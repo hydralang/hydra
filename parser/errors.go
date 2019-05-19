@@ -19,4 +19,5 @@ import "errors"
 // Various errors that may occur during parsing.
 var (
 	ErrSplitEntity = errors.New("entity split across files")
+	ErrBadRune     = errors.New("illegal UTF-8 encoding")
 )

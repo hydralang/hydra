@@ -114,6 +114,7 @@ func TestOptionsParseDefaults(t *testing.T) {
 
 	a.Equal(defaultFilename, obj.Filename)
 	a.Equal(defaultEncoding, obj.Encoding)
+	a.Equal(defaultTabStop, obj.TabStop)
 }
 
 type tnamer struct{}
@@ -134,6 +135,7 @@ func TestOptionsParseNamer(t *testing.T) {
 
 	a.Equal("name", obj.Filename)
 	a.Equal(defaultEncoding, obj.Encoding)
+	a.Equal(defaultTabStop, obj.TabStop)
 }
 
 func TestOptionsParseSeeker(t *testing.T) {
@@ -144,6 +146,7 @@ func TestOptionsParseSeeker(t *testing.T) {
 
 	a.Equal(defaultFilename, obj.Filename)
 	a.Equal("other", obj.Encoding)
+	a.Equal(defaultTabStop, obj.TabStop)
 }
 
 func TestOptionsParseSeekerNoContent(t *testing.T) {
@@ -154,6 +157,7 @@ func TestOptionsParseSeekerNoContent(t *testing.T) {
 
 	a.Equal(defaultFilename, obj.Filename)
 	a.Equal(defaultEncoding, obj.Encoding)
+	a.Equal(defaultTabStop, obj.TabStop)
 }
 
 type tseeker struct{}
@@ -174,16 +178,18 @@ func TestOptionsParseSeekerUnseekable(t *testing.T) {
 
 	a.Equal(defaultFilename, obj.Filename)
 	a.Equal(defaultEncoding, obj.Encoding)
+	a.Equal(defaultTabStop, obj.TabStop)
 }
 
 func TestOptionsParseOptions(t *testing.T) {
 	a := assert.New(t)
 	obj := &Options{}
 
-	obj.Parse(Filename("file"), Encoding("other"))
+	obj.Parse(Filename("file"), Encoding("other"), TabStop(4))
 
 	a.Equal("file", obj.Filename)
 	a.Equal("other", obj.Encoding)
+	a.Equal(4, obj.TabStop)
 }
 
 func TestFilename(t *testing.T) {
@@ -204,4 +210,14 @@ func TestEncoding(t *testing.T) {
 	opt(opts)
 
 	a.Equal("enc", opts.Encoding)
+}
+
+func TestTabStop(t *testing.T) {
+	a := assert.New(t)
+	opts := &Options{}
+
+	opt := TabStop(4)
+	opt(opts)
+
+	a.Equal(4, opts.TabStop)
 }

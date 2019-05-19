@@ -143,3 +143,26 @@ func (opts *Options) Classify(ch rune, loc Location, err error) AugChar {
 
 	return AugChar{ch, class, loc, val}
 }
+
+// Advance advances the location to account for the specified
+// character.
+func (opts *Options) Advance(ch rune, loc *Location) {
+	switch ch {
+	case EOF, Err: // End of file
+		loc.Advance(FilePos{})
+
+	case '\n': // New line
+		loc.Advance(FilePos{L: 1})
+
+	case '\t': // Hit a tab
+		loc.AdvanceTab(opts.TabStop)
+
+	case '\f': // Don't count form feeds at the beginning of lines
+		if loc.B.C > 1 {
+			loc.Advance(FilePos{C: 1})
+		}
+
+	default: // Everything else advances by one column
+		loc.Advance(FilePos{C: 1})
+	}
+}

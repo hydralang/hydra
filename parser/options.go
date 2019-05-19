@@ -34,6 +34,9 @@ const defaultFilename = "<input>"
 // file.
 const defaultEncoding = "utf-8"
 
+// defaultTabStop is the default size of a tab.
+const defaultTabStop = 8
+
 // encodingRE is a regular expression that matches a coding
 // declaration comment.
 var encodingRE = regexp.MustCompile(
@@ -75,6 +78,7 @@ type Options struct {
 	IDCont   runes.Set            // Set of valid identifier continue chars
 	StrFlags map[rune]interface{} // Valid string flags
 	Quotes   map[rune]interface{} // Valid quote characters
+	TabStop  int                  // The size of a tab stop
 }
 
 // namer is an interface with a single Name() method.  This matches
@@ -136,6 +140,11 @@ func (o *Options) Parse(opts ...Option) {
 			o.Encoding = defaultEncoding
 		}
 	}
+
+	// Set the default tab stop
+	if o.TabStop == 0 {
+		o.TabStop = defaultTabStop
+	}
 }
 
 // Option type for option functions.  Each function mutates a
@@ -159,5 +168,12 @@ func Filename(file string) Option {
 func Encoding(encoding string) Option {
 	return func(opts *Options) {
 		opts.Encoding = encoding
+	}
+}
+
+// TabStop sets the size of a tab stop.  If not set, it defaults to 8.
+func TabStop(tabstop int) Option {
+	return func(opts *Options) {
+		opts.TabStop = tabstop
 	}
 }

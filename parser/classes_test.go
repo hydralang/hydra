@@ -246,3 +246,147 @@ func TestOptionsClassifyErr(t *testing.T) {
 		Val: assert.AnError,
 	}, result)
 }
+
+func TestOptionsAdvanceEOF(t *testing.T) {
+	a := assert.New(t)
+	opts := &Options{TabStop: 8}
+	loc := Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 2},
+		E:    FilePos{L: 3, C: 3},
+	}
+
+	opts.Advance(EOF, &loc)
+
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 3},
+		E:    FilePos{L: 3, C: 3},
+	}, loc)
+}
+
+func TestOptionsAdvanceErr(t *testing.T) {
+	a := assert.New(t)
+	opts := &Options{TabStop: 8}
+	loc := Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 2},
+		E:    FilePos{L: 3, C: 3},
+	}
+
+	opts.Advance(Err, &loc)
+
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 3},
+		E:    FilePos{L: 3, C: 3},
+	}, loc)
+}
+
+func TestOptionsAdvanceNewline(t *testing.T) {
+	a := assert.New(t)
+	opts := &Options{TabStop: 8}
+	loc := Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 2},
+		E:    FilePos{L: 3, C: 3},
+	}
+
+	opts.Advance('\n', &loc)
+
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 3},
+		E:    FilePos{L: 4, C: 1},
+	}, loc)
+}
+
+func TestOptionsAdvanceTab8(t *testing.T) {
+	a := assert.New(t)
+	opts := &Options{TabStop: 8}
+	loc := Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 2},
+		E:    FilePos{L: 3, C: 3},
+	}
+
+	opts.Advance('\t', &loc)
+
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 3},
+		E:    FilePos{L: 3, C: 9},
+	}, loc)
+}
+
+func TestOptionsAdvanceTab4(t *testing.T) {
+	a := assert.New(t)
+	opts := &Options{TabStop: 4}
+	loc := Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 2},
+		E:    FilePos{L: 3, C: 3},
+	}
+
+	opts.Advance('\t', &loc)
+
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 3},
+		E:    FilePos{L: 3, C: 5},
+	}, loc)
+}
+
+func TestOptionsAdvanceFFBegin(t *testing.T) {
+	a := assert.New(t)
+	opts := &Options{TabStop: 8}
+	loc := Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 1},
+		E:    FilePos{L: 3, C: 2},
+	}
+
+	opts.Advance('\f', &loc)
+
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 1},
+		E:    FilePos{L: 3, C: 2},
+	}, loc)
+}
+
+func TestOptionsAdvanceFFMiddle(t *testing.T) {
+	a := assert.New(t)
+	opts := &Options{TabStop: 8}
+	loc := Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 2},
+		E:    FilePos{L: 3, C: 3},
+	}
+
+	opts.Advance('\f', &loc)
+
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 3},
+		E:    FilePos{L: 3, C: 4},
+	}, loc)
+}
+
+func TestOptionsAdvanceOther(t *testing.T) {
+	a := assert.New(t)
+	opts := &Options{TabStop: 8}
+	loc := Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 2},
+		E:    FilePos{L: 3, C: 3},
+	}
+
+	opts.Advance('o', &loc)
+
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 3},
+		E:    FilePos{L: 3, C: 4},
+	}, loc)
+}
