@@ -97,8 +97,8 @@ func flags8(fs FlagSet8, flags uint8) []string {
 
 	// Collect all the names
 	idx := 0
-	var low uint = uint(bits.TrailingZeros8(flags))
-	var hi uint = uint(bits.Len8(flags))
+	low := uint(bits.TrailingZeros8(flags))
+	hi := uint(bits.Len8(flags))
 	for i := low + 1; i <= hi; i++ {
 		flagNames[idx] = fs.FlagName(i)
 		idx++
@@ -113,8 +113,8 @@ func flags16(fs FlagSet16, flags uint16) []string {
 
 	// Collect all the names
 	idx := 0
-	var low uint = uint(bits.TrailingZeros16(flags))
-	var hi uint = uint(bits.Len16(flags))
+	low := uint(bits.TrailingZeros16(flags))
+	hi := uint(bits.Len16(flags))
 	for i := low + 1; i <= hi; i++ {
 		flagNames[idx] = fs.FlagName(i)
 		idx++
@@ -129,8 +129,8 @@ func flags32(fs FlagSet32, flags uint32) []string {
 
 	// Collect all the names
 	idx := 0
-	var low uint = uint(bits.TrailingZeros32(flags))
-	var hi uint = uint(bits.Len32(flags))
+	low := uint(bits.TrailingZeros32(flags))
+	hi := uint(bits.Len32(flags))
 	for i := low + 1; i <= hi; i++ {
 		flagNames[idx] = fs.FlagName(i)
 		idx++
@@ -145,8 +145,8 @@ func flags64(fs FlagSet64, flags uint64) []string {
 
 	// Collect all the names
 	idx := 0
-	var low uint = uint(bits.TrailingZeros64(flags))
-	var hi uint = uint(bits.Len64(flags))
+	low := uint(bits.TrailingZeros64(flags))
+	hi := uint(bits.Len64(flags))
 	for i := low + 1; i <= hi; i++ {
 		flagNames[idx] = fs.FlagName(i)
 		idx++
