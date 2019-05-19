@@ -43,7 +43,7 @@ type visitState struct {
 }
 
 // Visit visits every node in a Visitable in depth-first fashion,
-// calling the specified VisitPred with the specifiec context.  If a
+// calling the specified VisitPred with the specified context.  If a
 // VisitPred call returns an error, the error is returned.
 func Visit(visitable interface{}, visit VisitPred, ctxt interface{}) error {
 	// Convert to a visitable
