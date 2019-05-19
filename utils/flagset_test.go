@@ -20,6 +20,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestFlagSet8ImplementsFlagSet(t *testing.T) {
+	assert.Implements(t, (*FlagSet)(nil), &FlagSet8{})
+}
+
 const (
 	FLAG8F1 uint8 = 1 << iota
 	FLAG8F2
@@ -36,9 +40,13 @@ func TestFlags8(t *testing.T) {
 	a := assert.New(t)
 	flags := FLAG8F2 | FLAG8F3 | (1 << 3)
 
-	result := Flags(names8, flags, ", ")
+	result := names8.Flags(flags)
 
-	a.Equal("FLAG8F2, FLAG8F3, 4 (0x08)", result)
+	a.Equal([]string{"FLAG8F2", "FLAG8F3", "4 (0x08)"}, result)
+}
+
+func TestFlagSet16ImplementsFlagSet(t *testing.T) {
+	assert.Implements(t, (*FlagSet)(nil), &FlagSet16{})
 }
 
 const (
@@ -57,9 +65,13 @@ func TestFlags16(t *testing.T) {
 	a := assert.New(t)
 	flags := FLAG16F2 | FLAG16F3 | (1 << 3)
 
-	result := Flags(names16, flags, ", ")
+	result := names16.Flags(flags)
 
-	a.Equal("FLAG16F2, FLAG16F3, 4 (0x0008)", result)
+	a.Equal([]string{"FLAG16F2", "FLAG16F3", "4 (0x0008)"}, result)
+}
+
+func TestFlagSet32ImplementsFlagSet(t *testing.T) {
+	assert.Implements(t, (*FlagSet)(nil), &FlagSet32{})
 }
 
 const (
@@ -78,9 +90,13 @@ func TestFlags32(t *testing.T) {
 	a := assert.New(t)
 	flags := FLAG32F2 | FLAG32F3 | (1 << 3)
 
-	result := Flags(names32, flags, ", ")
+	result := names32.Flags(flags)
 
-	a.Equal("FLAG32F2, FLAG32F3, 4 (0x00000008)", result)
+	a.Equal([]string{"FLAG32F2", "FLAG32F3", "4 (0x00000008)"}, result)
+}
+
+func TestFlagSet64ImplementsFlagSet(t *testing.T) {
+	assert.Implements(t, (*FlagSet)(nil), &FlagSet64{})
 }
 
 const (
@@ -99,7 +115,7 @@ func TestFlags64(t *testing.T) {
 	a := assert.New(t)
 	flags := FLAG64F2 | FLAG64F3 | (1 << 3)
 
-	result := Flags(names64, flags, ", ")
+	result := names64.Flags(flags)
 
-	a.Equal("FLAG64F2, FLAG64F3, 4 (0x0000000000000008)", result)
+	a.Equal([]string{"FLAG64F2", "FLAG64F3", "4 (0x0000000000000008)"}, result)
 }

@@ -17,14 +17,18 @@ package utils
 import (
 	"fmt"
 	"math/bits"
-	"strings"
 )
 
-// flagSet is an interface representing sets of named flags.
-type flagSet interface {
-	// Retrieves the name for a flag corresponding to the
+// FlagSet is an interface representing sets of named flags.
+type FlagSet interface {
+	// FlagName retrieves the name for a flag corresponding to the
 	// specified bit.
 	FlagName(b uint) string
+
+	// Flags retrieves a list of flags corresponding to the
+	// specified bit set.  The flags will be in order from lowest
+	// set bit to highest.
+	Flags(flags interface{}) []string
 }
 
 // FlagSet8 is a mapping from flags to flag names.
@@ -43,6 +47,27 @@ func (fs FlagSet8) FlagName(b uint) string {
 	return name
 }
 
+// Flags retrieves a list of flags corresponding to the specified bit
+// set.  The flags will be in order from lowest set bit to highest.
+func (fs FlagSet8) Flags(flags interface{}) []string {
+	// Convert flags to the correct type
+	mask := flags.(uint8)
+
+	// Initialize the list of flag names
+	flagNames := make([]string, bits.OnesCount8(mask))
+
+	// Collect all the names
+	idx := 0
+	lo := uint(bits.TrailingZeros8(mask))
+	hi := uint(bits.Len8(mask))
+	for i := lo + 1; i <= hi; i++ {
+		flagNames[idx] = fs.FlagName(i)
+		idx++
+	}
+
+	return flagNames
+}
+
 // FlagSet16 is a mapping from flags to flag names.
 type FlagSet16 map[uint16]string
 
@@ -57,6 +82,27 @@ func (fs FlagSet16) FlagName(b uint) string {
 		return fmt.Sprintf("%d (0x%04x)", b, flag)
 	}
 	return name
+}
+
+// Flags retrieves a list of flags corresponding to the specified bit
+// set.  The flags will be in order from lowest set bit to highest.
+func (fs FlagSet16) Flags(flags interface{}) []string {
+	// Convert flags to the correct type
+	mask := flags.(uint16)
+
+	// Initialize the list of flag names
+	flagNames := make([]string, bits.OnesCount16(mask))
+
+	// Collect all the names
+	idx := 0
+	lo := uint(bits.TrailingZeros16(mask))
+	hi := uint(bits.Len16(mask))
+	for i := lo + 1; i <= hi; i++ {
+		flagNames[idx] = fs.FlagName(i)
+		idx++
+	}
+
+	return flagNames
 }
 
 // FlagSet32 is a mapping from flags to flag names.
@@ -75,6 +121,27 @@ func (fs FlagSet32) FlagName(b uint) string {
 	return name
 }
 
+// Flags retrieves a list of flags corresponding to the specified bit
+// set.  The flags will be in order from lowest set bit to highest.
+func (fs FlagSet32) Flags(flags interface{}) []string {
+	// Convert flags to the correct type
+	mask := flags.(uint32)
+
+	// Initialize the list of flag names
+	flagNames := make([]string, bits.OnesCount32(mask))
+
+	// Collect all the names
+	idx := 0
+	lo := uint(bits.TrailingZeros32(mask))
+	hi := uint(bits.Len32(mask))
+	for i := lo + 1; i <= hi; i++ {
+		flagNames[idx] = fs.FlagName(i)
+		idx++
+	}
+
+	return flagNames
+}
+
 // FlagSet64 is a mapping from flags to flag names.
 type FlagSet64 map[uint64]string
 
@@ -91,86 +158,23 @@ func (fs FlagSet64) FlagName(b uint) string {
 	return name
 }
 
-// flags8 assembles the flag names for 8-bit flag sets.
-func flags8(fs FlagSet8, flags uint8) []string {
-	flagNames := make([]string, bits.OnesCount8(flags))
+// Flags retrieves a list of flags corresponding to the specified bit
+// set.  The flags will be in order from lowest set bit to highest.
+func (fs FlagSet64) Flags(flags interface{}) []string {
+	// Convert flags to the correct type
+	mask := flags.(uint64)
+
+	// Initialize the list of flag names
+	flagNames := make([]string, bits.OnesCount64(mask))
 
 	// Collect all the names
 	idx := 0
-	low := uint(bits.TrailingZeros8(flags))
-	hi := uint(bits.Len8(flags))
-	for i := low + 1; i <= hi; i++ {
+	lo := uint(bits.TrailingZeros64(mask))
+	hi := uint(bits.Len64(mask))
+	for i := lo + 1; i <= hi; i++ {
 		flagNames[idx] = fs.FlagName(i)
 		idx++
 	}
 
 	return flagNames
-}
-
-// flags16 assembles the flag names for 16-bit flag sets.
-func flags16(fs FlagSet16, flags uint16) []string {
-	flagNames := make([]string, bits.OnesCount16(flags))
-
-	// Collect all the names
-	idx := 0
-	low := uint(bits.TrailingZeros16(flags))
-	hi := uint(bits.Len16(flags))
-	for i := low + 1; i <= hi; i++ {
-		flagNames[idx] = fs.FlagName(i)
-		idx++
-	}
-
-	return flagNames
-}
-
-// flags32 assembles the flag names for 32-bit flag sets.
-func flags32(fs FlagSet32, flags uint32) []string {
-	flagNames := make([]string, bits.OnesCount32(flags))
-
-	// Collect all the names
-	idx := 0
-	low := uint(bits.TrailingZeros32(flags))
-	hi := uint(bits.Len32(flags))
-	for i := low + 1; i <= hi; i++ {
-		flagNames[idx] = fs.FlagName(i)
-		idx++
-	}
-
-	return flagNames
-}
-
-// flags64 assembles the flag names for 64-bit flag sets.
-func flags64(fs FlagSet64, flags uint64) []string {
-	flagNames := make([]string, bits.OnesCount64(flags))
-
-	// Collect all the names
-	idx := 0
-	low := uint(bits.TrailingZeros64(flags))
-	hi := uint(bits.Len64(flags))
-	for i := low + 1; i <= hi; i++ {
-		flagNames[idx] = fs.FlagName(i)
-		idx++
-	}
-
-	return flagNames
-}
-
-// Flags constructs a string representing the flags set, joined by the
-// specified joiner.
-func Flags(fs flagSet, flags interface{}, joiner string) string {
-	var flagNames []string
-
-	// Delegate to the appropriate flag compiler
-	switch set := fs.(type) {
-	case FlagSet8:
-		flagNames = flags8(set, flags.(uint8))
-	case FlagSet16:
-		flagNames = flags16(set, flags.(uint16))
-	case FlagSet32:
-		flagNames = flags32(set, flags.(uint32))
-	case FlagSet64:
-		flagNames = flags64(set, flags.(uint64))
-	}
-
-	return strings.Join(flagNames, joiner)
 }
