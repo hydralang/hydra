@@ -53,3 +53,17 @@ func (t Token) String() string {
 
 	return text.String()
 }
+
+// Standard token symbols
+var (
+	TokError   = Symbol{"Error"}
+	TokEOF     = Symbol{"EOF"}
+	TokNewline = Symbol{"Newline"}
+	TokIndent  = Symbol{"Indent"}
+	TokDedent  = Symbol{"Dedent"}
+	TokIdent   = Symbol{"Ident"}
+	TokInt     = Symbol{"Int"}
+	TokFloat   = Symbol{"Float"}
+	TokString  = Symbol{"String"}
+	TokBytes   = Symbol{"Bytes"}
+)
