@@ -12,12 +12,9 @@
 // implied.  See the License for the specific language governing
 // permissions and limitations under the License.
 
+// Package parser implements the parser for Hydra.  The parser takes a
+// given source file and generates from it an abstract syntax tree.
+// The parser contains multiple pieces, including a scanner which
+// scans the file, handling any encoding issues, and a lexer, which
+// breaks down the scanned characters into tokens.
 package parser
-
-import "errors"
-
-// Various errors that may occur during parsing.
-var (
-	ErrSplitEntity = errors.New("entity split across files")
-	ErrBadRune     = errors.New("illegal UTF-8 encoding")
-)

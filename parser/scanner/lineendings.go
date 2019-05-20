@@ -14,7 +14,7 @@
 
 package scanner
 
-import "github.com/hydralang/hydra/parser"
+import "github.com/hydralang/hydra/parser/common"
 
 // lineEnding is a function that processes line ending characters.
 type lineEnding func(ch rune) rune
@@ -29,7 +29,7 @@ func (s *scanner) leUnknown(ch rune) rune {
 
 	// Peek at the next character
 	ch, err := s.nextChar()
-	if ch == parser.EOF || err != nil {
+	if ch == common.EOF || err != nil {
 		// EOF; assume '\r' was end-of-line
 		s.le = s.leCarriage
 
@@ -73,7 +73,7 @@ func (s *scanner) leBoth(ch rune) rune {
 		// Get the next character, and ignore '\r' if next is
 		// '\n'
 		ch, err := s.nextChar()
-		if ch == parser.EOF || err != nil {
+		if ch == common.EOF || err != nil {
 			// Put back the error
 			s.err = err
 

@@ -21,7 +21,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/hydralang/hydra/parser"
+	"github.com/hydralang/hydra/parser/common"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/text/runes"
@@ -62,7 +62,7 @@ func TestScannerImplementsScanner(t *testing.T) {
 
 func TestScanDefaultEncoding(t *testing.T) {
 	a := assert.New(t)
-	opts := &parser.Options{
+	opts := &common.Options{
 		Source:   bytes.NewReader([]byte{69, 108, 78, 105, 110, 204, 131, 111}),
 		Filename: "filename",
 		Encoding: "utf-8",
@@ -78,12 +78,12 @@ func TestScanDefaultEncoding(t *testing.T) {
 	a.Equal(0, s.pos)
 	a.Equal(0, s.end)
 	assertFuncEqual(a, s.leUnknown, s.le)
-	a.Equal(parser.Err, s.pushed)
+	a.Equal(common.Err, s.pushed)
 	a.Nil(s.err)
-	a.Equal(parser.Location{
+	a.Equal(common.Location{
 		File: "filename",
-		B:    parser.FilePos{L: 1, C: 1},
-		E:    parser.FilePos{L: 1, C: 1},
+		B:    common.FilePos{L: 1, C: 1},
+		E:    common.FilePos{L: 1, C: 1},
 	}, s.loc)
 	buf := [20]byte{}
 	n, err := s.source.Read(buf[:])
@@ -94,7 +94,7 @@ func TestScanDefaultEncoding(t *testing.T) {
 
 func TestScanISO8859_1(t *testing.T) {
 	a := assert.New(t)
-	opts := &parser.Options{
+	opts := &common.Options{
 		Source:   bytes.NewReader([]byte{69, 108, 78, 105, 241, 111}),
 		Filename: "filename",
 		Encoding: "iso-8859-1",
@@ -110,12 +110,12 @@ func TestScanISO8859_1(t *testing.T) {
 	a.Equal(0, s.pos)
 	a.Equal(0, s.end)
 	assertFuncEqual(a, s.leUnknown, s.le)
-	a.Equal(parser.Err, s.pushed)
+	a.Equal(common.Err, s.pushed)
 	a.Nil(s.err)
-	a.Equal(parser.Location{
+	a.Equal(common.Location{
 		File: "filename",
-		B:    parser.FilePos{L: 1, C: 1},
-		E:    parser.FilePos{L: 1, C: 1},
+		B:    common.FilePos{L: 1, C: 1},
+		E:    common.FilePos{L: 1, C: 1},
 	}, s.loc)
 	buf := [20]byte{}
 	n, err := s.source.Read(buf[:])
@@ -126,7 +126,7 @@ func TestScanISO8859_1(t *testing.T) {
 
 func TestScanNoSuchEncoding(t *testing.T) {
 	a := assert.New(t)
-	opts := &parser.Options{
+	opts := &common.Options{
 		Source:   bytes.NewReader([]byte{69, 108, 78, 105, 110, 204, 131, 111}),
 		Filename: "filename",
 		Encoding: "no-such-encoding",
@@ -189,8 +189,8 @@ func TestScannerNextCharBufferedBadChar(t *testing.T) {
 
 	r, err := s.nextChar()
 
-	a.Equal(parser.ErrBadRune, err)
-	a.Equal(parser.Err, r)
+	a.Equal(common.ErrBadRune, err)
+	a.Equal(common.Err, r)
 	a.Nil(s.source)
 	a.Equal([]byte("nino"), s.buf[s.pos:s.end])
 	a.Equal(1, s.pos)
@@ -208,7 +208,7 @@ func TestScannerNextCharEOF(t *testing.T) {
 	r, err := s.nextChar()
 
 	a.NoError(err)
-	a.Equal(parser.EOF, r)
+	a.Equal(common.EOF, r)
 	a.Nil(s.source)
 	a.Equal([]byte{}, s.buf[s.pos:s.end])
 	a.Equal(0, s.pos)
@@ -227,7 +227,7 @@ func TestScannerNextCharError(t *testing.T) {
 	r, err := s.nextChar()
 
 	a.Equal(assert.AnError, err)
-	a.Equal(parser.Err, r)
+	a.Equal(common.Err, r)
 	a.Nil(s.source)
 	a.Equal([]byte{}, s.buf[s.pos:s.end])
 	a.Equal(0, s.pos)
@@ -332,13 +332,13 @@ func TestScannerNextCharReadError(t *testing.T) {
 func TestScannerPush(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{}
-	ch := parser.AugChar{
+	ch := common.AugChar{
 		C:     'c',
 		Class: 5,
-		Loc: parser.Location{
+		Loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 1},
-			E:    parser.FilePos{L: 1, C: 1},
+			B:    common.FilePos{L: 1, C: 1},
+			E:    common.FilePos{L: 1, C: 1},
 		},
 		Val: nil,
 	}
@@ -346,63 +346,63 @@ func TestScannerPush(t *testing.T) {
 	s.Push(ch)
 
 	a.Equal(1, s.queue.Len())
-	a.Equal(ch, s.queue.Front().Value.(parser.AugChar))
+	a.Equal(ch, s.queue.Front().Value.(common.AugChar))
 }
 
 func TestScannerNextPushed(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &parser.Options{
+		opts: &common.Options{
 			IDStart:  testIDStart,
 			IDCont:   testIDCont,
 			StrFlags: testStrFlags,
 			Quotes:   testQuotes,
 		},
-		pushed: parser.Err,
+		pushed: common.Err,
 		end:    4,
-		loc: parser.Location{
+		loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 1},
-			E:    parser.FilePos{L: 1, C: 1},
+			B:    common.FilePos{L: 1, C: 1},
+			E:    common.FilePos{L: 1, C: 1},
 		},
 	}
 	copy(s.buf[0:], []byte{'t', 'e', 's', 't', utf8.RuneSelf})
 	s.le = s.leNewline
-	s.queue.PushFront(parser.AugChar{
+	s.queue.PushFront(common.AugChar{
 		C:     'p',
-		Class: parser.CharIDStart | parser.CharIDCont,
-		Loc: parser.Location{
+		Class: common.CharIDStart | common.CharIDCont,
+		Loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 2, C: 1},
-			E:    parser.FilePos{L: 2, C: 2},
+			B:    common.FilePos{L: 2, C: 1},
+			E:    common.FilePos{L: 2, C: 2},
 		},
 		Val: nil,
 	})
 	ch := s.Next()
 
-	a.Equal(parser.AugChar{
+	a.Equal(common.AugChar{
 		C:     'p',
-		Class: parser.CharIDStart | parser.CharIDCont,
-		Loc: parser.Location{
+		Class: common.CharIDStart | common.CharIDCont,
+		Loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 2, C: 1},
-			E:    parser.FilePos{L: 2, C: 2},
+			B:    common.FilePos{L: 2, C: 1},
+			E:    common.FilePos{L: 2, C: 2},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte("test"), s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(parser.Location{
+	a.Equal(common.Location{
 		File: "filename",
-		B:    parser.FilePos{L: 1, C: 1},
-		E:    parser.FilePos{L: 1, C: 1},
+		B:    common.FilePos{L: 1, C: 1},
+		E:    common.FilePos{L: 1, C: 1},
 	}, s.loc)
 }
 
 func TestScannerNextLEPushed(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &parser.Options{
+		opts: &common.Options{
 			IDStart:  testIDStart,
 			IDCont:   testIDCont,
 			StrFlags: testStrFlags,
@@ -410,10 +410,10 @@ func TestScannerNextLEPushed(t *testing.T) {
 		},
 		pushed: 'p',
 		end:    4,
-		loc: parser.Location{
+		loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 1},
-			E:    parser.FilePos{L: 1, C: 1},
+			B:    common.FilePos{L: 1, C: 1},
+			E:    common.FilePos{L: 1, C: 1},
 		},
 	}
 	copy(s.buf[0:], []byte{'t', 'e', 's', 't', utf8.RuneSelf})
@@ -421,39 +421,39 @@ func TestScannerNextLEPushed(t *testing.T) {
 
 	ch := s.Next()
 
-	a.Equal(parser.AugChar{
+	a.Equal(common.AugChar{
 		C:     'p',
-		Class: parser.CharIDStart | parser.CharIDCont,
-		Loc: parser.Location{
+		Class: common.CharIDStart | common.CharIDCont,
+		Loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 1},
-			E:    parser.FilePos{L: 1, C: 2},
+			B:    common.FilePos{L: 1, C: 1},
+			E:    common.FilePos{L: 1, C: 2},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte("test"), s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(parser.Location{
+	a.Equal(common.Location{
 		File: "filename",
-		B:    parser.FilePos{L: 1, C: 1},
-		E:    parser.FilePos{L: 1, C: 2},
+		B:    common.FilePos{L: 1, C: 1},
+		E:    common.FilePos{L: 1, C: 2},
 	}, s.loc)
 }
 
 func TestScannerNextEOF(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &parser.Options{
+		opts: &common.Options{
 			IDStart:  testIDStart,
 			IDCont:   testIDCont,
 			StrFlags: testStrFlags,
 			Quotes:   testQuotes,
 		},
-		pushed: parser.Err,
-		loc: parser.Location{
+		pushed: common.Err,
+		loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 1},
-			E:    parser.FilePos{L: 1, C: 2},
+			B:    common.FilePos{L: 1, C: 1},
+			E:    common.FilePos{L: 1, C: 2},
 		},
 	}
 	copy(s.buf[0:], []byte{utf8.RuneSelf})
@@ -461,40 +461,40 @@ func TestScannerNextEOF(t *testing.T) {
 
 	ch := s.Next()
 
-	a.Equal(parser.AugChar{
-		C:     parser.EOF,
+	a.Equal(common.AugChar{
+		C:     common.EOF,
 		Class: 0,
-		Loc: parser.Location{
+		Loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 2},
-			E:    parser.FilePos{L: 1, C: 2},
+			B:    common.FilePos{L: 1, C: 2},
+			E:    common.FilePos{L: 1, C: 2},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte{}, s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(parser.Location{
+	a.Equal(common.Location{
 		File: "filename",
-		B:    parser.FilePos{L: 1, C: 2},
-		E:    parser.FilePos{L: 1, C: 2},
+		B:    common.FilePos{L: 1, C: 2},
+		E:    common.FilePos{L: 1, C: 2},
 	}, s.loc)
 }
 
 func TestScannerNextError(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &parser.Options{
+		opts: &common.Options{
 			IDStart:  testIDStart,
 			IDCont:   testIDCont,
 			StrFlags: testStrFlags,
 			Quotes:   testQuotes,
 		},
-		pushed: parser.Err,
+		pushed: common.Err,
 		err:    assert.AnError,
-		loc: parser.Location{
+		loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 1},
-			E:    parser.FilePos{L: 1, C: 2},
+			B:    common.FilePos{L: 1, C: 1},
+			E:    common.FilePos{L: 1, C: 2},
 		},
 	}
 	copy(s.buf[0:], []byte{utf8.RuneSelf})
@@ -502,40 +502,40 @@ func TestScannerNextError(t *testing.T) {
 
 	ch := s.Next()
 
-	a.Equal(parser.AugChar{
-		C:     parser.Err,
+	a.Equal(common.AugChar{
+		C:     common.Err,
 		Class: 0,
-		Loc: parser.Location{
+		Loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 2},
-			E:    parser.FilePos{L: 1, C: 2},
+			B:    common.FilePos{L: 1, C: 2},
+			E:    common.FilePos{L: 1, C: 2},
 		},
 		Val: assert.AnError,
 	}, ch)
 	a.Equal([]byte{}, s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(parser.Location{
+	a.Equal(common.Location{
 		File: "filename",
-		B:    parser.FilePos{L: 1, C: 2},
-		E:    parser.FilePos{L: 1, C: 2},
+		B:    common.FilePos{L: 1, C: 2},
+		E:    common.FilePos{L: 1, C: 2},
 	}, s.loc)
 }
 
 func TestScannerNextCharacter(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &parser.Options{
+		opts: &common.Options{
 			IDStart:  testIDStart,
 			IDCont:   testIDCont,
 			StrFlags: testStrFlags,
 			Quotes:   testQuotes,
 		},
-		pushed: parser.Err,
+		pushed: common.Err,
 		end:    4,
-		loc: parser.Location{
+		loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 1},
-			E:    parser.FilePos{L: 1, C: 1},
+			B:    common.FilePos{L: 1, C: 1},
+			E:    common.FilePos{L: 1, C: 1},
 		},
 	}
 	copy(s.buf[0:], []byte{'t', 'e', 's', 't', utf8.RuneSelf})
@@ -543,40 +543,40 @@ func TestScannerNextCharacter(t *testing.T) {
 
 	ch := s.Next()
 
-	a.Equal(parser.AugChar{
+	a.Equal(common.AugChar{
 		C:     't',
-		Class: parser.CharIDStart | parser.CharIDCont,
-		Loc: parser.Location{
+		Class: common.CharIDStart | common.CharIDCont,
+		Loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 1},
-			E:    parser.FilePos{L: 1, C: 2},
+			B:    common.FilePos{L: 1, C: 1},
+			E:    common.FilePos{L: 1, C: 2},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte("est"), s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(parser.Location{
+	a.Equal(common.Location{
 		File: "filename",
-		B:    parser.FilePos{L: 1, C: 1},
-		E:    parser.FilePos{L: 1, C: 2},
+		B:    common.FilePos{L: 1, C: 1},
+		E:    common.FilePos{L: 1, C: 2},
 	}, s.loc)
 }
 
 func TestScannerNextNewline(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &parser.Options{
+		opts: &common.Options{
 			IDStart:  testIDStart,
 			IDCont:   testIDCont,
 			StrFlags: testStrFlags,
 			Quotes:   testQuotes,
 		},
-		pushed: parser.Err,
+		pushed: common.Err,
 		end:    4,
-		loc: parser.Location{
+		loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 3},
-			E:    parser.FilePos{L: 1, C: 4},
+			B:    common.FilePos{L: 1, C: 3},
+			E:    common.FilePos{L: 1, C: 4},
 		},
 	}
 	copy(s.buf[0:], []byte{'\n', 'e', 's', 't', utf8.RuneSelf})
@@ -584,22 +584,22 @@ func TestScannerNextNewline(t *testing.T) {
 
 	ch := s.Next()
 
-	a.Equal(parser.AugChar{
+	a.Equal(common.AugChar{
 		C:     '\n',
-		Class: parser.CharWS | parser.CharNL,
-		Loc: parser.Location{
+		Class: common.CharWS | common.CharNL,
+		Loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 4},
-			E:    parser.FilePos{L: 2, C: 1},
+			B:    common.FilePos{L: 1, C: 4},
+			E:    common.FilePos{L: 2, C: 1},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte("est"), s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(parser.Location{
+	a.Equal(common.Location{
 		File: "filename",
-		B:    parser.FilePos{L: 1, C: 4},
-		E:    parser.FilePos{L: 2, C: 1},
+		B:    common.FilePos{L: 1, C: 4},
+		E:    common.FilePos{L: 2, C: 1},
 	}, s.loc)
 }
 
@@ -613,18 +613,18 @@ func leSwap(ch rune) rune {
 func TestScannerNextCarriageSwapped(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &parser.Options{
+		opts: &common.Options{
 			IDStart:  testIDStart,
 			IDCont:   testIDCont,
 			StrFlags: testStrFlags,
 			Quotes:   testQuotes,
 		},
-		pushed: parser.Err,
+		pushed: common.Err,
 		end:    4,
-		loc: parser.Location{
+		loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 3},
-			E:    parser.FilePos{L: 1, C: 4},
+			B:    common.FilePos{L: 1, C: 3},
+			E:    common.FilePos{L: 1, C: 4},
 		},
 	}
 	copy(s.buf[0:], []byte{'\r', 'e', 's', 't', utf8.RuneSelf})
@@ -632,21 +632,21 @@ func TestScannerNextCarriageSwapped(t *testing.T) {
 
 	ch := s.Next()
 
-	a.Equal(parser.AugChar{
+	a.Equal(common.AugChar{
 		C:     '\n',
-		Class: parser.CharWS | parser.CharNL,
-		Loc: parser.Location{
+		Class: common.CharWS | common.CharNL,
+		Loc: common.Location{
 			File: "filename",
-			B:    parser.FilePos{L: 1, C: 4},
-			E:    parser.FilePos{L: 2, C: 1},
+			B:    common.FilePos{L: 1, C: 4},
+			E:    common.FilePos{L: 2, C: 1},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte("est"), s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(parser.Location{
+	a.Equal(common.Location{
 		File: "filename",
-		B:    parser.FilePos{L: 1, C: 4},
-		E:    parser.FilePos{L: 2, C: 1},
+		B:    common.FilePos{L: 1, C: 4},
+		E:    common.FilePos{L: 2, C: 1},
 	}, s.loc)
 }

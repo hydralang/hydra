@@ -19,7 +19,7 @@ import (
 	"io"
 	"unicode/utf8"
 
-	"github.com/hydralang/hydra/parser"
+	"github.com/hydralang/hydra/parser/common"
 	"golang.org/x/text/encoding/ianaindex"
 	"golang.org/x/text/transform"
 )
@@ -34,29 +34,29 @@ type Scanner interface {
 	// Next retrieves the next rune from the file.  An EOF
 	// augmented character is returned on end of file, and an Err
 	// augmented character is returned in the event of an error.
-	Next() parser.AugChar
+	Next() common.AugChar
 
 	// Push pushes back a single augmented character onto the
 	// scanner.  Any number of characters may be pushed back.
-	Push(ch parser.AugChar)
+	Push(ch common.AugChar)
 }
 
 // scanner is an implementation of Scanner.
 type scanner struct {
 	source io.Reader         // The reader, including encoding
-	opts   *parser.Options   // The parser options
+	opts   *common.Options   // The parser options
 	buf    [scanBuf + 1]byte // The read buffer
 	pos    int               // The current index into the read buffer
 	end    int               // The end of the buffer
 	le     lineEnding        // The processor for line ending style
 	pushed rune              // One char pushback for line endings
 	err    error             // Deferred error
-	loc    parser.Location   // Location of head of read buffer
+	loc    common.Location   // Location of head of read buffer
 	queue  list.List         // List of pushed-back chars
 }
 
 // Scan prepares a new scanner from the parser options.
-func Scan(opts *parser.Options) (Scanner, error) {
+func Scan(opts *common.Options) (Scanner, error) {
 	// Set up the encoding transform to apply to the input
 	enc, err := ianaindex.IANA.Encoding(opts.Encoding)
 	if err != nil {
@@ -67,11 +67,11 @@ func Scan(opts *parser.Options) (Scanner, error) {
 	s := &scanner{
 		source: transform.NewReader(opts.Source, enc.NewDecoder()),
 		opts:   opts,
-		pushed: parser.Err, // sentinel for nothing there
-		loc: parser.Location{
+		pushed: common.Err, // sentinel for nothing there
+		loc: common.Location{
 			File: opts.Filename,
-			B:    parser.FilePos{L: 1, C: 1},
-			E:    parser.FilePos{L: 1, C: 1},
+			B:    common.FilePos{L: 1, C: 1},
+			E:    common.FilePos{L: 1, C: 1},
 		},
 	}
 
@@ -102,7 +102,7 @@ func (s *scanner) nextChar() (rune, error) {
 			// read error
 			if s.source == nil {
 				if s.err == nil {
-					return parser.EOF, nil
+					return common.EOF, nil
 				}
 
 				// Save the error for return and clear
@@ -110,7 +110,7 @@ func (s *scanner) nextChar() (rune, error) {
 				err := s.err
 				s.err = nil
 
-				return parser.Err, err
+				return common.Err, err
 			}
 
 			// Don't have enough, start by shifting the
@@ -154,7 +154,7 @@ func (s *scanner) nextChar() (rune, error) {
 				// of input
 				s.source = nil
 
-				return parser.Err, parser.ErrBadRune
+				return common.Err, common.ErrBadRune
 			}
 		}
 	}
@@ -167,7 +167,7 @@ func (s *scanner) nextChar() (rune, error) {
 
 // Push pushes back a single augmented character onto the scanner.
 // Any number of characters may be pushed back.
-func (s *scanner) Push(ch parser.AugChar) {
+func (s *scanner) Push(ch common.AugChar) {
 	// Push the character onto the queue
 	s.queue.PushFront(ch)
 }
@@ -175,7 +175,7 @@ func (s *scanner) Push(ch parser.AugChar) {
 // Next retrieves the next rune from the file.  An EOF augmented
 // character is returned on end of file, and an Err augmented
 // character is returned in the event of an error.
-func (s *scanner) Next() parser.AugChar {
+func (s *scanner) Next() common.AugChar {
 	// Handle characters pushed back by Push
 	if s.queue.Len() > 0 {
 		// Pop the first element off
@@ -183,15 +183,15 @@ func (s *scanner) Next() parser.AugChar {
 		s.queue.Remove(elem)
 
 		// Return the character
-		return elem.Value.(parser.AugChar)
+		return elem.Value.(common.AugChar)
 	}
 
 	// OK, get the next character to process
 	var ch rune
 	var err error
-	if s.pushed != parser.Err {
+	if s.pushed != common.Err {
 		ch = s.pushed
-		s.pushed = parser.Err
+		s.pushed = common.Err
 
 		// No need to handle line endings, because that's the
 		// only thing that can push a character back

@@ -19,7 +19,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/hydralang/hydra/parser"
+	"github.com/hydralang/hydra/parser/common"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -33,7 +33,7 @@ func TestScannerLeUnknownNewline(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
 		end:    1,
-		pushed: parser.Err,
+		pushed: common.Err,
 	}
 	copy(s.buf[0:], []byte{'o', utf8.RuneSelf})
 	s.le = s.leUnknown
@@ -42,7 +42,7 @@ func TestScannerLeUnknownNewline(t *testing.T) {
 
 	a.Equal('\n', result)
 	a.Nil(s.err)
-	a.Equal(parser.Err, s.pushed)
+	a.Equal(common.Err, s.pushed)
 	assertFuncEqual(a, s.leNewline, s.le)
 }
 
@@ -50,7 +50,7 @@ func TestScannerLeUnknownCarriageEOF(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
 		end:    0,
-		pushed: parser.Err,
+		pushed: common.Err,
 	}
 	copy(s.buf[0:], []byte{utf8.RuneSelf})
 	s.le = s.leUnknown
@@ -59,7 +59,7 @@ func TestScannerLeUnknownCarriageEOF(t *testing.T) {
 
 	a.Equal('\n', result)
 	a.Nil(s.err)
-	a.Equal(parser.Err, s.pushed)
+	a.Equal(common.Err, s.pushed)
 	assertFuncEqual(a, s.leCarriage, s.le)
 }
 
@@ -67,7 +67,7 @@ func TestScannerLeUnknownCarriageError(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
 		end:    0,
-		pushed: parser.Err,
+		pushed: common.Err,
 		err:    assert.AnError,
 	}
 	copy(s.buf[0:], []byte{utf8.RuneSelf})
@@ -77,7 +77,7 @@ func TestScannerLeUnknownCarriageError(t *testing.T) {
 
 	a.Equal('\n', result)
 	a.Equal(assert.AnError, s.err)
-	a.Equal(parser.Err, s.pushed)
+	a.Equal(common.Err, s.pushed)
 	assertFuncEqual(a, s.leCarriage, s.le)
 }
 
@@ -85,7 +85,7 @@ func TestScannerLeUnknownBoth(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
 		end:    1,
-		pushed: parser.Err,
+		pushed: common.Err,
 	}
 	copy(s.buf[0:], []byte{'\n', utf8.RuneSelf})
 	s.le = s.leUnknown
@@ -94,7 +94,7 @@ func TestScannerLeUnknownBoth(t *testing.T) {
 
 	a.Equal('\n', result)
 	a.Nil(s.err)
-	a.Equal(parser.Err, s.pushed)
+	a.Equal(common.Err, s.pushed)
 	assertFuncEqual(a, s.leBoth, s.le)
 }
 
@@ -102,7 +102,7 @@ func TestScannerLeUnknownCarriage(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
 		end:    1,
-		pushed: parser.Err,
+		pushed: common.Err,
 	}
 	copy(s.buf[0:], []byte{'o', utf8.RuneSelf})
 	s.le = s.leUnknown
@@ -155,7 +155,7 @@ func TestScannerLeBothCarriageEOF(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
 		end:    0,
-		pushed: parser.Err,
+		pushed: common.Err,
 	}
 	copy(s.buf[0:], []byte{utf8.RuneSelf})
 
@@ -163,14 +163,14 @@ func TestScannerLeBothCarriageEOF(t *testing.T) {
 
 	a.Equal('\r', result)
 	a.Nil(s.err)
-	a.Equal(parser.Err, s.pushed)
+	a.Equal(common.Err, s.pushed)
 }
 
 func TestScannerLeBothCarriageError(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
 		end:    0,
-		pushed: parser.Err,
+		pushed: common.Err,
 		err:    assert.AnError,
 	}
 	copy(s.buf[0:], []byte{utf8.RuneSelf})
@@ -179,14 +179,14 @@ func TestScannerLeBothCarriageError(t *testing.T) {
 
 	a.Equal('\r', result)
 	a.Equal(assert.AnError, s.err)
-	a.Equal(parser.Err, s.pushed)
+	a.Equal(common.Err, s.pushed)
 }
 
 func TestScannerLeBothCarriageNewline(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
 		end:    1,
-		pushed: parser.Err,
+		pushed: common.Err,
 	}
 	copy(s.buf[0:], []byte{'\n', utf8.RuneSelf})
 
@@ -194,14 +194,14 @@ func TestScannerLeBothCarriageNewline(t *testing.T) {
 
 	a.Equal('\n', result)
 	a.Nil(s.err)
-	a.Equal(parser.Err, s.pushed)
+	a.Equal(common.Err, s.pushed)
 }
 
 func TestScannerLeBothCarriageOther(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
 		end:    1,
-		pushed: parser.Err,
+		pushed: common.Err,
 	}
 	copy(s.buf[0:], []byte{'o', utf8.RuneSelf})
 
@@ -216,7 +216,7 @@ func TestScannerLeBothNewline(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
 		end:    0,
-		pushed: parser.Err,
+		pushed: common.Err,
 	}
 	copy(s.buf[0:], []byte{utf8.RuneSelf})
 
@@ -224,5 +224,5 @@ func TestScannerLeBothNewline(t *testing.T) {
 
 	a.Equal('\n', result)
 	a.Nil(s.err)
-	a.Equal(parser.Err, s.pushed)
+	a.Equal(common.Err, s.pushed)
 }
