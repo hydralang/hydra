@@ -27,6 +27,7 @@ var (
 	ErrBadOp             = errors.New("bad operator character")
 	ErrMixedIndent       = errors.New("mixed whitespace types in indent")
 	ErrDanglingBackslash = errors.New("dangling backslash")
+	ErrBadNumber         = errors.New("bad character for number literal")
 )
 
 // ErrDanglingOpen generates an error for a dangling open operator
