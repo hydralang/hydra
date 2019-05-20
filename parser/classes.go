@@ -38,6 +38,7 @@ const (
 	CharIDCont                      // Valid character for ID continue
 	CharStrFlag                     // String flag character
 	CharQuote                       // String quote character
+	CharComment                     // Comment character
 )
 
 // CharClasses is a mapping of character class flags to names.
@@ -52,6 +53,7 @@ var CharClasses = utils.FlagSet16{
 	CharIDCont:   "ID continue",
 	CharStrFlag:  "string flag",
 	CharQuote:    "quote",
+	CharComment:  "comment",
 }
 
 // digitData is a structure containing data about a particular digit.
@@ -139,6 +141,11 @@ func (opts *Options) Classify(ch rune, loc Location, err error) AugChar {
 	}
 	if _, ok := opts.Quotes[ch]; ok {
 		class |= CharQuote
+	}
+
+	// Check for the comment character
+	if ch == '#' {
+		class |= CharComment
 	}
 
 	return AugChar{ch, class, loc, val}

@@ -171,6 +171,16 @@ var expected = map[rune]AugChar{
 		},
 		Val: nil,
 	},
+	'#': {
+		C:     '#',
+		Class: CharComment,
+		Loc: Location{
+			File: "file",
+			B:    FilePos{L: 3, C: 2},
+			E:    FilePos{L: 3, C: 3},
+		},
+		Val: nil,
+	},
 }
 
 func TestOptionsClassify(t *testing.T) {
