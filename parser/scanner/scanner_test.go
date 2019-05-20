@@ -22,6 +22,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/hydralang/hydra/parser/common"
+	"github.com/hydralang/hydra/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/text/runes"
@@ -86,7 +87,7 @@ func TestScanDefaultEncoding(t *testing.T) {
 	a.Equal(rune(utf8.RuneSelf), rune(s.buf[0]))
 	a.Equal(0, s.pos)
 	a.Equal(0, s.end)
-	assertFuncEqual(a, s.leUnknown, s.le)
+	testutils.AssertPtrEqual(a, s.leUnknown, s.le)
 	a.Equal(common.Err, s.pushed)
 	a.Nil(s.err)
 	a.Equal(common.Location{
@@ -115,7 +116,7 @@ func TestScanISO8859_1(t *testing.T) {
 	a.Equal(rune(utf8.RuneSelf), rune(s.buf[0]))
 	a.Equal(0, s.pos)
 	a.Equal(0, s.end)
-	assertFuncEqual(a, s.leUnknown, s.le)
+	testutils.AssertPtrEqual(a, s.leUnknown, s.le)
 	a.Equal(common.Err, s.pushed)
 	a.Nil(s.err)
 	a.Equal(common.Location{

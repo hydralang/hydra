@@ -15,19 +15,13 @@
 package scanner
 
 import (
-	"reflect"
 	"testing"
 	"unicode/utf8"
 
 	"github.com/hydralang/hydra/parser/common"
+	"github.com/hydralang/hydra/testutils"
 	"github.com/stretchr/testify/assert"
 )
-
-func assertFuncEqual(a *assert.Assertions, expected, actual interface{}) {
-	exp := reflect.ValueOf(expected)
-	act := reflect.ValueOf(actual)
-	a.Equal(exp.Pointer(), act.Pointer())
-}
 
 func TestScannerLeUnknownNewline(t *testing.T) {
 	a := assert.New(t)
@@ -43,7 +37,7 @@ func TestScannerLeUnknownNewline(t *testing.T) {
 	a.Equal('\n', result)
 	a.Nil(s.err)
 	a.Equal(common.Err, s.pushed)
-	assertFuncEqual(a, s.leNewline, s.le)
+	testutils.AssertPtrEqual(a, s.leNewline, s.le)
 }
 
 func TestScannerLeUnknownCarriageEOF(t *testing.T) {
@@ -60,7 +54,7 @@ func TestScannerLeUnknownCarriageEOF(t *testing.T) {
 	a.Equal('\n', result)
 	a.Nil(s.err)
 	a.Equal(common.Err, s.pushed)
-	assertFuncEqual(a, s.leCarriage, s.le)
+	testutils.AssertPtrEqual(a, s.leCarriage, s.le)
 }
 
 func TestScannerLeUnknownCarriageError(t *testing.T) {
@@ -78,7 +72,7 @@ func TestScannerLeUnknownCarriageError(t *testing.T) {
 	a.Equal('\n', result)
 	a.Equal(assert.AnError, s.err)
 	a.Equal(common.Err, s.pushed)
-	assertFuncEqual(a, s.leCarriage, s.le)
+	testutils.AssertPtrEqual(a, s.leCarriage, s.le)
 }
 
 func TestScannerLeUnknownBoth(t *testing.T) {
@@ -95,7 +89,7 @@ func TestScannerLeUnknownBoth(t *testing.T) {
 	a.Equal('\n', result)
 	a.Nil(s.err)
 	a.Equal(common.Err, s.pushed)
-	assertFuncEqual(a, s.leBoth, s.le)
+	testutils.AssertPtrEqual(a, s.leBoth, s.le)
 }
 
 func TestScannerLeUnknownCarriage(t *testing.T) {
@@ -112,7 +106,7 @@ func TestScannerLeUnknownCarriage(t *testing.T) {
 	a.Equal('\n', result)
 	a.Nil(s.err)
 	a.Equal('o', s.pushed)
-	assertFuncEqual(a, s.leCarriage, s.le)
+	testutils.AssertPtrEqual(a, s.leCarriage, s.le)
 }
 
 func TestScannerLeCarriageCarriage(t *testing.T) {
