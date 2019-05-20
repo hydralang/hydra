@@ -128,18 +128,18 @@ func (opts *Options) Classify(ch rune, loc Location, err error) AugChar {
 	}
 
 	// Check for identifiers
-	if opts.IDStart.Contains(ch) {
+	if opts.Prof.IDStart.Contains(ch) {
 		class |= CharIDStart
 	}
-	if opts.IDCont.Contains(ch) {
+	if opts.Prof.IDCont.Contains(ch) {
 		class |= CharIDCont
 	}
 
 	// Check for string flags and quotes
-	if _, ok := opts.StrFlags[ch]; ok {
+	if _, ok := opts.Prof.StrFlags[ch]; ok {
 		class |= CharStrFlag
 	}
-	if _, ok := opts.Quotes[ch]; ok {
+	if _, ok := opts.Prof.Quotes[ch]; ok {
 		class |= CharQuote
 	}
 

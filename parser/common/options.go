@@ -18,8 +18,6 @@ import (
 	"io"
 	"regexp"
 	"unicode/utf8"
-
-	"golang.org/x/text/runes"
 )
 
 // guessBlock is a block size for guessing a file encoding based on
@@ -71,14 +69,11 @@ func guessEncoding(source []byte) string {
 
 // Options contains the options for the parser.
 type Options struct {
-	Source   io.Reader            // The source from which to read
-	Filename string               // The name of the file being parsed
-	Encoding string               // The encoding of the source
-	IDStart  runes.Set            // Set of valid identifier start chars
-	IDCont   runes.Set            // Set of valid identifier continue chars
-	StrFlags map[rune]interface{} // Valid string flags
-	Quotes   map[rune]interface{} // Valid quote characters
-	TabStop  int                  // The size of a tab stop
+	Source   io.Reader // The source from which to read
+	Filename string    // The name of the file being parsed
+	Encoding string    // The encoding of the source
+	Prof     *Profile  // The profile
+	TabStop  int       // The size of a tab stop
 }
 
 // namer is an interface with a single Name() method.  This matches

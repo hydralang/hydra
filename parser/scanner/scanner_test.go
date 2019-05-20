@@ -55,6 +55,12 @@ var (
 		'"':  nil,
 		'\'': nil,
 	}
+	testProfile = &common.Profile{
+		IDStart:  testIDStart,
+		IDCont:   testIDCont,
+		StrFlags: testStrFlags,
+		Quotes:   testQuotes,
+	}
 )
 
 func makeOptions(src io.Reader) *common.Options {
@@ -62,10 +68,7 @@ func makeOptions(src io.Reader) *common.Options {
 		Source:   src,
 		Filename: "file",
 		Encoding: "utf-8",
-		IDStart:  testIDStart,
-		IDCont:   testIDCont,
-		StrFlags: testStrFlags,
-		Quotes:   testQuotes,
+		Prof:     testProfile,
 		TabStop:  8,
 	}
 }

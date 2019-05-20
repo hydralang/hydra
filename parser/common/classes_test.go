@@ -18,36 +18,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/text/runes"
-	"golang.org/x/text/unicode/rangetable"
-)
-
-var (
-	testIDStart = runes.In(rangetable.New(
-		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-		'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-		'y', 'z', '_', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
-		'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-		'V', 'W', 'X', 'Y', 'Z',
-	))
-	testIDCont = runes.In(rangetable.New(
-		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-		'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-		'y', 'z', '_', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
-		'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-		'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6',
-		'7', '8', '9',
-	))
-	testStrFlags = map[rune]interface{}{
-		'r': nil,
-		'R': nil,
-		'b': nil,
-		'B': nil,
-	}
-	testQuotes = map[rune]interface{}{
-		'"':  nil,
-		'\'': nil,
-	}
 )
 
 var expected = map[rune]AugChar{
@@ -186,10 +156,7 @@ var expected = map[rune]AugChar{
 func TestOptionsClassify(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{
-		IDStart:  testIDStart,
-		IDCont:   testIDCont,
-		StrFlags: testStrFlags,
-		Quotes:   testQuotes,
+		Prof: testProfile,
 	}
 
 	for r, exp := range expected {
@@ -206,10 +173,7 @@ func TestOptionsClassify(t *testing.T) {
 func TestOptionsClassifyEOF(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{
-		IDStart:  testIDStart,
-		IDCont:   testIDCont,
-		StrFlags: testStrFlags,
-		Quotes:   testQuotes,
+		Prof: testProfile,
 	}
 
 	result := opts.Classify(EOF, Location{
@@ -233,10 +197,7 @@ func TestOptionsClassifyEOF(t *testing.T) {
 func TestOptionsClassifyErr(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{
-		IDStart:  testIDStart,
-		IDCont:   testIDCont,
-		StrFlags: testStrFlags,
-		Quotes:   testQuotes,
+		Prof: testProfile,
 	}
 
 	result := opts.Classify(Err, Location{
