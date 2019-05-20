@@ -56,17 +56,26 @@ var (
 	}
 )
 
+func makeOptions(src io.Reader) *common.Options {
+	return &common.Options{
+		Source:   src,
+		Filename: "file",
+		Encoding: "utf-8",
+		IDStart:  testIDStart,
+		IDCont:   testIDCont,
+		StrFlags: testStrFlags,
+		Quotes:   testQuotes,
+		TabStop:  8,
+	}
+}
+
 func TestScannerImplementsScanner(t *testing.T) {
 	assert.Implements(t, (*Scanner)(nil), &scanner{})
 }
 
 func TestScanDefaultEncoding(t *testing.T) {
 	a := assert.New(t)
-	opts := &common.Options{
-		Source:   bytes.NewReader([]byte{69, 108, 78, 105, 110, 204, 131, 111}),
-		Filename: "filename",
-		Encoding: "utf-8",
-	}
+	opts := makeOptions(bytes.NewReader([]byte{69, 108, 78, 105, 110, 204, 131, 111}))
 
 	result, err := Scan(opts)
 
@@ -81,7 +90,7 @@ func TestScanDefaultEncoding(t *testing.T) {
 	a.Equal(common.Err, s.pushed)
 	a.Nil(s.err)
 	a.Equal(common.Location{
-		File: "filename",
+		File: "file",
 		B:    common.FilePos{L: 1, C: 1},
 		E:    common.FilePos{L: 1, C: 1},
 	}, s.loc)
@@ -94,11 +103,8 @@ func TestScanDefaultEncoding(t *testing.T) {
 
 func TestScanISO8859_1(t *testing.T) {
 	a := assert.New(t)
-	opts := &common.Options{
-		Source:   bytes.NewReader([]byte{69, 108, 78, 105, 241, 111}),
-		Filename: "filename",
-		Encoding: "iso-8859-1",
-	}
+	opts := makeOptions(bytes.NewReader([]byte{69, 108, 78, 105, 241, 111}))
+	opts.Encoding = "iso-8859-1"
 
 	result, err := Scan(opts)
 
@@ -113,7 +119,7 @@ func TestScanISO8859_1(t *testing.T) {
 	a.Equal(common.Err, s.pushed)
 	a.Nil(s.err)
 	a.Equal(common.Location{
-		File: "filename",
+		File: "file",
 		B:    common.FilePos{L: 1, C: 1},
 		E:    common.FilePos{L: 1, C: 1},
 	}, s.loc)
@@ -126,11 +132,8 @@ func TestScanISO8859_1(t *testing.T) {
 
 func TestScanNoSuchEncoding(t *testing.T) {
 	a := assert.New(t)
-	opts := &common.Options{
-		Source:   bytes.NewReader([]byte{69, 108, 78, 105, 110, 204, 131, 111}),
-		Filename: "filename",
-		Encoding: "no-such-encoding",
-	}
+	opts := makeOptions(bytes.NewReader([]byte{69, 108, 78, 105, 110, 204, 131, 111}))
+	opts.Encoding = "no-such-encoding"
 
 	result, err := Scan(opts)
 
@@ -352,12 +355,7 @@ func TestScannerPush(t *testing.T) {
 func TestScannerNextPushed(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &common.Options{
-			IDStart:  testIDStart,
-			IDCont:   testIDCont,
-			StrFlags: testStrFlags,
-			Quotes:   testQuotes,
-		},
+		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		end:    4,
 		loc: common.Location{
@@ -402,12 +400,7 @@ func TestScannerNextPushed(t *testing.T) {
 func TestScannerNextLEPushed(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &common.Options{
-			IDStart:  testIDStart,
-			IDCont:   testIDCont,
-			StrFlags: testStrFlags,
-			Quotes:   testQuotes,
-		},
+		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: 'p',
 		end:    4,
 		loc: common.Location{
@@ -443,12 +436,7 @@ func TestScannerNextLEPushed(t *testing.T) {
 func TestScannerNextEOF(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &common.Options{
-			IDStart:  testIDStart,
-			IDCont:   testIDCont,
-			StrFlags: testStrFlags,
-			Quotes:   testQuotes,
-		},
+		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		loc: common.Location{
 			File: "filename",
@@ -483,12 +471,7 @@ func TestScannerNextEOF(t *testing.T) {
 func TestScannerNextError(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &common.Options{
-			IDStart:  testIDStart,
-			IDCont:   testIDCont,
-			StrFlags: testStrFlags,
-			Quotes:   testQuotes,
-		},
+		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		err:    assert.AnError,
 		loc: common.Location{
@@ -524,12 +507,7 @@ func TestScannerNextError(t *testing.T) {
 func TestScannerNextCharacter(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &common.Options{
-			IDStart:  testIDStart,
-			IDCont:   testIDCont,
-			StrFlags: testStrFlags,
-			Quotes:   testQuotes,
-		},
+		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		end:    4,
 		loc: common.Location{
@@ -565,12 +543,7 @@ func TestScannerNextCharacter(t *testing.T) {
 func TestScannerNextNewline(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &common.Options{
-			IDStart:  testIDStart,
-			IDCont:   testIDCont,
-			StrFlags: testStrFlags,
-			Quotes:   testQuotes,
-		},
+		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		end:    4,
 		loc: common.Location{
@@ -613,12 +586,7 @@ func leSwap(ch rune) rune {
 func TestScannerNextCarriageSwapped(t *testing.T) {
 	a := assert.New(t)
 	s := &scanner{
-		opts: &common.Options{
-			IDStart:  testIDStart,
-			IDCont:   testIDCont,
-			StrFlags: testStrFlags,
-			Quotes:   testQuotes,
-		},
+		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		end:    4,
 		loc: common.Location{
