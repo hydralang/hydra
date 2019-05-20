@@ -23,7 +23,9 @@ import (
 // indicate something with a fixed value, like an operator, or
 // something that has semantic value, such as a number literal.
 type Symbol struct {
-	Name string // The name of the symbol, for display purposes
+	Name  string // The name of the symbol, for display purposes
+	Open  string // Paired operator that opens
+	Close string // Paired operator that closes
 }
 
 // String constructs a string representation of a symbol--e.g., the
@@ -34,7 +36,7 @@ func (s Symbol) String() string {
 
 // Token represents a single token emitted by the lexer.
 type Token struct {
-	Sym Symbol      // The token type
+	Sym *Symbol     // The token type
 	Loc Location    // The location range of the token
 	Val interface{} // The semantic value of the token
 }
@@ -56,14 +58,14 @@ func (t Token) String() string {
 
 // Standard token symbols
 var (
-	TokError   = Symbol{"Error"}
-	TokEOF     = Symbol{"EOF"}
-	TokNewline = Symbol{"Newline"}
-	TokIndent  = Symbol{"Indent"}
-	TokDedent  = Symbol{"Dedent"}
-	TokIdent   = Symbol{"Ident"}
-	TokInt     = Symbol{"Int"}
-	TokFloat   = Symbol{"Float"}
-	TokString  = Symbol{"String"}
-	TokBytes   = Symbol{"Bytes"}
+	TokError   = &Symbol{Name: "Error"}
+	TokEOF     = &Symbol{Name: "EOF"}
+	TokNewline = &Symbol{Name: "Newline"}
+	TokIndent  = &Symbol{Name: "Indent"}
+	TokDedent  = &Symbol{Name: "Dedent"}
+	TokIdent   = &Symbol{Name: "Ident"}
+	TokInt     = &Symbol{Name: "Int"}
+	TokFloat   = &Symbol{Name: "Float"}
+	TokString  = &Symbol{Name: "String"}
+	TokBytes   = &Symbol{Name: "Bytes"}
 )

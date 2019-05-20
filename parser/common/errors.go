@@ -14,10 +14,23 @@
 
 package common
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // Various errors that may occur during parsing.
 var (
-	ErrSplitEntity = errors.New("entity split across files")
-	ErrBadRune     = errors.New("illegal UTF-8 encoding")
+	ErrSplitEntity       = errors.New("entity split across files")
+	ErrBadRune           = errors.New("illegal UTF-8 encoding")
+	ErrBadIndent         = errors.New("inconsistent indentation")
+	ErrBadOp             = errors.New("bad operator character")
+	ErrMixedIndent       = errors.New("mixed whitespace types in indent")
+	ErrDanglingBackslash = errors.New("dangling backslash")
 )
+
+// ErrDanglingOpen generates an error for a dangling open operator
+// with no corresponding close operator.
+func ErrDanglingOpen(tok *Token) error {
+	return fmt.Errorf("unexpected EOF; expected \"%s\"", tok.Sym.Close)
+}

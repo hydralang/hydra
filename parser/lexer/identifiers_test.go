@@ -12,7 +12,7 @@
 // implied.  See the License for the specific language governing
 // permissions and limitations under the License.
 
-package common
+package lexer
 
 import (
 	"testing"
@@ -20,33 +20,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSymbolString(t *testing.T) {
-	a := assert.New(t)
-	sym := Symbol{Name: "sym"}
-
-	result := sym.String()
-
-	a.Equal("sym", result)
+func TestRecognizeIdentifierImplementsRecognizer(t *testing.T) {
+	assert.Implements(t, (*Recognizer)(nil), &recognizeIdentifier{})
 }
 
-func TestTokenStringBase(t *testing.T) {
+func TestRecogIdentifier(t *testing.T) {
 	a := assert.New(t)
-	sym := &Symbol{Name: "sym"}
-	loc := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
-	tok := Token{Sym: sym, Loc: loc}
+	l := &lexer{}
 
-	result := tok.String()
+	result := recogIdentifier(l)
 
-	a.Equal("file:3:2: <sym> token", result)
-}
-
-func TestTokenStringWithValue(t *testing.T) {
-	a := assert.New(t)
-	sym := &Symbol{Name: "sym"}
-	loc := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
-	tok := Token{Sym: sym, Loc: loc, Val: "value"}
-
-	result := tok.String()
-
-	a.Equal("file:3:2: <sym> token: value", result)
+	r, ok := result.(*recognizeIdentifier)
+	a.True(ok)
+	a.Equal(l, r.l)
 }

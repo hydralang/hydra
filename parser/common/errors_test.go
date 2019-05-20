@@ -20,33 +20,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSymbolString(t *testing.T) {
+func TestErrDanglingOpen(t *testing.T) {
 	a := assert.New(t)
-	sym := Symbol{Name: "sym"}
+	tok := &Token{Sym: &Symbol{Name: "(", Close: ")"}}
 
-	result := sym.String()
+	result := ErrDanglingOpen(tok)
 
-	a.Equal("sym", result)
-}
-
-func TestTokenStringBase(t *testing.T) {
-	a := assert.New(t)
-	sym := &Symbol{Name: "sym"}
-	loc := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
-	tok := Token{Sym: sym, Loc: loc}
-
-	result := tok.String()
-
-	a.Equal("file:3:2: <sym> token", result)
-}
-
-func TestTokenStringWithValue(t *testing.T) {
-	a := assert.New(t)
-	sym := &Symbol{Name: "sym"}
-	loc := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
-	tok := Token{Sym: sym, Loc: loc, Val: "value"}
-
-	result := tok.String()
-
-	a.Equal("file:3:2: <sym> token: value", result)
+	a.EqualError(result, "unexpected EOF; expected \")\"")
 }
