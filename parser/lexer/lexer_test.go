@@ -71,7 +71,7 @@ func makeOptions(src io.Reader) *common.Options {
 }
 
 func TestLexerImplementsLexer(t *testing.T) {
-	assert.Implements(t, (*Lexer)(nil), &lexer{})
+	assert.Implements(t, (*common.Lexer)(nil), &lexer{})
 }
 
 func TestLexWithScanner(t *testing.T) {

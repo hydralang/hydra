@@ -31,26 +31,9 @@ var (
 	rOp      RecogInit = recogOperator
 )
 
-// Lexer is an interface describing a lexer.  A lexer pulls characters
-// from a scanner and converts them to tokens, which may then be used
-// by the parser.
-type Lexer interface {
-	// Next retrieves the next token from the scanner.  If the end
-	// of file is reached, an EOF token is returned; if an error
-	// occurs while scanning or lexically analyzing the file, an
-	// error token is returned with the error as the token's
-	// semantic value.  After either an EOF token or an error
-	// token, nil will be returned.
-	Next() *common.Token
-
-	// Push pushes a single token back onto the lexer.  Any number
-	// of tokens may be pushed back.
-	Push(tok *common.Token)
-}
-
 // lexer is an implementation of Lexer.
 type lexer struct {
-	s       scanner.Scanner // The scanner for the source
+	s       common.Scanner  // The scanner for the source
 	opts    *common.Options // The parser options
 	indent  list.List       // The indent stack
 	pair    list.List       // The pairing stack
@@ -60,7 +43,7 @@ type lexer struct {
 
 // Lex prepares a new lexer from the parser options and the scanner.
 // If the scanner is nil, one will be constructed from the options.
-func Lex(opts *common.Options, s scanner.Scanner) (Lexer, error) {
+func Lex(opts *common.Options, s common.Scanner) (common.Lexer, error) {
 	// Construct the scanner
 	if s == nil {
 		var err error

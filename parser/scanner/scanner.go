@@ -27,20 +27,6 @@ import (
 // scanBuf is the size of the read buffer to utilize.
 const scanBuf = 4096
 
-// Scanner is an interface describing a scanner.  A scanner reads a
-// source character rune by character rune, returning augmented
-// characters.
-type Scanner interface {
-	// Next retrieves the next rune from the file.  An EOF
-	// augmented character is returned on end of file, and an Err
-	// augmented character is returned in the event of an error.
-	Next() common.AugChar
-
-	// Push pushes back a single augmented character onto the
-	// scanner.  Any number of characters may be pushed back.
-	Push(ch common.AugChar)
-}
-
 // scanner is an implementation of Scanner.
 type scanner struct {
 	source io.Reader         // The reader, including encoding
@@ -56,7 +42,7 @@ type scanner struct {
 }
 
 // Scan prepares a new scanner from the parser options.
-func Scan(opts *common.Options) (Scanner, error) {
+func Scan(opts *common.Options) (common.Scanner, error) {
 	// Set up the encoding transform to apply to the input
 	enc, err := ianaindex.IANA.Encoding(opts.Encoding)
 	if err != nil {

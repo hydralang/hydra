@@ -74,7 +74,7 @@ func makeOptions(src io.Reader) *common.Options {
 }
 
 func TestScannerImplementsScanner(t *testing.T) {
-	assert.Implements(t, (*Scanner)(nil), &scanner{})
+	assert.Implements(t, (*common.Scanner)(nil), &scanner{})
 }
 
 func TestScanDefaultEncoding(t *testing.T) {
