@@ -171,18 +171,12 @@ func (r *recognizeNumber) Recognize(ch common.AugChar) {
 		value := &big.Int{}
 		value.SetString(r.buf.String(), r.base) // can't error
 
-		// Assemble location
-		loc, _ := r.loc.Thru(ch.Loc) // can't error
-
-		r.l.pushTok(common.TokInt, loc, value)
+		r.l.pushTok(common.TokInt, r.loc.Thru(ch.Loc), value)
 	} else {
 		// Convert number
 		value := &big.Float{}
 		value.SetString(r.buf.String()) // can't error
 
-		// Assemble location
-		loc, _ := r.loc.Thru(ch.Loc) // can't error
-
-		r.l.pushTok(common.TokFloat, loc, value)
+		r.l.pushTok(common.TokFloat, r.loc.Thru(ch.Loc), value)
 	}
 }

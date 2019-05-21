@@ -105,9 +105,8 @@ func TestLocationThruBase(t *testing.T) {
 	loc1 := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
 	loc2 := Location{File: "file", B: FilePos{3, 5}, E: FilePos{3, 6}}
 
-	result, err := loc1.Thru(loc2)
+	result := loc1.Thru(loc2)
 
-	a.NoError(err)
 	a.Equal("file", result.File)
 	a.Equal(FilePos{L: 3, C: 2}, result.B)
 	a.Equal(FilePos{L: 3, C: 5}, result.E)
@@ -118,9 +117,7 @@ func TestLocationThruSplit(t *testing.T) {
 	loc1 := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
 	loc2 := Location{File: "other", B: FilePos{3, 5}, E: FilePos{3, 6}}
 
-	_, err := loc1.Thru(loc2)
-
-	a.Equal(ErrSplitEntity, err)
+	a.PanicsWithValue(ErrSplitEntity, func() { loc1.Thru(loc2) })
 }
 
 func TestLocationThruEndBase(t *testing.T) {
@@ -128,9 +125,8 @@ func TestLocationThruEndBase(t *testing.T) {
 	loc1 := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
 	loc2 := Location{File: "file", B: FilePos{3, 5}, E: FilePos{3, 6}}
 
-	result, err := loc1.ThruEnd(loc2)
+	result := loc1.ThruEnd(loc2)
 
-	a.NoError(err)
 	a.Equal("file", result.File)
 	a.Equal(FilePos{L: 3, C: 2}, result.B)
 	a.Equal(FilePos{L: 3, C: 6}, result.E)
@@ -141,9 +137,7 @@ func TestLocationThruEndSplit(t *testing.T) {
 	loc1 := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
 	loc2 := Location{File: "other", B: FilePos{3, 5}, E: FilePos{3, 6}}
 
-	_, err := loc1.ThruEnd(loc2)
-
-	a.Equal(ErrSplitEntity, err)
+	a.PanicsWithValue(ErrSplitEntity, func() { loc1.ThruEnd(loc2) })
 }
 
 func TestLocationString0Columns(t *testing.T) {

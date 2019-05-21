@@ -56,10 +56,10 @@ func (l *Location) AdvanceTab(tabstop int) {
 
 // Thru creates a new Location that ranges from the beginning of this
 // location to the beginning of another Location.
-func (l Location) Thru(other Location) (Location, error) {
+func (l Location) Thru(other Location) Location {
 	// Location can't range across files
 	if l.File != other.File {
-		return Location{}, ErrSplitEntity
+		panic(ErrSplitEntity)
 	}
 
 	// Create and return the new location
@@ -67,16 +67,16 @@ func (l Location) Thru(other Location) (Location, error) {
 		File: l.File,
 		B:    l.B,
 		E:    other.B,
-	}, nil
+	}
 }
 
 // ThruEnd is similar to Thru, except that it creates a new Location
 // that ranges from the beginning of this location to the ending of
 // another Location.
-func (l Location) ThruEnd(other Location) (Location, error) {
+func (l Location) ThruEnd(other Location) Location {
 	// Location can't range across files
 	if l.File != other.File {
-		return Location{}, ErrSplitEntity
+		panic(ErrSplitEntity)
 	}
 
 	// Create and return the new location
@@ -84,7 +84,7 @@ func (l Location) ThruEnd(other Location) (Location, error) {
 		File: l.File,
 		B:    l.B,
 		E:    other.E,
-	}, nil
+	}
 }
 
 // String constructs a string representation of the location.
