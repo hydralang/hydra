@@ -39,21 +39,45 @@ var (
 		'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6',
 		'7', '8', '9',
 	))
-	testStrFlags = map[rune]interface{}{
-		'r': nil,
-		'R': nil,
-		'b': nil,
-		'B': nil,
+	testStrFlags = map[rune]uint8{
+		'r': StrRaw,
+		'R': StrRaw,
+		'b': StrBytes,
+		'B': StrBytes,
 	}
-	testQuotes = map[rune]interface{}{
-		'"':  nil,
-		'\'': nil,
+	testQuotes = map[rune]uint8{
+		'"':  StrTriple,
+		'\'': StrTriple,
+	}
+	testEscapes = map[rune]StrEscape{
+		'\n': SimpleEscape(EOF),
+		'0':  OctEscape,
+		'1':  OctEscape,
+		'2':  OctEscape,
+		'3':  OctEscape,
+		'4':  OctEscape,
+		'5':  OctEscape,
+		'6':  OctEscape,
+		'7':  OctEscape,
+		'\\': SimpleEscape('\\'),
+		'a':  SimpleEscape('\a'),
+		'b':  SimpleEscape('\b'),
+		'e':  SimpleEscape('\x1b'),
+		'f':  SimpleEscape('\f'),
+		'n':  SimpleEscape('\n'),
+		'r':  SimpleEscape('\r'),
+		't':  SimpleEscape('\t'),
+		'u':  HexEscape(4),
+		'U':  HexEscape(8),
+		'v':  SimpleEscape('\v'),
+		'x':  HexEscape(2),
 	}
 	testProfile = &Profile{
 		IDStart:  testIDStart,
 		IDCont:   testIDCont,
 		StrFlags: testStrFlags,
 		Quotes:   testQuotes,
+		Escapes:  testEscapes,
 	}
 )
 
@@ -66,4 +90,5 @@ func TestProfileCopy(t *testing.T) {
 	testutils.AssertPtrEqual(a, testProfile.IDCont, result.IDCont)
 	a.Equal(testProfile.StrFlags, result.StrFlags)
 	a.Equal(testProfile.Quotes, result.Quotes)
+	testutils.AssertPtrEqual(a, testProfile.Escapes, result.Escapes)
 }

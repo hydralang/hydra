@@ -42,21 +42,45 @@ var (
 		'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6',
 		'7', '8', '9',
 	))
-	testStrFlags = map[rune]interface{}{
-		'r': nil,
-		'R': nil,
-		'b': nil,
-		'B': nil,
+	testStrFlags = map[rune]uint8{
+		'r': common.StrRaw,
+		'R': common.StrRaw,
+		'b': common.StrBytes,
+		'B': common.StrBytes,
 	}
-	testQuotes = map[rune]interface{}{
-		'"':  nil,
-		'\'': nil,
+	testQuotes = map[rune]uint8{
+		'"':  common.StrTriple,
+		'\'': common.StrTriple,
+	}
+	testEscapes = map[rune]common.StrEscape{
+		'\n': common.SimpleEscape(common.EOF),
+		'0':  common.OctEscape,
+		'1':  common.OctEscape,
+		'2':  common.OctEscape,
+		'3':  common.OctEscape,
+		'4':  common.OctEscape,
+		'5':  common.OctEscape,
+		'6':  common.OctEscape,
+		'7':  common.OctEscape,
+		'\\': common.SimpleEscape('\\'),
+		'a':  common.SimpleEscape('\a'),
+		'b':  common.SimpleEscape('\b'),
+		'e':  common.SimpleEscape('\x1b'),
+		'f':  common.SimpleEscape('\f'),
+		'n':  common.SimpleEscape('\n'),
+		'r':  common.SimpleEscape('\r'),
+		't':  common.SimpleEscape('\t'),
+		'u':  common.HexEscape(4),
+		'U':  common.HexEscape(8),
+		'v':  common.SimpleEscape('\v'),
+		'x':  common.HexEscape(2),
 	}
 	testProfile = &common.Profile{
 		IDStart:  testIDStart,
 		IDCont:   testIDCont,
 		StrFlags: testStrFlags,
 		Quotes:   testQuotes,
+		Escapes:  testEscapes,
 	}
 )
 
