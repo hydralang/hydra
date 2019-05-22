@@ -42,6 +42,7 @@ var (
 		'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
 		'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6',
 		'7', '8', '9',
+		'\u00f1', '\u0303', // used for identifier normalization tests
 	))
 	testStrFlags = map[rune]uint8{
 		'r': common.StrRaw,

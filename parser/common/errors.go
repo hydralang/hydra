@@ -31,6 +31,7 @@ var (
 	ErrBadEscape         = errors.New("bad escape sequence")
 	ErrBadStrChar        = errors.New("invalid character for string")
 	ErrUnclosedStr       = errors.New("unclosed string literal")
+	ErrBadIdent          = errors.New("bad identifier character")
 )
 
 // ErrDanglingOpen generates an error for a dangling open operator
