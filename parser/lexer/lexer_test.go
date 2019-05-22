@@ -23,6 +23,7 @@ import (
 	"github.com/hydralang/hydra/parser/scanner"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/text/runes"
+	"golang.org/x/text/unicode/norm"
 	"golang.org/x/text/unicode/rangetable"
 )
 
@@ -75,12 +76,18 @@ var (
 		'v':  common.SimpleEscape('\v'),
 		'x':  common.HexEscape(2),
 	}
+	testKeywords = common.Keywords{
+		"kw1": &common.Symbol{Name: "kw1"},
+		"kw2": &common.Symbol{Name: "kw2"},
+	}
 	testProfile = &common.Profile{
 		IDStart:  testIDStart,
 		IDCont:   testIDCont,
 		StrFlags: testStrFlags,
 		Quotes:   testQuotes,
 		Escapes:  testEscapes,
+		Keywords: testKeywords,
+		Norm:     norm.NFKC,
 	}
 )
 

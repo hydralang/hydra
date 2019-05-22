@@ -20,6 +20,7 @@ import (
 	"github.com/hydralang/hydra/testutils"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/text/runes"
+	"golang.org/x/text/unicode/norm"
 	"golang.org/x/text/unicode/rangetable"
 )
 
@@ -72,12 +73,18 @@ var (
 		'v':  SimpleEscape('\v'),
 		'x':  HexEscape(2),
 	}
+	testKeywords = Keywords{
+		"kw1": &Symbol{Name: "kw1"},
+		"kw2": &Symbol{Name: "kw2"},
+	}
 	testProfile = &Profile{
 		IDStart:  testIDStart,
 		IDCont:   testIDCont,
 		StrFlags: testStrFlags,
 		Quotes:   testQuotes,
 		Escapes:  testEscapes,
+		Keywords: testKeywords,
+		Norm:     norm.NFKC,
 	}
 )
 
@@ -91,4 +98,7 @@ func TestProfileCopy(t *testing.T) {
 	a.Equal(testProfile.StrFlags, result.StrFlags)
 	a.Equal(testProfile.Quotes, result.Quotes)
 	testutils.AssertPtrEqual(a, testProfile.Escapes, result.Escapes)
+	a.Equal(testProfile.Keywords, result.Keywords)
+	testutils.AssertPtrNotEqual(a, testProfile.Keywords, result.Keywords)
+	a.Equal(testProfile.Norm, result.Norm)
 }

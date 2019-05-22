@@ -14,7 +14,10 @@
 
 package common
 
-import "golang.org/x/text/runes"
+import (
+	"golang.org/x/text/runes"
+	"golang.org/x/text/unicode/norm"
+)
 
 // Profile describes a profile for the parser.  A profile is simply
 // the version-specific rules, with desired options applied, and
@@ -25,6 +28,8 @@ type Profile struct {
 	StrFlags map[rune]uint8     // Valid string flags
 	Quotes   map[rune]uint8     // Valid quote characters
 	Escapes  map[rune]StrEscape // String escapes
+	Keywords Keywords           // Mapping of keywords
+	Norm     norm.Form          // Normalization for identifiers
 }
 
 // Copy generates a copy of a profile.  An Options structure always
@@ -37,5 +42,7 @@ func (p *Profile) Copy() *Profile {
 		StrFlags: p.StrFlags,
 		Quotes:   p.Quotes,
 		Escapes:  p.Escapes,
+		Keywords: p.Keywords.Copy(),
+		Norm:     p.Norm,
 	}
 }
