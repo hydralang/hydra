@@ -36,15 +36,16 @@ var StrFlags = utils.FlagSet8{
 
 // StrEscape is a function type for handling string escapes.  It is
 // called with the character, the scanner, and the string flags, and
-// should return a rune to add to the buffer.  If an error is
-// returned, the error location should also be returned.
+// should return a rune to add to the buffer and the escape sequence
+// location.  If an error is returned, the error location should be
+// returned instead.  If no character should be written, return EOF.
 type StrEscape func(ch AugChar, s Scanner, flags uint8) (rune, Location, error)
 
 // SimpleEscape sets up a StrEscape that returns a specified
 // character.
 func SimpleEscape(r rune) StrEscape {
 	return func(ch AugChar, s Scanner, flags uint8) (rune, Location, error) {
-		return r, Location{}, nil
+		return r, ch.Loc, nil
 	}
 }
 
@@ -53,6 +54,7 @@ func SimpleEscape(r rune) StrEscape {
 func HexEscape(cnt int) StrEscape {
 	return func(ch AugChar, s Scanner, flags uint8) (rune, Location, error) {
 		var r rune
+		bLoc := ch.Loc
 
 		// Count off the specified number of characters
 		for cnt--; cnt >= 0; cnt-- {
@@ -68,7 +70,7 @@ func HexEscape(cnt int) StrEscape {
 		}
 
 		// Return the rune
-		return r, Location{}, nil
+		return r, bLoc.ThruEnd(ch.Loc), nil
 	}
 }
 
@@ -76,6 +78,7 @@ func HexEscape(cnt int) StrEscape {
 // specified rune.
 func OctEscape(ch AugChar, s Scanner, flags uint8) (rune, Location, error) {
 	r := rune(ch.Val.(int))
+	loc := ch.Loc
 	el := 1
 
 	// 0x1f << 3 is still 8 bits
@@ -87,6 +90,7 @@ func OctEscape(ch AugChar, s Scanner, flags uint8) (rune, Location, error) {
 			// Another component of the code
 			el++
 			r = (r << 3) | rune(ch.Val.(int))
+			loc = loc.ThruEnd(ch.Loc)
 		} else {
 			// Push it back
 			s.Push(ch)
@@ -94,5 +98,5 @@ func OctEscape(ch AugChar, s Scanner, flags uint8) (rune, Location, error) {
 		}
 	}
 
-	return r, Location{}, nil
+	return r, loc, nil
 }

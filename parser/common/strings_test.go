@@ -24,11 +24,21 @@ func TestSimpleEscape(t *testing.T) {
 	a := assert.New(t)
 
 	esc := SimpleEscape('c')
-	r, loc, err := esc(AugChar{}, nil, 0)
+	r, loc, err := esc(AugChar{
+		Loc: Location{
+			File: "file",
+			B:    FilePos{L: 3, C: 1},
+			E:    FilePos{L: 3, C: 2},
+		},
+	}, nil, 0)
 
 	a.NoError(err)
 	a.Equal('c', r)
-	a.Equal(Location{}, loc)
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 1},
+		E:    FilePos{L: 3, C: 2},
+	}, loc)
 }
 
 func TestHexEscapeBase(t *testing.T) {
@@ -56,11 +66,21 @@ func TestHexEscapeBase(t *testing.T) {
 	}).Once()
 
 	esc := HexEscape(2)
-	r, loc, err := esc(AugChar{}, s, 0)
+	r, loc, err := esc(AugChar{
+		Loc: Location{
+			File: "file",
+			B:    FilePos{L: 3, C: 1},
+			E:    FilePos{L: 3, C: 2},
+		},
+	}, s, 0)
 
 	a.NoError(err)
 	a.Equal('a', r)
-	a.Equal(Location{}, loc)
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 1},
+		E:    FilePos{L: 3, C: 4},
+	}, loc)
 	s.AssertExpectations(t)
 }
 
@@ -89,7 +109,13 @@ func TestHexEscapeErr(t *testing.T) {
 	}).Once()
 
 	esc := HexEscape(2)
-	r, loc, err := esc(AugChar{}, s, 0)
+	r, loc, err := esc(AugChar{
+		Loc: Location{
+			File: "file",
+			B:    FilePos{L: 3, C: 1},
+			E:    FilePos{L: 3, C: 2},
+		},
+	}, s, 0)
 
 	a.Equal(assert.AnError, err)
 	a.Equal(rune(0), r)
@@ -125,7 +151,13 @@ func TestHexEscapeBadEscape(t *testing.T) {
 	}).Once()
 
 	esc := HexEscape(2)
-	r, loc, err := esc(AugChar{}, s, 0)
+	r, loc, err := esc(AugChar{
+		Loc: Location{
+			File: "file",
+			B:    FilePos{L: 3, C: 1},
+			E:    FilePos{L: 3, C: 2},
+		},
+	}, s, 0)
 
 	a.Equal(ErrBadEscape, err)
 	a.Equal(rune(0), r)
@@ -165,7 +197,11 @@ func TestOctEscape1Digit(t *testing.T) {
 
 	a.NoError(err)
 	a.Equal('\x01', r)
-	a.Equal(Location{}, loc)
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 1},
+		E:    FilePos{L: 3, C: 2},
+	}, loc)
 	s.AssertExpectations(t)
 }
 
@@ -207,7 +243,11 @@ func TestOctEscape2Digit(t *testing.T) {
 
 	a.NoError(err)
 	a.Equal('\x1f', r)
-	a.Equal(Location{}, loc)
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 1},
+		E:    FilePos{L: 3, C: 3},
+	}, loc)
 	s.AssertExpectations(t)
 }
 
@@ -248,7 +288,11 @@ func TestOctEscape3Digit(t *testing.T) {
 
 	a.NoError(err)
 	a.Equal('\xff', r)
-	a.Equal(Location{}, loc)
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 1},
+		E:    FilePos{L: 3, C: 4},
+	}, loc)
 	s.AssertExpectations(t)
 }
 
@@ -279,7 +323,11 @@ func TestOctEscape2DigitMax(t *testing.T) {
 
 	a.NoError(err)
 	a.Equal('\x20', r)
-	a.Equal(Location{}, loc)
+	a.Equal(Location{
+		File: "file",
+		B:    FilePos{L: 3, C: 1},
+		E:    FilePos{L: 3, C: 3},
+	}, loc)
 	s.AssertExpectations(t)
 }
 
