@@ -58,14 +58,15 @@ func (t Token) String() string {
 
 // Standard token symbols
 var (
-	TokError   = &Symbol{Name: "Error"}
-	TokEOF     = &Symbol{Name: "EOF"}
-	TokNewline = &Symbol{Name: "Newline"}
-	TokIndent  = &Symbol{Name: "Indent"}
-	TokDedent  = &Symbol{Name: "Dedent"}
-	TokIdent   = &Symbol{Name: "Ident"}
-	TokInt     = &Symbol{Name: "Int"}
-	TokFloat   = &Symbol{Name: "Float"}
-	TokString  = &Symbol{Name: "String"}
-	TokBytes   = &Symbol{Name: "Bytes"}
+	TokError      = &Symbol{Name: "<Error>"}
+	TokEOF        = &Symbol{Name: "<EOF>"}
+	TokNewline    = &Symbol{Name: "<Newline>"}
+	TokIndent     = &Symbol{Name: "<Indent>"}
+	TokDedent     = &Symbol{Name: "<Dedent>"}
+	TokIdent      = &Symbol{Name: "<Ident>"}
+	TokInt        = &Symbol{Name: "<Int>"}
+	TokFloat      = &Symbol{Name: "<Float>"}
+	TokString     = &Symbol{Name: "<String>"}
+	TokBytes      = &Symbol{Name: "<Bytes>"}
+	TokDocComment = &Symbol{Name: "<DocComment>"}
 )

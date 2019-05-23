@@ -14,12 +14,18 @@
 
 package lexer
 
-import "github.com/hydralang/hydra/parser/common"
+import (
+	"strings"
+
+	"github.com/hydralang/hydra/parser/common"
+)
 
 // recognizeComment is a recognizer for comments.  It should be called
 // when the character is the comment character, '#'.
 type recognizeComment struct {
-	l *lexer // The lexer
+	l   *lexer           // The lexer
+	loc common.Location  // Location of first char
+	buf *strings.Builder // Buffer to accumulate doc comment
 }
 
 // recogComment constructs a recognizer for comments.
@@ -33,5 +39,46 @@ func recogComment(l *lexer) Recognizer {
 // the first character, and should push zero or more tokens onto the
 // lexer's tokens queue.
 func (r *recognizeComment) Recognize(ch common.AugChar) {
-	// XXX
+	// Begin by saving the start location
+	r.loc = ch.Loc
+
+	// See if we have a doc comment
+	next := r.l.s.Next()
+	if next.C == ch.C {
+		// Initialize the buffer
+		r.buf = &strings.Builder{}
+
+		// Skip leading whitespace
+		r.l.skipSpaces(r.l.s.Next(), 0)
+	} else {
+		// Put it back for reprocessing
+		r.l.s.Push(next)
+	}
+
+	// Skip through the comment
+	for ch = r.l.s.Next(); ; ch = r.l.s.Next() {
+		// Handle errors
+		if ch.C == common.Err {
+			r.l.pushErr(ch.Loc, ch.Val.(error))
+			return
+		}
+
+		// Process up to newline or EOF
+		if ch.C == common.EOF || ch.Class&common.CharNL != 0 {
+			break
+		}
+
+		// Accumulate characters only if it's a doc comment
+		if r.buf != nil {
+			r.buf.WriteRune(ch.C)
+		}
+	}
+
+	// Put the character back
+	r.l.s.Push(ch)
+
+	// Generate a doc comment token
+	if r.buf != nil {
+		r.l.pushTok(common.TokDocComment, r.loc.Thru(ch.Loc), r.buf.String())
+	}
 }
