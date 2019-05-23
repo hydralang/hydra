@@ -47,9 +47,6 @@ func (r *recognizeComment) Recognize(ch common.AugChar) {
 	if next.C == ch.C {
 		// Initialize the buffer
 		r.buf = &strings.Builder{}
-
-		// Skip leading whitespace
-		r.l.skipSpaces(r.l.s.Next(), 0)
 	} else {
 		// Put it back for reprocessing
 		r.l.s.Push(next)

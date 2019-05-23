@@ -90,7 +90,7 @@ func TestRecognizeCommentRecognizeDocComment(t *testing.T) {
 			B:    common.FilePos{L: 1, C: 1},
 			E:    common.FilePos{L: 1, C: 19},
 		},
-		Val: "this is a test",
+		Val: "  this is a test",
 	}, l.tokens.Front().Value.(*common.Token))
 	a.Equal(common.AugChar{
 		C:     '\n',
@@ -126,7 +126,7 @@ func TestRecognizeCommentRecognizeDocCommentEOF(t *testing.T) {
 			B:    common.FilePos{L: 1, C: 1},
 			E:    common.FilePos{L: 1, C: 19},
 		},
-		Val: "this is a test",
+		Val: "  this is a test",
 	}, l.tokens.Front().Value.(*common.Token))
 	a.Equal(common.AugChar{
 		C:     common.EOF,
