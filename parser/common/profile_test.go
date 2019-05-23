@@ -77,14 +77,36 @@ var (
 		"kw1": &Symbol{Name: "kw1"},
 		"kw2": &Symbol{Name: "kw2"},
 	}
+	testOperators = NewOperators(
+		&Symbol{Name: "+"},
+		&Symbol{Name: "-"},
+		&Symbol{Name: "*"},
+		&Symbol{Name: "/"},
+		&Symbol{Name: "+="},
+		&Symbol{Name: "-="},
+		&Symbol{Name: "*="},
+		&Symbol{Name: "/="},
+		&Symbol{Name: "<"},
+		&Symbol{Name: "<="},
+		&Symbol{Name: ">"},
+		&Symbol{Name: ">="},
+		&Symbol{Name: "<<"},
+		&Symbol{Name: ">>"},
+		&Symbol{Name: "<<="},
+		&Symbol{Name: ">>="},
+		&Symbol{Name: "="},
+		&Symbol{Name: "=="},
+		&Symbol{Name: "!="},
+	)
 	testProfile = &Profile{
-		IDStart:  testIDStart,
-		IDCont:   testIDCont,
-		StrFlags: testStrFlags,
-		Quotes:   testQuotes,
-		Escapes:  testEscapes,
-		Keywords: testKeywords,
-		Norm:     norm.NFKC,
+		IDStart:   testIDStart,
+		IDCont:    testIDCont,
+		StrFlags:  testStrFlags,
+		Quotes:    testQuotes,
+		Escapes:   testEscapes,
+		Keywords:  testKeywords,
+		Norm:      norm.NFKC,
+		Operators: testOperators,
 	}
 )
 
@@ -101,4 +123,6 @@ func TestProfileCopy(t *testing.T) {
 	a.Equal(testProfile.Keywords, result.Keywords)
 	testutils.AssertPtrNotEqual(a, testProfile.Keywords, result.Keywords)
 	a.Equal(testProfile.Norm, result.Norm)
+	a.Equal(testOperators, result.Operators)
+	testutils.AssertPtrNotEqual(a, testProfile.Operators, result.Operators)
 }

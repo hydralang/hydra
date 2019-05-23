@@ -83,14 +83,36 @@ var (
 		"kw1": &common.Symbol{Name: "kw1"},
 		"kw2": &common.Symbol{Name: "kw2"},
 	}
+	testOperators = common.NewOperators(
+		&common.Symbol{Name: "+"},
+		&common.Symbol{Name: "-"},
+		&common.Symbol{Name: "*"},
+		&common.Symbol{Name: "/"},
+		&common.Symbol{Name: "+="},
+		&common.Symbol{Name: "-="},
+		&common.Symbol{Name: "*="},
+		&common.Symbol{Name: "/="},
+		&common.Symbol{Name: "<"},
+		&common.Symbol{Name: "<="},
+		&common.Symbol{Name: ">"},
+		&common.Symbol{Name: ">="},
+		&common.Symbol{Name: "<<"},
+		&common.Symbol{Name: ">>"},
+		&common.Symbol{Name: "<<="},
+		&common.Symbol{Name: ">>="},
+		&common.Symbol{Name: "="},
+		&common.Symbol{Name: "=="},
+		&common.Symbol{Name: "!="},
+	)
 	testProfile = &common.Profile{
-		IDStart:  testIDStart,
-		IDCont:   testIDCont,
-		StrFlags: testStrFlags,
-		Quotes:   testQuotes,
-		Escapes:  testEscapes,
-		Keywords: testKeywords,
-		Norm:     norm.NFKC,
+		IDStart:   testIDStart,
+		IDCont:    testIDCont,
+		StrFlags:  testStrFlags,
+		Quotes:    testQuotes,
+		Escapes:   testEscapes,
+		Keywords:  testKeywords,
+		Norm:      norm.NFKC,
+		Operators: testOperators,
 	}
 )
 

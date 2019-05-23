@@ -23,13 +23,14 @@ import (
 // the version-specific rules, with desired options applied, and
 // covers such things as the sets of identifier characters, etc.
 type Profile struct {
-	IDStart  runes.Set          // Set of valid identifier start chars
-	IDCont   runes.Set          // Set of valid identifier continue chars
-	StrFlags map[rune]uint8     // Valid string flags
-	Quotes   map[rune]uint8     // Valid quote characters
-	Escapes  map[rune]StrEscape // String escapes
-	Keywords Keywords           // Mapping of keywords
-	Norm     norm.Form          // Normalization for identifiers
+	IDStart   runes.Set          // Set of valid identifier start chars
+	IDCont    runes.Set          // Set of valid identifier continue chars
+	StrFlags  map[rune]uint8     // Valid string flags
+	Quotes    map[rune]uint8     // Valid quote characters
+	Escapes   map[rune]StrEscape // String escapes
+	Keywords  Keywords           // Mapping of keywords
+	Norm      norm.Form          // Normalization for identifiers
+	Operators *Operators         // Recognized operators
 }
 
 // Copy generates a copy of a profile.  An Options structure always
@@ -37,12 +38,13 @@ type Profile struct {
 // without accidentally changing the master profile.
 func (p *Profile) Copy() *Profile {
 	return &Profile{
-		IDStart:  p.IDStart,
-		IDCont:   p.IDCont,
-		StrFlags: p.StrFlags,
-		Quotes:   p.Quotes,
-		Escapes:  p.Escapes,
-		Keywords: p.Keywords.Copy(),
-		Norm:     p.Norm,
+		IDStart:   p.IDStart,
+		IDCont:    p.IDCont,
+		StrFlags:  p.StrFlags,
+		Quotes:    p.Quotes,
+		Escapes:   p.Escapes,
+		Keywords:  p.Keywords.Copy(),
+		Norm:      p.Norm,
+		Operators: p.Operators.Copy(),
 	}
 }
