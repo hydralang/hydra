@@ -39,3 +39,15 @@ var (
 func ErrDanglingOpen(tok *Token) error {
 	return fmt.Errorf("unexpected EOF; expected \"%s\"", tok.Sym.Close)
 }
+
+// ErrNoOpen generates an error for a close operator with no
+// corresponding open operator.
+func ErrNoOpen(sym *Symbol) error {
+	return fmt.Errorf("unexpected close operator \"%s\"", sym.Name)
+}
+
+// ErrOpMismatch generates an error for a close operator that doesn't
+// match the open operator.
+func ErrOpMismatch(openTok *Token, close *Symbol) error {
+	return fmt.Errorf("close operator \"%s\" does not match open operator \"%s\" at %s", close.Name, openTok.Sym.Name, openTok.Loc)
+}

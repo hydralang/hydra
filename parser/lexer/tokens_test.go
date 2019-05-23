@@ -103,8 +103,13 @@ func TestLexerPushTokBase(t *testing.T) {
 	}
 	l.indent.PushBack(1)
 
-	l.pushTok(common.TokIdent, loc, "val")
+	result := l.pushTok(common.TokIdent, loc, "val")
 
+	a.Equal(&common.Token{
+		Sym: common.TokIdent,
+		Loc: loc,
+		Val: "val",
+	}, result)
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokIdent,
@@ -126,8 +131,9 @@ func TestLexerPushTokDuplicateNewline(t *testing.T) {
 	}
 	l.indent.PushBack(1)
 
-	l.pushTok(common.TokNewline, loc, nil)
+	result := l.pushTok(common.TokNewline, loc, nil)
 
+	a.Nil(result)
 	a.Equal(0, l.tokens.Len())
 	a.Equal(1, l.indent.Len())
 }
@@ -142,8 +148,9 @@ func TestLexerPushTokInitialNewline(t *testing.T) {
 	l := &lexer{}
 	l.indent.PushBack(1)
 
-	l.pushTok(common.TokNewline, loc, nil)
+	result := l.pushTok(common.TokNewline, loc, nil)
 
+	a.Nil(result)
 	a.Equal(0, l.tokens.Len())
 	a.Equal(1, l.indent.Len())
 }
@@ -159,8 +166,12 @@ func TestLexerPushTokDedentEOF(t *testing.T) {
 	l.indent.PushBack(1)
 	l.indent.PushBack(5)
 
-	l.pushTok(common.TokEOF, loc, nil)
+	result := l.pushTok(common.TokEOF, loc, nil)
 
+	a.Equal(&common.Token{
+		Sym: common.TokEOF,
+		Loc: loc,
+	}, result)
 	a.Equal(2, l.tokens.Len())
 	elem := l.tokens.Front()
 	a.Equal(&common.Token{
@@ -187,8 +198,13 @@ func TestLexerPushTokIndent(t *testing.T) {
 	l := &lexer{}
 	l.indent.PushBack(1)
 
-	l.pushTok(common.TokIdent, loc, "val")
+	result := l.pushTok(common.TokIdent, loc, "val")
 
+	a.Equal(&common.Token{
+		Sym: common.TokIdent,
+		Loc: loc,
+		Val: "val",
+	}, result)
 	a.Equal(2, l.tokens.Len())
 	elem := l.tokens.Front()
 	a.Equal(&common.Token{

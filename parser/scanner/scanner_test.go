@@ -103,6 +103,12 @@ var (
 		&common.Symbol{Name: "="},
 		&common.Symbol{Name: "=="},
 		&common.Symbol{Name: "!="},
+		&common.Symbol{Name: "(", Close: ")"},
+		&common.Symbol{Name: ")", Open: "("},
+		&common.Symbol{Name: "[", Close: "]"},
+		&common.Symbol{Name: "]", Open: "["},
+		&common.Symbol{Name: "{", Close: "}"},
+		&common.Symbol{Name: "}", Open: "{"},
 	)
 	testProfile = &common.Profile{
 		IDStart:   testIDStart,

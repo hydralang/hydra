@@ -28,3 +28,29 @@ func TestErrDanglingOpen(t *testing.T) {
 
 	a.EqualError(result, "unexpected EOF; expected \")\"")
 }
+
+func TestErrNoOpen(t *testing.T) {
+	a := assert.New(t)
+	sym := &Symbol{Name: ")"}
+
+	result := ErrNoOpen(sym)
+
+	a.EqualError(result, "unexpected close operator \")\"")
+}
+
+func TestErrOpMismatch(t *testing.T) {
+	a := assert.New(t)
+	tok := &Token{
+		Sym: &Symbol{Name: "["},
+		Loc: Location{
+			File: "file",
+			B:    FilePos{L: 3, C: 2},
+			E:    FilePos{L: 3, C: 3},
+		},
+	}
+	sym := &Symbol{Name: ")"}
+
+	result := ErrOpMismatch(tok, sym)
+
+	a.EqualError(result, "close operator \")\" does not match open operator \"[\" at file:3:2")
+}

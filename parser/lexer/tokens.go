@@ -31,7 +31,7 @@ func (l *lexer) lastTok() *common.Token {
 // pushTok pushes a token onto the end of the token queue.  This is in
 // contrast to Push(), which pushes onto the beginning of the token
 // queue.
-func (l *lexer) pushTok(sym *common.Symbol, loc common.Location, val interface{}) {
+func (l *lexer) pushTok(sym *common.Symbol, loc common.Location, val interface{}) *common.Token {
 	// Avoid recursive calls
 	if sym != common.TokError && sym != common.TokIndent && sym != common.TokDedent {
 		// Do special handling if last token is not set or is
@@ -40,7 +40,7 @@ func (l *lexer) pushTok(sym *common.Symbol, loc common.Location, val interface{}
 		if prevTok == nil || prevTok.Sym == common.TokNewline {
 			// Elide duplicate newlines
 			if sym == common.TokNewline {
-				return
+				return nil
 			}
 
 			// Apply indentation
@@ -56,11 +56,14 @@ func (l *lexer) pushTok(sym *common.Symbol, loc common.Location, val interface{}
 	}
 
 	// Push the token onto the queue
-	l.tokens.PushBack(&common.Token{
+	tok := &common.Token{
 		Sym: sym,
 		Loc: loc,
 		Val: val,
-	})
+	}
+	l.tokens.PushBack(tok)
+
+	return tok
 }
 
 // pushErr pushes an error token onto the end of the token queue.

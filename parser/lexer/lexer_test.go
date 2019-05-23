@@ -101,6 +101,13 @@ var (
 		&common.Symbol{Name: "="},
 		&common.Symbol{Name: "=="},
 		&common.Symbol{Name: "!="},
+		&common.Symbol{Name: "(", Close: ")"},
+		&common.Symbol{Name: ")", Open: "("},
+		&common.Symbol{Name: "[", Close: "]"},
+		&common.Symbol{Name: "]", Open: "["},
+		&common.Symbol{Name: "{", Close: "}"},
+		&common.Symbol{Name: "}", Open: "{"},
+		&common.Symbol{Name: "$$$"}, // used for operators_test
 	)
 	testProfile = &common.Profile{
 		IDStart:   testIDStart,

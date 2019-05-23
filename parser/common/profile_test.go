@@ -97,6 +97,12 @@ var (
 		&Symbol{Name: "="},
 		&Symbol{Name: "=="},
 		&Symbol{Name: "!="},
+		&Symbol{Name: "(", Close: ")"},
+		&Symbol{Name: ")", Open: "("},
+		&Symbol{Name: "[", Close: "]"},
+		&Symbol{Name: "]", Open: "["},
+		&Symbol{Name: "{", Close: "}"},
+		&Symbol{Name: "}", Open: "{"},
 	)
 	testProfile = &Profile{
 		IDStart:   testIDStart,
