@@ -97,7 +97,7 @@ func (l *lexer) Next() *common.Token {
 		if ch.Class&common.CharNL != 0 && l.pair.Len() == 0 {
 			// Generate a newline token
 			l.pushTok(common.TokNewline, ch.Loc, nil)
-			break
+			continue
 		} else if ch.Class&common.CharWS != 0 {
 			// Are we concerned about mixed spaces?
 			errMixed := false

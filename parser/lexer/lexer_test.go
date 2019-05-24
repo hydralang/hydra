@@ -954,6 +954,63 @@ func TestLexerNextNewline(t *testing.T) {
 	recs.AssertExpectations(t)
 }
 
+func TestLexerNextNewlineOmitted(t *testing.T) {
+	a := assert.New(t)
+	opts := makeOptions(strings.NewReader(""))
+	s, _ := scanner.Scan(opts)
+	recs := newMockRecs()
+	oldRecs := recs.Install()
+	defer oldRecs.Install()
+	ch1 := common.AugChar{
+		C:     '\n',
+		Class: common.CharWS | common.CharNL,
+		Loc: common.Location{
+			File: "file",
+			B:    common.FilePos{L: 3, C: 2},
+			E:    common.FilePos{L: 4, C: 1},
+		},
+	}
+	ch2 := common.AugChar{
+		C:     '#',
+		Class: common.CharComment,
+		Loc: common.Location{
+			File: "file",
+			B:    common.FilePos{L: 4, C: 1},
+			E:    common.FilePos{L: 4, C: 2},
+		},
+	}
+	recs.rComment.On("Recognize", ch2).Return(
+		common.TokIdent,
+		common.Location{
+			File: "file",
+			B:    common.FilePos{L: 4, C: 1},
+			E:    common.FilePos{L: 4, C: 2},
+		},
+		"comment",
+	)
+	l := &lexer{s: s}
+	l.indent.PushBack(1)
+	s.Push(ch2)
+	s.Push(ch1)
+	expTok := &common.Token{
+		Sym: common.TokIdent,
+		Loc: common.Location{
+			File: "file",
+			B:    common.FilePos{L: 4, C: 1},
+			E:    common.FilePos{L: 4, C: 2},
+		},
+		Val: "comment",
+	}
+
+	result := l.Next()
+
+	a.Equal(expTok, result)
+	a.NotNil(l.s)
+	a.Equal(0, l.tokens.Len())
+	a.Equal(expTok, l.prevTok)
+	recs.AssertExpectations(t)
+}
+
 func TestLexerNextWhitespaceBase(t *testing.T) {
 	a := assert.New(t)
 	opts := makeOptions(strings.NewReader(""))
