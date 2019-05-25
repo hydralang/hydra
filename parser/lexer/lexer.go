@@ -12,6 +12,33 @@
 // implied.  See the License for the specific language governing
 // permissions and limitations under the License.
 
+// Package lexer contains a lexer for the Hydra parser.  The lexer
+// takes the output produced by the scanner and organizes the
+// characters into labeled tokens.  A token consists of a symbol, the
+// physical file location of that symbol (expressed as a range from
+// one line and column to another line and column, exclusive), and the
+// semantic value of that token (e.g., a string token, TokString, will
+// have the decoded and de-escaped value of that string literal as its
+// semantic value).
+//
+// To perform its work, the lexer relies on recognizers, which
+// implement the Recognizer interface defined in recognizers.go.  This
+// vastly simplifies the task of unit testing the lexer by allowing
+// the code that recognizes individual token types to be mocked out
+// for the testing, and allows the recognizers to be handled in
+// isolation.  The specific structure of the breakdown is needed
+// because recognizers are not 100% isolated: a string with flags will
+// be passed through to the recognizer for identifiers, so it needs to
+// be able to interface with the recognizer for strings.
+//
+// The lexer is incredibly flexible, owing to the use of a Profile
+// (see hydra/parser/common.Profile).  This allows string flags,
+// string escapes, string quote characters, keywords, and operators to
+// be dynamically specified, and even changed on the fly.  This
+// capability means that one lexer may be used to process different
+// versions of the Hydra language without needing to write a custom
+// lexer for each, or to introduce ad-hoc complications to the lexer
+// to accommodate them.
 package lexer
 
 import (

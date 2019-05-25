@@ -12,6 +12,30 @@
 // implied.  See the License for the specific language governing
 // permissions and limitations under the License.
 
+// Package scanner contains a scanner for the Hydra parser.  The
+// scanner scans a single file, reporting each character, along with
+// its class, location, and semantic value (e.g., the character '1'
+// has the integer value 1; the character 'a' has the integer value
+// 10; and the special Err character has a golang error associated
+// with it).
+//
+// The scanner is also responsible for applying appropriate character
+// set decoding, translating a file into UTF-8, and for detecting the
+// style of and converting line endings into single newline characters
+// ('\n').  This detection code, in lineendings.go, is capable of
+// handling files edited on Windows, UNIX, or classic Mac, as long as
+// the line ending style throughout the file is consistent.  The
+// detection is based on the first carriage return or newline
+// contained in the file.
+//
+// Finally, the scanner is capable of accepting arbitrary "pushback";
+// that is, the lexer may consume any number of characters, then put
+// the ones it doesn't use for a particular token back onto the
+// scanner, to allow them to be re-processed by the lexer for another
+// token.  This ability vastly simplifies the lexer's operator
+// processing, primarily, but is used throughout the lexer.
+//
+// A scanner implements the interface hydra/parser/common.Scanner.
 package scanner
 
 import (
