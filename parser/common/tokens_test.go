@@ -17,6 +17,7 @@ package common
 import (
 	"testing"
 
+	"github.com/hydralang/hydra/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,6 +28,10 @@ func TestSymbolString(t *testing.T) {
 	result := sym.String()
 
 	a.Equal("sym", result)
+}
+
+func TestTokenImplementsVisitable(t *testing.T) {
+	assert.Implements(t, (*utils.Visitable)(nil), &Token{})
 }
 
 func TestTokenStringBase(t *testing.T) {
@@ -49,4 +54,15 @@ func TestTokenStringWithValue(t *testing.T) {
 	result := tok.String()
 
 	a.Equal("file:3:2: <sym> token: value", result)
+}
+
+func TestTokenChildren(t *testing.T) {
+	a := assert.New(t)
+	sym := &Symbol{Name: "sym"}
+	loc := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
+	tok := Token{Sym: sym, Loc: loc, Val: "value"}
+
+	result := tok.Children()
+
+	a.Equal([]utils.Visitable{}, result)
 }

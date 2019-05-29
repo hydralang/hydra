@@ -17,6 +17,8 @@ package common
 import (
 	"fmt"
 	"strings"
+
+	"github.com/hydralang/hydra/utils"
 )
 
 // Symbol represents a defined symbol, or token type.  This could
@@ -54,6 +56,12 @@ func (t Token) String() string {
 	}
 
 	return text.String()
+}
+
+// Children implements the utils.Visitable interface, allowing a Token
+// to be part of an AST.
+func (t *Token) Children() []utils.Visitable {
+	return []utils.Visitable{}
 }
 
 // Standard token symbols
