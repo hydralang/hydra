@@ -44,3 +44,11 @@ type Lexer interface {
 	// of tokens may be pushed back.
 	Push(tok *Token)
 }
+
+// Expression is an interface describing an expression node in the
+// abstract syntax tree.
+type Expression interface{}
+
+// Statement is an interface describing a statement node in the
+// abstract syntax tree.
+type Statement interface{}
