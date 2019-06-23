@@ -43,7 +43,7 @@ func TestSimpleEscape(t *testing.T) {
 
 func TestHexEscapeBase(t *testing.T) {
 	a := assert.New(t)
-	s := &mockScanner{}
+	s := &MockScanner{}
 	s.On("Next").Return(AugChar{
 		C:     '6',
 		Class: CharHexDigit,
@@ -86,7 +86,7 @@ func TestHexEscapeBase(t *testing.T) {
 
 func TestHexEscapeErr(t *testing.T) {
 	a := assert.New(t)
-	s := &mockScanner{}
+	s := &MockScanner{}
 	s.On("Next").Return(AugChar{
 		C:     '6',
 		Class: CharHexDigit,
@@ -129,7 +129,7 @@ func TestHexEscapeErr(t *testing.T) {
 
 func TestHexEscapeBadEscape(t *testing.T) {
 	a := assert.New(t)
-	s := &mockScanner{}
+	s := &MockScanner{}
 	s.On("Next").Return(AugChar{
 		C:     '6',
 		Class: CharHexDigit,
@@ -171,7 +171,7 @@ func TestHexEscapeBadEscape(t *testing.T) {
 
 func TestOctEscape1Digit(t *testing.T) {
 	a := assert.New(t)
-	s := &mockScanner{}
+	s := &MockScanner{}
 	ch := AugChar{
 		C:     'c',
 		Class: 0,
@@ -207,7 +207,7 @@ func TestOctEscape1Digit(t *testing.T) {
 
 func TestOctEscape2Digit(t *testing.T) {
 	a := assert.New(t)
-	s := &mockScanner{}
+	s := &MockScanner{}
 	s.On("Next").Return(AugChar{
 		C:     '7',
 		Class: CharOctDigit,
@@ -253,7 +253,7 @@ func TestOctEscape2Digit(t *testing.T) {
 
 func TestOctEscape3Digit(t *testing.T) {
 	a := assert.New(t)
-	s := &mockScanner{}
+	s := &MockScanner{}
 	s.On("Next").Return(AugChar{
 		C:     '7',
 		Class: CharOctDigit,
@@ -298,7 +298,7 @@ func TestOctEscape3Digit(t *testing.T) {
 
 func TestOctEscape2DigitMax(t *testing.T) {
 	a := assert.New(t)
-	s := &mockScanner{}
+	s := &MockScanner{}
 	s.On("Next").Return(AugChar{
 		C:     '0',
 		Class: CharOctDigit,
@@ -333,7 +333,7 @@ func TestOctEscape2DigitMax(t *testing.T) {
 
 func TestOctEscapeErr(t *testing.T) {
 	a := assert.New(t)
-	s := &mockScanner{}
+	s := &MockScanner{}
 	s.On("Next").Return(AugChar{
 		C:     Err,
 		Class: 0,
