@@ -31,6 +31,7 @@ type Profile struct {
 	Keywords  Keywords           // Mapping of keywords
 	Norm      norm.Form          // Normalization for identifiers
 	Operators *Operators         // Recognized operators
+	ParseTab  ParserTable        // The parser table
 }
 
 // Copy generates a copy of a profile.  An Options structure always
@@ -46,5 +47,6 @@ func (p *Profile) Copy() *Profile {
 		Keywords:  p.Keywords.Copy(),
 		Norm:      p.Norm,
 		Operators: p.Operators.Copy(),
+		ParseTab:  p.ParseTab,
 	}
 }

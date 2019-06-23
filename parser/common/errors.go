@@ -32,6 +32,7 @@ var (
 	ErrBadStrChar        = errors.New("invalid character for string")
 	ErrUnclosedStr       = errors.New("unclosed string literal")
 	ErrBadIdent          = errors.New("bad identifier character")
+	ErrUnexpected        = errors.New("unexpected symbol")
 )
 
 // ErrDanglingOpen generates an error for a dangling open operator

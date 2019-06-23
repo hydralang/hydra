@@ -45,6 +45,47 @@ type Lexer interface {
 	Push(tok *Token)
 }
 
+// Parser is an interface describing a parser.  A parser utilizes a
+// lexer to tokenize the input stream and convert it into an
+// appropriate abstract syntax tree.
+type Parser interface {
+	// Expression parses a single expression from the output of
+	// the lexer.  Note that this does not necessarily consume the
+	// entire input.  The method is called with a "right binding
+	// power", which is used to determine operator precedence.  An
+	// initial call should set this parameter to 0; calls by token
+	// parsers (see ParserTable) may pass different values,
+	// typically their left binding power.
+	Expression(rbp int) (Expression, error)
+
+	// Statement parses a single statement from the output of the
+	// lexer.  Note that this does not necessarily consume the
+	// entire input.
+	Statement() (Statement, error)
+
+	// Module parses a module, or collection of statements, from
+	// the output of the lexer.  This is intended to consume the
+	// entire input.
+	Module() (Statement, error)
+}
+
+// ParserTable is an interface describing the table of symbols the
+// parser uses during parsing.
+type ParserTable interface {
+	// ExprFirst is called for the first expression token.  It is
+	// passed the token.  It returns an expression or an error.
+	ExprFirst(p Parser, t *Token) (Expression, error)
+
+	// ExprNext is called for subsequent expression tokens.  It is
+	// passed the left and right tokens.  It returns an expression
+	// or an error.
+	ExprNext(p Parser, l, r *Token) (Expression, error)
+
+	// Statement is called for statement tokens.  It returns a
+	// statement or an error.
+	Statement(p Parser, t *Token) (Statement, error)
+}
+
 // Expression is an interface describing an expression node in the
 // abstract syntax tree.
 type Expression interface{}
