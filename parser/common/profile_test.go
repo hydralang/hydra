@@ -18,50 +18,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/unicode/norm"
 	"golang.org/x/text/unicode/rangetable"
 
 	"github.com/hydralang/hydra/testutils"
 )
-
-type mockParserTable struct {
-	mock.Mock
-}
-
-func (pt *mockParserTable) ExprFirst(p Parser, t *Token) (Expression, error) {
-	args := pt.MethodCalled("ExprFirst", p, t)
-
-	data := args.Get(0)
-	if data == nil {
-		return nil, args.Error(1)
-	}
-
-	return data.(Expression), args.Error(1)
-}
-
-func (pt *mockParserTable) ExprNext(p Parser, l, r *Token) (Expression, error) {
-	args := pt.MethodCalled("ExprNext", p, l, r)
-
-	data := args.Get(0)
-	if data == nil {
-		return nil, args.Error(1)
-	}
-
-	return data.(Expression), args.Error(1)
-}
-
-func (pt *mockParserTable) Statement(p Parser, t *Token) (Statement, error) {
-	args := pt.MethodCalled("Statement", p, t)
-
-	data := args.Get(0)
-	if data == nil {
-		return nil, args.Error(1)
-	}
-
-	return data.(Statement), args.Error(1)
-}
 
 var (
 	testIDStart = runes.In(rangetable.New(
@@ -152,7 +114,7 @@ var (
 		Keywords:  testKeywords,
 		Norm:      norm.NFKC,
 		Operators: testOperators,
-		ParseTab:  &mockParserTable{},
+		ParseTab:  &MockParserTable{},
 	}
 )
 

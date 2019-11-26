@@ -15,8 +15,10 @@
 package common
 
 import (
+	"errors"
 	"testing"
 
+	"github.com/hydralang/hydra/testutils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -77,4 +79,263 @@ func TestMockLexerPush(t *testing.T) {
 	l.Push(&Token{Sym: &Symbol{Name: "sym"}})
 
 	l.AssertExpectations(t)
+}
+
+func TestMockParserImplementsParser(t *testing.T) {
+	assert.Implements(t, (*Parser)(nil), &MockParser{})
+}
+
+func TestMockParserExpressionNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	p.On("Expression", 5).Return(nil, nil)
+
+	result, err := p.Expression(5)
+
+	a.Nil(result)
+	a.NoError(err)
+	p.AssertExpectations(t)
+}
+
+func TestMockParserExpressionNonNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	e := &MockExpression{}
+	p.On("Expression", 5).Return(e, nil)
+
+	result, err := p.Expression(5)
+
+	testutils.AssertPtrEqual(a, e, result)
+	a.NoError(err)
+	p.AssertExpectations(t)
+}
+
+func TestMockParserExpressionErr(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	p.On("Expression", 5).Return(nil, errors.New("an error"))
+
+	result, err := p.Expression(5)
+
+	a.Nil(result)
+	a.Error(err, "an error")
+	p.AssertExpectations(t)
+}
+
+func TestMockParserStatementNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	p.On("Statement").Return(nil, nil)
+
+	result, err := p.Statement()
+
+	a.Nil(result)
+	a.NoError(err)
+	p.AssertExpectations(t)
+}
+
+func TestMockParserStatementNonNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	s := &MockStatement{}
+	p.On("Statement").Return(s, nil)
+
+	result, err := p.Statement()
+
+	testutils.AssertPtrEqual(a, s, result)
+	a.NoError(err)
+	p.AssertExpectations(t)
+}
+
+func TestMockParserStatementErr(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	p.On("Statement").Return(nil, errors.New("an error"))
+
+	result, err := p.Statement()
+
+	a.Nil(result)
+	a.Error(err, "an error")
+	p.AssertExpectations(t)
+}
+
+func TestMockParserModuleNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	p.On("Module").Return(nil, nil)
+
+	result, err := p.Module()
+
+	a.Nil(result)
+	a.NoError(err)
+	p.AssertExpectations(t)
+}
+
+func TestMockParserModuleNonNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	s := &MockStatement{}
+	p.On("Module").Return(s, nil)
+
+	result, err := p.Module()
+
+	testutils.AssertPtrEqual(a, s, result)
+	a.NoError(err)
+	p.AssertExpectations(t)
+}
+
+func TestMockParserModuleErr(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	p.On("Module").Return(nil, errors.New("an error"))
+
+	result, err := p.Module()
+
+	a.Nil(result)
+	a.Error(err, "an error")
+	p.AssertExpectations(t)
+}
+
+func TestMockParserTableImplementsParserTable(t *testing.T) {
+	assert.Implements(t, (*ParserTable)(nil), &MockParserTable{})
+}
+
+func TestMockParserTableExprFirstNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	tok := &Token{}
+	pt := &MockParserTable{}
+	pt.On("ExprFirst", p, tok).Return(nil, nil)
+
+	result, err := pt.ExprFirst(p, tok)
+
+	a.Nil(result)
+	a.NoError(err)
+	pt.AssertExpectations(t)
+}
+
+func TestMockParserTableExprFirstNonNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	tok := &Token{}
+	pt := &MockParserTable{}
+	e := &MockExpression{}
+	pt.On("ExprFirst", p, tok).Return(e, nil)
+
+	result, err := pt.ExprFirst(p, tok)
+
+	testutils.AssertPtrEqual(a, e, result)
+	a.NoError(err)
+	pt.AssertExpectations(t)
+}
+
+func TestMockParserTableExprFirstErr(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	tok := &Token{}
+	pt := &MockParserTable{}
+	pt.On("ExprFirst", p, tok).Return(nil, errors.New("an error"))
+
+	result, err := pt.ExprFirst(p, tok)
+
+	a.Nil(result)
+	a.Error(err, "an error")
+	pt.AssertExpectations(t)
+}
+
+func TestMockParserTableExprNextNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	l := &MockExpression{}
+	tok := &Token{}
+	pt := &MockParserTable{}
+	pt.On("ExprNext", p, l, tok).Return(nil, nil)
+
+	result, err := pt.ExprNext(p, l, tok)
+
+	a.Nil(result)
+	a.NoError(err)
+	pt.AssertExpectations(t)
+}
+
+func TestMockParserTableExprNextNonNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	l := &MockExpression{}
+	tok := &Token{}
+	pt := &MockParserTable{}
+	e := &MockExpression{}
+	pt.On("ExprNext", p, l, tok).Return(e, nil)
+
+	result, err := pt.ExprNext(p, l, tok)
+
+	testutils.AssertPtrEqual(a, e, result)
+	a.NoError(err)
+	pt.AssertExpectations(t)
+}
+
+func TestMockParserTableExprNextErr(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	l := &MockExpression{}
+	tok := &Token{}
+	pt := &MockParserTable{}
+	pt.On("ExprNext", p, l, tok).Return(nil, errors.New("an error"))
+
+	result, err := pt.ExprNext(p, l, tok)
+
+	a.Nil(result)
+	a.Error(err, "an error")
+	pt.AssertExpectations(t)
+}
+
+func TestMockParserTableStatementNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	tok := &Token{}
+	pt := &MockParserTable{}
+	pt.On("Statement", p, tok).Return(nil, nil)
+
+	result, err := pt.Statement(p, tok)
+
+	a.Nil(result)
+	a.NoError(err)
+	pt.AssertExpectations(t)
+}
+
+func TestMockParserTableStatementNonNil(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	s := &MockStatement{}
+	tok := &Token{}
+	pt := &MockParserTable{}
+	pt.On("Statement", p, tok).Return(s, nil)
+
+	result, err := pt.Statement(p, tok)
+
+	testutils.AssertPtrEqual(a, s, result)
+	a.NoError(err)
+	pt.AssertExpectations(t)
+}
+
+func TestMockParserTableStatementErr(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	tok := &Token{}
+	pt := &MockParserTable{}
+	pt.On("Statement", p, tok).Return(nil, errors.New("an error"))
+
+	result, err := pt.Statement(p, tok)
+
+	a.Nil(result)
+	a.Error(err, "an error")
+	pt.AssertExpectations(t)
+}
+
+func TestMockExpressionImplementsExpression(t *testing.T) {
+	assert.Implements(t, (*Expression)(nil), &MockExpression{})
+}
+
+func TestMockStatementImplementsStatement(t *testing.T) {
+	assert.Implements(t, (*Statement)(nil), &MockStatement{})
 }

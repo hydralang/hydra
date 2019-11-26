@@ -79,7 +79,7 @@ type ParserTable interface {
 	// ExprNext is called for subsequent expression tokens.  It is
 	// passed the left and right tokens.  It returns an expression
 	// or an error.
-	ExprNext(p Parser, l, r *Token) (Expression, error)
+	ExprNext(p Parser, l Expression, r *Token) (Expression, error)
 
 	// Statement is called for statement tokens.  It returns a
 	// statement or an error.

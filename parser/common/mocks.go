@@ -62,3 +62,105 @@ func (m *MockLexer) Next() *Token {
 func (m *MockLexer) Push(tok *Token) {
 	m.MethodCalled("Push", tok)
 }
+
+// MockParser is a mock object for parsers.
+type MockParser struct {
+	mock.Mock
+}
+
+// Expression parses a single expression from the output of the lexer.
+// Note that this does not necessarily consume the entire input.  The
+// method is called with a "right binding power", which is used to
+// determine operator precedence.  An initial call should set this
+// parameter to 0; calls by token parsers (see ParserTable) may pass
+// different values, typically their left binding power.
+func (m *MockParser) Expression(rbp int) (Expression, error) {
+	args := m.MethodCalled("Expression", rbp)
+
+	tmp := args.Get(0)
+	if tmp != nil {
+		return tmp.(Expression), args.Error(1)
+	}
+
+	return nil, args.Error(1)
+}
+
+// Statement parses a single statement from the output of the lexer.
+// Note that this does not necessarily consume the entire input.
+func (m *MockParser) Statement() (Statement, error) {
+	args := m.MethodCalled("Statement")
+
+	tmp := args.Get(0)
+	if tmp != nil {
+		return tmp.(Statement), args.Error(1)
+	}
+
+	return nil, args.Error(1)
+}
+
+// Module parses a module, or collection of statements, from the
+// output of the lexer.  This is intended to consume the entire input.
+func (m *MockParser) Module() (Statement, error) {
+	args := m.MethodCalled("Module")
+
+	tmp := args.Get(0)
+	if tmp != nil {
+		return tmp.(Statement), args.Error(1)
+	}
+
+	return nil, args.Error(1)
+}
+
+// MockParserTable is a mock object for parser tables.
+type MockParserTable struct {
+	mock.Mock
+}
+
+// ExprFirst is called for the first expression token.  It is passed
+// the token.  It returns an expression or an error.
+func (m *MockParserTable) ExprFirst(p Parser, t *Token) (Expression, error) {
+	args := m.MethodCalled("ExprFirst", p, t)
+
+	tmp := args.Get(0)
+	if tmp != nil {
+		return tmp.(Expression), args.Error(1)
+	}
+
+	return nil, args.Error(1)
+}
+
+// ExprNext is called for subsequent expression tokens.  It is passed
+// the left and right tokens.  It returns an expression or an error.
+func (m *MockParserTable) ExprNext(p Parser, l Expression, r *Token) (Expression, error) {
+	args := m.MethodCalled("ExprNext", p, l, r)
+
+	tmp := args.Get(0)
+	if tmp != nil {
+		return tmp.(Expression), args.Error(1)
+	}
+
+	return nil, args.Error(1)
+}
+
+// Statement is called for statement tokens.  It returns a statement
+// or an error.
+func (m *MockParserTable) Statement(p Parser, t *Token) (Statement, error) {
+	args := m.MethodCalled("Statement", p, t)
+
+	tmp := args.Get(0)
+	if tmp != nil {
+		return tmp.(Statement), args.Error(1)
+	}
+
+	return nil, args.Error(1)
+}
+
+// MockExpression is a mock object for expressions.
+type MockExpression struct {
+	mock.Mock
+}
+
+// MockStatement is a mock object for statements.
+type MockStatement struct {
+	mock.Mock
+}

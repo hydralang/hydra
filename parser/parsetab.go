@@ -21,7 +21,7 @@ type ExprFirst func(p common.Parser, t *common.Token, lbp int) (common.Expressio
 
 // ExprNext is called to process subsequent tokens in a
 // sub-expression.
-type ExprNext func(p common.Parser, l, r *common.Token, lbp int) (common.Expression, error)
+type ExprNext func(p common.Parser, l common.Expression, r *common.Token, lbp int) (common.Expression, error)
 
 // Statement is called to process statement tokens.
 type Statement func(p common.Parser, t *common.Token) (common.Statement, error)
@@ -53,7 +53,7 @@ func (pt parserTable) ExprFirst(p common.Parser, t *common.Token) (common.Expres
 // the left and right tokens and the associated left binding power of
 // the left token, which is used to determine how to recurse.  It
 // returns an expression or an error.
-func (pt parserTable) ExprNext(p common.Parser, l, r *common.Token) (common.Expression, error) {
+func (pt parserTable) ExprNext(p common.Parser, l common.Expression, r *common.Token) (common.Expression, error) {
 	ent, ok := pt[r.Sym.Name]
 	if !ok || ent.ExprNext == nil {
 		return nil, common.ErrUnexpected
