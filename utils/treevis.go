@@ -170,3 +170,30 @@ func Visualize(v interface{}, opts ...VisOption) (string, error) {
 	// Return the visualization
 	return ctxt.buf.String(), nil
 }
+
+// annotatedStringer is an interface for objects wrappable by an
+// Annotated.
+type annotatedStringer interface {
+	Visitable
+	fmt.Stringer
+}
+
+// Annotated is a Visitable that wraps another Visitable; it proxies
+// the other Visitable's Children method and includes an annotation,
+// specified when the Annotated is constructed, that prefixes the
+// result of calling the wrapped Visitable's String method.
+type Annotated struct {
+	Wrapped    annotatedStringer
+	Annotation string
+}
+
+// Children returns the list of child nodes.
+func (ann Annotated) Children() []Visitable {
+	return ann.Wrapped.Children()
+}
+
+// String returns the result of calling the wrapped Visitable's String
+// method, prefixed by the annotation.
+func (ann Annotated) String() string {
+	return fmt.Sprintf("%s%s", ann.Annotation, ann.Wrapped.String())
+}

@@ -20,6 +20,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func equalFunc(a *assert.Assertions, expected, actual interface{}) {
@@ -209,4 +210,53 @@ func TestVisualizeError(t *testing.T) {
 
 	a.Equal(assert.AnError, err)
 	a.Equal("", result)
+}
+
+type mockAnnotatedStringer struct {
+	mock.Mock
+}
+
+func (m *mockAnnotatedStringer) Children() []Visitable {
+	args := m.MethodCalled("Children")
+
+	return args.Get(0).([]Visitable)
+}
+
+func (m *mockAnnotatedStringer) String() string {
+	args := m.MethodCalled("String")
+
+	return args.String(0)
+}
+
+func TestAnnotatedChildren(t *testing.T) {
+	a := assert.New(t)
+	children := []Visitable{
+		&mockAnnotatedStringer{},
+		&mockAnnotatedStringer{},
+	}
+	wrapped := &mockAnnotatedStringer{}
+	wrapped.On("Children").Return(children)
+	obj := &Annotated{
+		Wrapped: wrapped,
+	}
+
+	result := obj.Children()
+
+	a.Equal(children, result)
+	wrapped.AssertExpectations(t)
+}
+
+func TestAnnotatedString(t *testing.T) {
+	a := assert.New(t)
+	wrapped := &mockAnnotatedStringer{}
+	wrapped.On("String").Return("ren")
+	obj := &Annotated{
+		Wrapped:    wrapped,
+		Annotation: "child",
+	}
+
+	result := obj.String()
+
+	a.Equal("children", result)
+	wrapped.AssertExpectations(t)
 }
