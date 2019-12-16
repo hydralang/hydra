@@ -57,6 +57,33 @@ func TestMockExpressionGetLoc(t *testing.T) {
 	e.AssertExpectations(t)
 }
 
+func TestMockExpressionChildren(t *testing.T) {
+	a := assert.New(t)
+	children := []utils.Visitable{
+		&MockExpression{},
+		&MockExpression{},
+		&MockExpression{},
+	}
+	e := &MockExpression{}
+	e.On("Children").Return(children)
+
+	result := e.Children()
+
+	a.Equal(children, result)
+	e.AssertExpectations(t)
+}
+
+func TestMockExpressionString(t *testing.T) {
+	a := assert.New(t)
+	e := &MockExpression{}
+	e.On("String").Return("string!")
+
+	result := e.String()
+
+	a.Equal("string!", result)
+	e.AssertExpectations(t)
+}
+
 func TestMockStatementImplementsStatement(t *testing.T) {
 	assert.Implements(t, (*Statement)(nil), &MockStatement{})
 }

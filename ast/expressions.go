@@ -41,6 +41,27 @@ func (c *Constant) String() string {
 	return fmt.Sprintf("%s: %v", c.Loc, c.Val)
 }
 
+// Variable describes a reference to a variable.
+type Variable struct {
+	Loc  utils.Location // Location of the variable reference
+	Name string         // Name of the variable
+}
+
+// GetLoc retrieves the location of the expression.
+func (v *Variable) GetLoc() utils.Location {
+	return v.Loc
+}
+
+// Children implements the utils.Visitable interface.
+func (v *Variable) Children() []utils.Visitable {
+	return []utils.Visitable{}
+}
+
+// String implements the fmt.Stringer interface.
+func (v *Variable) String() string {
+	return fmt.Sprintf("%s: <%s>", v.Loc, v.Name)
+}
+
 // Unary describes the action of a unary operator on another
 // expression node.
 type Unary struct {
@@ -100,6 +121,34 @@ func (b *Binary) Children() []utils.Visitable {
 // String implements the fmt.Stringer interface.
 func (b *Binary) String() string {
 	return fmt.Sprintf("%s: %s", b.Loc, b.Op)
+}
+
+// Attribute describes the action of the "." operator on an expression
+// node.
+type Attribute struct {
+	Loc  utils.Location // Location of the attribute operator
+	Expr Expression     // The expression to seek the attribute of
+	Attr string         // The name of the attribute to seek
+}
+
+// GetLoc retrieves the location of the expression.
+func (a *Attribute) GetLoc() utils.Location {
+	return a.Loc
+}
+
+// Children implements the utils.Visitable interface.
+func (a *Attribute) Children() []utils.Visitable {
+	return []utils.Visitable{
+		utils.Annotated{
+			Wrapped:    a.Expr,
+			Annotation: "Expr: ",
+		},
+	}
+}
+
+// String implements the fmt.Stringer interface.
+func (a *Attribute) String() string {
+	return fmt.Sprintf("%s: .%s", a.Loc, a.Attr)
 }
 
 // Call describes a call to a function.
