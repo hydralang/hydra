@@ -15,9 +15,7 @@
 package common
 
 import (
-	"fmt"
-
-	"github.com/hydralang/hydra/utils"
+	"github.com/hydralang/hydra/ast"
 )
 
 // Scanner is an interface describing a scanner.  A scanner reads a
@@ -62,17 +60,17 @@ type Parser interface {
 	// initial call should set this parameter to 0; calls by token
 	// parsers (see ParserTable) may pass different values,
 	// typically their left binding power.
-	Expression(rbp int) (Expression, error)
+	Expression(rbp int) (ast.Expression, error)
 
 	// Statement parses a single statement from the output of the
 	// lexer.  Note that this does not necessarily consume the
 	// entire input.
-	Statement() (Statement, error)
+	Statement() (ast.Statement, error)
 
 	// Module parses a module, or collection of statements, from
 	// the output of the lexer.  This is intended to consume the
 	// entire input.
-	Module() (Statement, error)
+	Module() (ast.Statement, error)
 }
 
 // ParserTable is an interface describing the table of symbols the
@@ -85,31 +83,14 @@ type ParserTable interface {
 
 	// ExprFirst is called for the first expression token.  It is
 	// passed the token.  It returns an expression or an error.
-	ExprFirst(p Parser, t *Token) (Expression, error)
+	ExprFirst(p Parser, t *Token) (ast.Expression, error)
 
 	// ExprNext is called for subsequent expression tokens.  It is
 	// passed the left and right tokens.  It returns an expression
 	// or an error.
-	ExprNext(p Parser, l Expression, r *Token) (Expression, error)
+	ExprNext(p Parser, l ast.Expression, r *Token) (ast.Expression, error)
 
 	// Statement is called for statement tokens.  It returns a
 	// statement or an error.
-	Statement(p Parser, t *Token) (Statement, error)
-}
-
-// Expression is an interface describing an expression node in the
-// abstract syntax tree.
-type Expression interface {
-	fmt.Stringer
-	utils.Visitable
-
-	// GetLoc retrieves the location of the expression.
-	GetLoc() Location
-}
-
-// Statement is an interface describing a statement node in the
-// abstract syntax tree.
-type Statement interface {
-	// GetLoc retrieves the location of the statement.
-	GetLoc() Location
+	Statement(p Parser, t *Token) (ast.Statement, error)
 }

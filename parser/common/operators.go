@@ -115,7 +115,7 @@ func (o *Operators) Add(op *Symbol) {
 		// Grab next rune
 		r, w := utf8.DecodeRuneInString(op.Name[pos:])
 		if r == utf8.RuneError && w == 1 {
-			panic(ErrBadRune)
+			panic(utils.ErrBadRune)
 		}
 
 		// Advance the text position
@@ -166,7 +166,7 @@ func (o *Operators) Remove(op *Symbol) {
 		// Grab next rune
 		r, w := utf8.DecodeRuneInString(op.Name[pos:])
 		if r == utf8.RuneError && w == 1 {
-			panic(ErrBadRune)
+			panic(utils.ErrBadRune)
 		}
 
 		// Advance the text position

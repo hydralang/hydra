@@ -26,6 +26,7 @@ import (
 
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/scanner"
+	"github.com/hydralang/hydra/utils"
 )
 
 var (
@@ -206,19 +207,19 @@ func TestLexerNextEnqueued(t *testing.T) {
 	a := assert.New(t)
 	tok1 := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: "tok1",
 	}
 	tok2 := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: "tok2",
 	}
@@ -251,19 +252,19 @@ func TestLexerNextError(t *testing.T) {
 	s.Push(common.AugChar{
 		C:     common.Err,
 		Class: 0,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: assert.AnError,
 	})
 	expTok := &common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: assert.AnError,
 	}
@@ -289,18 +290,18 @@ func TestLexerNextEOF(t *testing.T) {
 	s.Push(common.AugChar{
 		C:     common.EOF,
 		Class: 0,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	})
 	expTok := &common.Token{
 		Sym: common.TokEOF,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 
@@ -325,10 +326,10 @@ func TestLexerNextEOFDangle(t *testing.T) {
 			Name:  "(",
 			Close: ")",
 		},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 	l := &lexer{s: s}
@@ -337,18 +338,18 @@ func TestLexerNextEOFDangle(t *testing.T) {
 	s.Push(common.AugChar{
 		C:     common.EOF,
 		Class: 0,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	})
 	expTok := &common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 		Val: common.ErrDanglingOpen(pairTok),
 	}
@@ -372,18 +373,18 @@ func TestLexerNextComment(t *testing.T) {
 	ch := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	recs.rComment.On("Recognize", ch).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		"comment",
 	)
@@ -392,10 +393,10 @@ func TestLexerNextComment(t *testing.T) {
 	s.Push(ch)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: "comment",
 	}
@@ -419,18 +420,18 @@ func TestLexerNextDigit(t *testing.T) {
 	ch := common.AugChar{
 		C:     '5',
 		Class: common.CharOctDigit | common.CharDecDigit | common.CharHexDigit | common.CharIDCont,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	recs.rNumber.On("Recognize", ch).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		"number",
 	)
@@ -439,10 +440,10 @@ func TestLexerNextDigit(t *testing.T) {
 	s.Push(ch)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: "number",
 	}
@@ -466,27 +467,27 @@ func TestLexerNextPeriodDigit(t *testing.T) {
 	ch1 := common.AugChar{
 		C:     '.',
 		Class: 0,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     '5',
 		Class: common.CharOctDigit | common.CharDecDigit | common.CharHexDigit | common.CharIDCont,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 	recs.rNumber.On("Recognize", ch1).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		"number",
 	)
@@ -496,10 +497,10 @@ func TestLexerNextPeriodDigit(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: "number",
 	}
@@ -523,18 +524,18 @@ func TestLexerNextIdent(t *testing.T) {
 	ch := common.AugChar{
 		C:     'a',
 		Class: common.CharHexDigit | common.CharIDStart | common.CharIDCont,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	recs.rIdent.On("Recognize", ch).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		"ident",
 	)
@@ -543,10 +544,10 @@ func TestLexerNextIdent(t *testing.T) {
 	s.Push(ch)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: "ident",
 	}
@@ -570,18 +571,18 @@ func TestLexerNextQuote(t *testing.T) {
 	ch := common.AugChar{
 		C:     '"',
 		Class: common.CharQuote,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	recs.rString.On("Recognize", ch).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		"quote",
 	)
@@ -590,10 +591,10 @@ func TestLexerNextQuote(t *testing.T) {
 	s.Push(ch)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: "quote",
 	}
@@ -617,18 +618,18 @@ func TestLexerNextOp(t *testing.T) {
 	ch := common.AugChar{
 		C:     '!',
 		Class: 0,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	recs.rOp.On("Recognize", ch).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		"op",
 	)
@@ -637,10 +638,10 @@ func TestLexerNextOp(t *testing.T) {
 	s.Push(ch)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: "op",
 	}
@@ -664,27 +665,27 @@ func TestLexerNextPeriodOp(t *testing.T) {
 	ch1 := common.AugChar{
 		C:     '.',
 		Class: 0,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 	recs.rOp.On("Recognize", ch1).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		"op",
 	)
@@ -694,10 +695,10 @@ func TestLexerNextPeriodOp(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: "op",
 	}
@@ -721,10 +722,10 @@ func TestLexerNextOther(t *testing.T) {
 	ch := common.AugChar{
 		C:     '$',
 		Class: common.CharIDCont,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	l := &lexer{s: s}
@@ -732,12 +733,12 @@ func TestLexerNextOther(t *testing.T) {
 	s.Push(ch)
 	expTok := &common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
-		Val: common.ErrBadOp,
+		Val: utils.ErrBadOp,
 	}
 
 	result := l.Next()
@@ -759,36 +760,36 @@ func TestLexerNextContinuation(t *testing.T) {
 	ch1 := common.AugChar{
 		C:     '\\',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 2, C: 3},
-			E:    common.FilePos{L: 2, C: 4},
+			B:    utils.FilePos{L: 2, C: 3},
+			E:    utils.FilePos{L: 2, C: 4},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     '\n',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 2, C: 4},
-			E:    common.FilePos{L: 3, C: 1},
+			B:    utils.FilePos{L: 2, C: 4},
+			E:    utils.FilePos{L: 3, C: 1},
 		},
 	}
 	ch3 := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	recs.rComment.On("Recognize", ch3).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		"comment",
 	)
@@ -799,10 +800,10 @@ func TestLexerNextContinuation(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: "comment",
 	}
@@ -826,19 +827,19 @@ func TestLexerNextContinuationErr(t *testing.T) {
 	ch1 := common.AugChar{
 		C:     '\\',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 2, C: 3},
-			E:    common.FilePos{L: 2, C: 4},
+			B:    utils.FilePos{L: 2, C: 3},
+			E:    utils.FilePos{L: 2, C: 4},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     common.Err,
 		Class: 0,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 2, C: 4},
-			E:    common.FilePos{L: 2, C: 4},
+			B:    utils.FilePos{L: 2, C: 4},
+			E:    utils.FilePos{L: 2, C: 4},
 		},
 		Val: assert.AnError,
 	}
@@ -848,10 +849,10 @@ func TestLexerNextContinuationErr(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 2, C: 4},
-			E:    common.FilePos{L: 2, C: 4},
+			B:    utils.FilePos{L: 2, C: 4},
+			E:    utils.FilePos{L: 2, C: 4},
 		},
 		Val: assert.AnError,
 	}
@@ -875,19 +876,19 @@ func TestLexerNextContinuationDangling(t *testing.T) {
 	ch1 := common.AugChar{
 		C:     '\\',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 2, C: 3},
-			E:    common.FilePos{L: 2, C: 4},
+			B:    utils.FilePos{L: 2, C: 3},
+			E:    utils.FilePos{L: 2, C: 4},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 2, C: 4},
-			E:    common.FilePos{L: 2, C: 4},
+			B:    utils.FilePos{L: 2, C: 4},
+			E:    utils.FilePos{L: 2, C: 4},
 		},
 	}
 	l := &lexer{s: s}
@@ -896,12 +897,12 @@ func TestLexerNextContinuationDangling(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 2, C: 4},
-			E:    common.FilePos{L: 2, C: 4},
+			B:    utils.FilePos{L: 2, C: 4},
+			E:    utils.FilePos{L: 2, C: 4},
 		},
-		Val: common.ErrDanglingBackslash,
+		Val: utils.ErrDanglingBackslash,
 	}
 
 	result := l.Next()
@@ -923,10 +924,10 @@ func TestLexerNextNewline(t *testing.T) {
 	ch := common.AugChar{
 		C:     '\n',
 		Class: common.CharWS | common.CharNL,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 4, C: 1},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 4, C: 1},
 		},
 	}
 	l := &lexer{
@@ -939,10 +940,10 @@ func TestLexerNextNewline(t *testing.T) {
 	s.Push(ch)
 	expTok := &common.Token{
 		Sym: common.TokNewline,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 4, C: 1},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 4, C: 1},
 		},
 	}
 
@@ -965,27 +966,27 @@ func TestLexerNextNewlineOmitted(t *testing.T) {
 	ch1 := common.AugChar{
 		C:     '\n',
 		Class: common.CharWS | common.CharNL,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 4, C: 1},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 4, C: 1},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 4, C: 1},
-			E:    common.FilePos{L: 4, C: 2},
+			B:    utils.FilePos{L: 4, C: 1},
+			E:    utils.FilePos{L: 4, C: 2},
 		},
 	}
 	recs.rComment.On("Recognize", ch2).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 4, C: 1},
-			E:    common.FilePos{L: 4, C: 2},
+			B:    utils.FilePos{L: 4, C: 1},
+			E:    utils.FilePos{L: 4, C: 2},
 		},
 		"comment",
 	)
@@ -995,10 +996,10 @@ func TestLexerNextNewlineOmitted(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 4, C: 1},
-			E:    common.FilePos{L: 4, C: 2},
+			B:    utils.FilePos{L: 4, C: 1},
+			E:    utils.FilePos{L: 4, C: 2},
 		},
 		Val: "comment",
 	}
@@ -1022,54 +1023,54 @@ func TestLexerNextWhitespaceBase(t *testing.T) {
 	ch1 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 	ch3 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 3},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 3},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 	}
 	ch4 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 4},
-			E:    common.FilePos{L: 3, C: 5},
+			B:    utils.FilePos{L: 3, C: 4},
+			E:    utils.FilePos{L: 3, C: 5},
 		},
 	}
 	ch5 := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 	}
 	recs.rComment.On("Recognize", ch5).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 		"comment",
 	)
@@ -1083,10 +1084,10 @@ func TestLexerNextWhitespaceBase(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 		Val: "comment",
 	}
@@ -1110,63 +1111,63 @@ func TestLexerNextWhitespaceLeadFFSkipped(t *testing.T) {
 	ch1 := common.AugChar{
 		C:     '\f',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 1},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 1},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	ch3 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 	ch4 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 3},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 3},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 	}
 	ch5 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 4},
-			E:    common.FilePos{L: 3, C: 5},
+			B:    utils.FilePos{L: 3, C: 4},
+			E:    utils.FilePos{L: 3, C: 5},
 		},
 	}
 	ch6 := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 	}
 	recs.rComment.On("Recognize", ch6).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 		"comment",
 	)
@@ -1181,10 +1182,10 @@ func TestLexerNextWhitespaceLeadFFSkipped(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 		Val: "comment",
 	}
@@ -1208,55 +1209,55 @@ func TestLexerNextWhitespaceMixed(t *testing.T) {
 	ch1 := common.AugChar{
 		C:     '\t',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 9},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 9},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 9},
-			E:    common.FilePos{L: 3, C: 10},
+			B:    utils.FilePos{L: 3, C: 9},
+			E:    utils.FilePos{L: 3, C: 10},
 		},
 	}
 	ch3 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 10},
-			E:    common.FilePos{L: 3, C: 11},
+			B:    utils.FilePos{L: 3, C: 10},
+			E:    utils.FilePos{L: 3, C: 11},
 		},
 	}
 	ch4 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 11},
-			E:    common.FilePos{L: 3, C: 12},
+			B:    utils.FilePos{L: 3, C: 11},
+			E:    utils.FilePos{L: 3, C: 12},
 		},
 	}
 	ch5 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 12},
-			E:    common.FilePos{L: 3, C: 13},
+			B:    utils.FilePos{L: 3, C: 12},
+			E:    utils.FilePos{L: 3, C: 13},
 		},
 	}
 	ch6 := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 13},
-			E:    common.FilePos{L: 3, C: 14},
+			B:    utils.FilePos{L: 3, C: 13},
+			E:    utils.FilePos{L: 3, C: 14},
 		},
 	}
 	l := &lexer{s: s}
@@ -1270,12 +1271,12 @@ func TestLexerNextWhitespaceMixed(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 9},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 9},
 		},
-		Val: common.ErrMixedIndent,
+		Val: utils.ErrMixedIndent,
 	}
 
 	result := l.Next()
@@ -1299,63 +1300,63 @@ func TestLexerNextWhitespacePaired(t *testing.T) {
 			Name:  "(",
 			Close: ")",
 		},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 	ch1 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 	ch3 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 3},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 3},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 	}
 	ch4 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 4},
-			E:    common.FilePos{L: 3, C: 5},
+			B:    utils.FilePos{L: 3, C: 4},
+			E:    utils.FilePos{L: 3, C: 5},
 		},
 	}
 	ch5 := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 	}
 	recs.rComment.On("Recognize", ch5).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 		"comment",
 	)
@@ -1370,10 +1371,10 @@ func TestLexerNextWhitespacePaired(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 		Val: "comment",
 	}
@@ -1399,72 +1400,72 @@ func TestLexerNextWhitespacePairedLeadFFSkipped(t *testing.T) {
 			Name:  "(",
 			Close: ")",
 		},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 	ch1 := common.AugChar{
 		C:     '\f',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 1},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 1},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	ch3 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 	ch4 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 3},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 3},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 	}
 	ch5 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 4},
-			E:    common.FilePos{L: 3, C: 5},
+			B:    utils.FilePos{L: 3, C: 4},
+			E:    utils.FilePos{L: 3, C: 5},
 		},
 	}
 	ch6 := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 	}
 	recs.rComment.On("Recognize", ch6).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 		"comment",
 	)
@@ -1480,10 +1481,10 @@ func TestLexerNextWhitespacePairedLeadFFSkipped(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 5},
-			E:    common.FilePos{L: 3, C: 6},
+			B:    utils.FilePos{L: 3, C: 5},
+			E:    utils.FilePos{L: 3, C: 6},
 		},
 		Val: "comment",
 	}
@@ -1509,72 +1510,72 @@ func TestLexerNextWhitespacePairedMixed(t *testing.T) {
 			Name:  "(",
 			Close: ")",
 		},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 	ch1 := common.AugChar{
 		C:     '\t',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 9},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 9},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 9},
-			E:    common.FilePos{L: 3, C: 10},
+			B:    utils.FilePos{L: 3, C: 9},
+			E:    utils.FilePos{L: 3, C: 10},
 		},
 	}
 	ch3 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 10},
-			E:    common.FilePos{L: 3, C: 11},
+			B:    utils.FilePos{L: 3, C: 10},
+			E:    utils.FilePos{L: 3, C: 11},
 		},
 	}
 	ch4 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 11},
-			E:    common.FilePos{L: 3, C: 12},
+			B:    utils.FilePos{L: 3, C: 11},
+			E:    utils.FilePos{L: 3, C: 12},
 		},
 	}
 	ch5 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 12},
-			E:    common.FilePos{L: 3, C: 13},
+			B:    utils.FilePos{L: 3, C: 12},
+			E:    utils.FilePos{L: 3, C: 13},
 		},
 	}
 	ch6 := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 13},
-			E:    common.FilePos{L: 3, C: 14},
+			B:    utils.FilePos{L: 3, C: 13},
+			E:    utils.FilePos{L: 3, C: 14},
 		},
 	}
 	recs.rComment.On("Recognize", ch6).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 13},
-			E:    common.FilePos{L: 3, C: 14},
+			B:    utils.FilePos{L: 3, C: 13},
+			E:    utils.FilePos{L: 3, C: 14},
 		},
 		"comment",
 	)
@@ -1590,10 +1591,10 @@ func TestLexerNextWhitespacePairedMixed(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 13},
-			E:    common.FilePos{L: 3, C: 14},
+			B:    utils.FilePos{L: 3, C: 13},
+			E:    utils.FilePos{L: 3, C: 14},
 		},
 		Val: "comment",
 	}
@@ -1619,72 +1620,72 @@ func TestLexerNextWhitespacePairedNewline(t *testing.T) {
 			Name:  "(",
 			Close: ")",
 		},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 	ch1 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	ch2 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 	ch3 := common.AugChar{
 		C:     '\n',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 4},
-			E:    common.FilePos{L: 4, C: 1},
+			B:    utils.FilePos{L: 3, C: 4},
+			E:    utils.FilePos{L: 4, C: 1},
 		},
 	}
 	ch4 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 4, C: 1},
-			E:    common.FilePos{L: 4, C: 2},
+			B:    utils.FilePos{L: 4, C: 1},
+			E:    utils.FilePos{L: 4, C: 2},
 		},
 	}
 	ch5 := common.AugChar{
 		C:     ' ',
 		Class: common.CharWS,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 4, C: 2},
-			E:    common.FilePos{L: 4, C: 3},
+			B:    utils.FilePos{L: 4, C: 2},
+			E:    utils.FilePos{L: 4, C: 3},
 		},
 	}
 	ch6 := common.AugChar{
 		C:     '#',
 		Class: common.CharComment,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 4, C: 3},
-			E:    common.FilePos{L: 4, C: 4},
+			B:    utils.FilePos{L: 4, C: 3},
+			E:    utils.FilePos{L: 4, C: 4},
 		},
 	}
 	recs.rComment.On("Recognize", ch6).Return(
 		common.TokIdent,
-		common.Location{
+		utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 4, C: 3},
-			E:    common.FilePos{L: 4, C: 4},
+			B:    utils.FilePos{L: 4, C: 3},
+			E:    utils.FilePos{L: 4, C: 4},
 		},
 		"comment",
 	)
@@ -1700,10 +1701,10 @@ func TestLexerNextWhitespacePairedNewline(t *testing.T) {
 	s.Push(ch1)
 	expTok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 4, C: 3},
-			E:    common.FilePos{L: 4, C: 4},
+			B:    utils.FilePos{L: 4, C: 3},
+			E:    utils.FilePos{L: 4, C: 4},
 		},
 		Val: "comment",
 	}
@@ -1722,19 +1723,19 @@ func TestLexerPush(t *testing.T) {
 	l := &lexer{}
 	tok1 := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: "tok1",
 	}
 	tok2 := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: "tok2",
 	}

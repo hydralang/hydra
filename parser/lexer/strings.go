@@ -20,6 +20,7 @@ import (
 	"unicode"
 
 	"github.com/hydralang/hydra/parser/common"
+	"github.com/hydralang/hydra/utils"
 )
 
 // buffer is a buffer for recogString.
@@ -43,7 +44,7 @@ type bufString struct {
 func (b *bufString) putC(r rune) error {
 	// Handle bad character
 	if r > unicode.MaxRune {
-		return common.ErrBadStrChar
+		return utils.ErrBadStrChar
 	}
 
 	b.WriteRune(r)
@@ -69,7 +70,7 @@ type bufBytes struct {
 func (b *bufBytes) putC(r rune) error {
 	// Handle bad character
 	if r > 0xff {
-		return common.ErrBadStrChar
+		return utils.ErrBadStrChar
 	}
 
 	b.WriteByte(byte(r))
@@ -91,13 +92,13 @@ func (b bufBytes) sym() *common.Symbol {
 // exact quote characters are dynamic.  It should be called when the
 // character is a quote character.
 type recognizeString struct {
-	l      *lexer          // The lexer
-	flags  uint8           // Recognized string flags
-	loc    common.Location // Location of first char
-	buf    buffer          // Buffer for the string value
-	q      rune            // The quote character to look for
-	qcnt   int             // Number of quote characters spotted so far
-	runLoc common.Location // Beginning of last run of quote characters
+	l      *lexer         // The lexer
+	flags  uint8          // Recognized string flags
+	loc    utils.Location // Location of first char
+	buf    buffer         // Buffer for the string value
+	q      rune           // The quote character to look for
+	qcnt   int            // Number of quote characters spotted so far
+	runLoc utils.Location // Beginning of last run of quote characters
 }
 
 // recogString constructs a recognizer for strings.
@@ -134,7 +135,7 @@ func (r *recognizeString) setFlag(ch common.AugChar) *recognizeString {
 // escape handles an escape character encountered while processing a
 // string.  Returns an error and a location if an error is
 // encountered.
-func (r *recognizeString) escape(ch common.AugChar) (common.Location, error) {
+func (r *recognizeString) escape(ch common.AugChar) (utils.Location, error) {
 	loc := ch.Loc
 
 	// Handle raw string escapes
@@ -149,12 +150,12 @@ func (r *recognizeString) escape(ch common.AugChar) (common.Location, error) {
 		if ch.C == common.Err {
 			return ch.Loc, ch.Val.(error)
 		} else if ch.C == common.EOF {
-			return loc.ThruEnd(ch.Loc), common.ErrUnclosedStr
+			return loc.ThruEnd(ch.Loc), utils.ErrUnclosedStr
 		} else if err := r.buf.putC(ch.C); err != nil {
 			return loc.ThruEnd(ch.Loc), err
 		}
 
-		return common.Location{}, nil
+		return utils.Location{}, nil
 	}
 
 	// Check if we're escaping a quote
@@ -163,7 +164,7 @@ func (r *recognizeString) escape(ch common.AugChar) (common.Location, error) {
 		if err := r.buf.putC(ch.C); err != nil {
 			return loc.ThruEnd(ch.Loc), err
 		}
-		return common.Location{}, nil
+		return utils.Location{}, nil
 	}
 
 	// Make sure it's a valid escape
@@ -183,11 +184,11 @@ func (r *recognizeString) escape(ch common.AugChar) (common.Location, error) {
 			}
 		}
 
-		return common.Location{}, nil
+		return utils.Location{}, nil
 	}
 
 	// Not a valid escape
-	return loc.ThruEnd(ch.Loc), common.ErrBadEscape
+	return loc.ThruEnd(ch.Loc), utils.ErrBadEscape
 }
 
 // Recognize is called to recognize a string.  Will be called with the
@@ -271,7 +272,7 @@ func (r *recognizeString) Recognize(ch common.AugChar) {
 			return
 
 		case common.EOF: // EOF in a string?
-			r.l.pushErr(ch.Loc, common.ErrUnclosedStr)
+			r.l.pushErr(ch.Loc, utils.ErrUnclosedStr)
 			return
 
 		case '\\': // Introduces an escape
@@ -282,7 +283,7 @@ func (r *recognizeString) Recognize(ch common.AugChar) {
 
 		case '\n': // Newline, possible unclosed string
 			if r.flags&common.StrMulti == 0 {
-				r.l.pushErr(ch.Loc, common.ErrUnclosedStr)
+				r.l.pushErr(ch.Loc, utils.ErrUnclosedStr)
 				return
 			}
 			fallthrough

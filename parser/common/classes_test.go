@@ -18,136 +18,138 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/hydralang/hydra/utils"
 )
 
 var expected = map[rune]AugChar{
 	' ': {
 		C:     ' ',
 		Class: CharWS,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: nil,
 	},
 	'\n': {
 		C:     '\n',
 		Class: CharWS | CharNL,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: nil,
 	},
 	'0': {
 		C:     '0',
 		Class: CharBinDigit | CharOctDigit | CharDecDigit | CharHexDigit | CharIDCont,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: 0,
 	},
 	'2': {
 		C:     '2',
 		Class: CharOctDigit | CharDecDigit | CharHexDigit | CharIDCont,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: 2,
 	},
 	'8': {
 		C:     '8',
 		Class: CharDecDigit | CharHexDigit | CharIDCont,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: 8,
 	},
 	'a': {
 		C:     'a',
 		Class: CharHexDigit | CharIDStart | CharIDCont,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: 10,
 	},
 	'A': {
 		C:     'A',
 		Class: CharHexDigit | CharIDStart | CharIDCont,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: 10,
 	},
 	'b': {
 		C:     'b',
 		Class: CharHexDigit | CharIDStart | CharIDCont | CharStrFlag,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: 11,
 	},
 	'g': {
 		C:     'g',
 		Class: CharIDStart | CharIDCont,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: nil,
 	},
 	'r': {
 		C:     'r',
 		Class: CharIDStart | CharIDCont | CharStrFlag,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: nil,
 	},
 	'R': {
 		C:     'R',
 		Class: CharIDStart | CharIDCont | CharStrFlag,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: nil,
 	},
 	'"': {
 		C:     '"',
 		Class: CharQuote,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: nil,
 	},
 	'#': {
 		C:     '#',
 		Class: CharComment,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: nil,
 	},
@@ -160,10 +162,10 @@ func TestOptionsClassify(t *testing.T) {
 	}
 
 	for r, exp := range expected {
-		result := opts.Classify(r, Location{
+		result := opts.Classify(r, utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		}, nil)
 
 		a.Equal(exp, result)
@@ -176,19 +178,19 @@ func TestOptionsClassifyEOF(t *testing.T) {
 		Prof: testProfile,
 	}
 
-	result := opts.Classify(EOF, Location{
+	result := opts.Classify(EOF, utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 2},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}, nil)
 
 	a.Equal(AugChar{
 		C:     EOF,
 		Class: 0,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: nil,
 	}, result)
@@ -200,19 +202,19 @@ func TestOptionsClassifyErr(t *testing.T) {
 		Prof: testProfile,
 	}
 
-	result := opts.Classify(Err, Location{
+	result := opts.Classify(Err, utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 2},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}, assert.AnError)
 
 	a.Equal(AugChar{
 		C:     Err,
 		Class: 0,
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: assert.AnError,
 	}, result)
@@ -221,143 +223,143 @@ func TestOptionsClassifyErr(t *testing.T) {
 func TestOptionsAdvanceEOF(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{TabStop: 8}
-	loc := Location{
+	loc := utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 2},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 
 	opts.Advance(EOF, &loc)
 
-	a.Equal(Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 3},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 3},
+		E:    utils.FilePos{L: 3, C: 3},
 	}, loc)
 }
 
 func TestOptionsAdvanceErr(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{TabStop: 8}
-	loc := Location{
+	loc := utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 2},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 
 	opts.Advance(Err, &loc)
 
-	a.Equal(Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 3},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 3},
+		E:    utils.FilePos{L: 3, C: 3},
 	}, loc)
 }
 
 func TestOptionsAdvanceNewline(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{TabStop: 8}
-	loc := Location{
+	loc := utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 2},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 
 	opts.Advance('\n', &loc)
 
-	a.Equal(Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 3},
-		E:    FilePos{L: 4, C: 1},
+		B:    utils.FilePos{L: 3, C: 3},
+		E:    utils.FilePos{L: 4, C: 1},
 	}, loc)
 }
 
 func TestOptionsAdvanceTab8(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{TabStop: 8}
-	loc := Location{
+	loc := utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 2},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 
 	opts.Advance('\t', &loc)
 
-	a.Equal(Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 3},
-		E:    FilePos{L: 3, C: 9},
+		B:    utils.FilePos{L: 3, C: 3},
+		E:    utils.FilePos{L: 3, C: 9},
 	}, loc)
 }
 
 func TestOptionsAdvanceTab4(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{TabStop: 4}
-	loc := Location{
+	loc := utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 2},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 
 	opts.Advance('\t', &loc)
 
-	a.Equal(Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 3},
-		E:    FilePos{L: 3, C: 5},
+		B:    utils.FilePos{L: 3, C: 3},
+		E:    utils.FilePos{L: 3, C: 5},
 	}, loc)
 }
 
 func TestOptionsAdvanceFFBegin(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{TabStop: 8}
-	loc := Location{
+	loc := utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 1},
-		E:    FilePos{L: 3, C: 2},
+		B:    utils.FilePos{L: 3, C: 1},
+		E:    utils.FilePos{L: 3, C: 2},
 	}
 
 	opts.Advance('\f', &loc)
 
-	a.Equal(Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 1},
-		E:    FilePos{L: 3, C: 2},
+		B:    utils.FilePos{L: 3, C: 1},
+		E:    utils.FilePos{L: 3, C: 2},
 	}, loc)
 }
 
 func TestOptionsAdvanceFFMiddle(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{TabStop: 8}
-	loc := Location{
+	loc := utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 2},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 
 	opts.Advance('\f', &loc)
 
-	a.Equal(Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 3},
-		E:    FilePos{L: 3, C: 4},
+		B:    utils.FilePos{L: 3, C: 3},
+		E:    utils.FilePos{L: 3, C: 4},
 	}, loc)
 }
 
 func TestOptionsAdvanceOther(t *testing.T) {
 	a := assert.New(t)
 	opts := &Options{TabStop: 8}
-	loc := Location{
+	loc := utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 2},
-		E:    FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 
 	opts.Advance('o', &loc)
 
-	a.Equal(Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    FilePos{L: 3, C: 3},
-		E:    FilePos{L: 3, C: 4},
+		B:    utils.FilePos{L: 3, C: 3},
+		E:    utils.FilePos{L: 3, C: 4},
 	}, loc)
 }

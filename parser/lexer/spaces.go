@@ -80,7 +80,7 @@ func (l *lexer) skipSpaces(ch common.AugChar, flags uint8) (mixed bool) {
 // doIndent is the core routine that manages indentation tracking.  It
 // will push TokIndent and TokDedent tokens onto the token stack as
 // appropriate, depending on the indentation level.
-func (l *lexer) doIndent(col int, loc common.Location) {
+func (l *lexer) doIndent(col int, loc utils.Location) {
 	// Handle the simple cases first
 	curCol := l.indent.Back().Value.(int)
 	if col == curCol {
@@ -103,6 +103,6 @@ func (l *lexer) doIndent(col int, loc common.Location) {
 
 	// Produce an error if there's inconsistent indentation
 	if elem.Value.(int) != col {
-		l.pushErr(loc, common.ErrBadIndent)
+		l.pushErr(loc, utils.ErrBadIndent)
 	}
 }

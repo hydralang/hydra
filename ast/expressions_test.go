@@ -18,22 +18,20 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/hydralang/hydra/parser/common"
 )
 
 func TestConstantImplementsExpression(t *testing.T) {
-	assert.Implements(t, (*common.Expression)(nil), &Constant{})
+	assert.Implements(t, (*Expression)(nil), &Constant{})
 }
 
 func TestUnaryImplementsExpression(t *testing.T) {
-	assert.Implements(t, (*common.Expression)(nil), &Unary{})
+	assert.Implements(t, (*Expression)(nil), &Unary{})
 }
 
 func TestBinaryImplementsExpression(t *testing.T) {
-	assert.Implements(t, (*common.Expression)(nil), &Binary{})
+	assert.Implements(t, (*Expression)(nil), &Binary{})
 }
 
 func TestCallImplementsExpression(t *testing.T) {
-	assert.Implements(t, (*common.Expression)(nil), &Call{})
+	assert.Implements(t, (*Expression)(nil), &Call{})
 }

@@ -22,6 +22,7 @@ import (
 
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/scanner"
+	"github.com/hydralang/hydra/utils"
 )
 
 func TestRecognizeIdentifierImplementsRecognizer(t *testing.T) {
@@ -61,10 +62,10 @@ func TestRecognizeIdentifierRecognizeBase(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 5},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 5},
 		},
 		Val: "Nino",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -91,10 +92,10 @@ func TestRecognizeIdentifierRecognizeNormalizeUnneeded(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 5},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 5},
 		},
 		Val: "Ni\u00f1o",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -121,10 +122,10 @@ func TestRecognizeIdentifierRecognizeNormalizeNeeded(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 6},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 6},
 		},
 		Val: "Ni\u00f1o",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -151,10 +152,10 @@ func TestRecognizeIdentifierRecognizeString(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokBytes,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 9},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 9},
 		},
 		Val: []byte("spam"),
 	}, l.tokens.Front().Value.(*common.Token))
@@ -181,10 +182,10 @@ func TestRecognizeIdentifierRecognizeKeyword(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: &common.Symbol{Name: "kw1"},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
 		Val: "kw1",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -205,19 +206,19 @@ func TestRecognizeIdentifierRecognizeErr(t *testing.T) {
 	}
 	s.Push(common.AugChar{
 		C: common.Err,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: assert.AnError,
 	})
 	ch := common.AugChar{
 		C: 's',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 
@@ -227,10 +228,10 @@ func TestRecognizeIdentifierRecognizeErr(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: assert.AnError,
 	}, l.tokens.Front().Value.(*common.Token))
@@ -257,11 +258,11 @@ func TestRecognizeIdentifierRecognizeBadIdent(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 5},
-			E:    common.FilePos{L: 1, C: 6},
+			B:    utils.FilePos{L: 1, C: 5},
+			E:    utils.FilePos{L: 1, C: 6},
 		},
-		Val: common.ErrBadIdent,
+		Val: utils.ErrBadIdent,
 	}, l.tokens.Front().Value.(*common.Token))
 }

@@ -93,15 +93,15 @@ var digits = map[rune]digitData{
 // its location, and any numeric value it may have.  This is the type
 // that the scanner returns.
 type AugChar struct {
-	C     rune        // The character
-	Class uint16      // The character's class
-	Loc   Location    // The character's location
-	Val   interface{} // The "value"; an integer for digits
+	C     rune           // The character
+	Class uint16         // The character's class
+	Loc   utils.Location // The character's location
+	Val   interface{}    // The "value"; an integer for digits
 }
 
 // Classify classifies a character and composes an AugChar describing
 // the character.
-func (opts *Options) Classify(ch rune, loc Location, err error) AugChar {
+func (opts *Options) Classify(ch rune, loc utils.Location, err error) AugChar {
 	var class uint16
 	var val interface{}
 
@@ -153,23 +153,23 @@ func (opts *Options) Classify(ch rune, loc Location, err error) AugChar {
 
 // Advance advances the location to account for the specified
 // character.
-func (opts *Options) Advance(ch rune, loc *Location) {
+func (opts *Options) Advance(ch rune, loc *utils.Location) {
 	switch ch {
 	case EOF, Err: // End of file
-		loc.Advance(FilePos{})
+		loc.Advance(utils.FilePos{})
 
 	case '\n': // New line
-		loc.Advance(FilePos{L: 1})
+		loc.Advance(utils.FilePos{L: 1})
 
 	case '\t': // Hit a tab
 		loc.AdvanceTab(opts.TabStop)
 
 	case '\f': // Don't count form feeds at the beginning of lines
 		if loc.B.C > 1 {
-			loc.Advance(FilePos{C: 1})
+			loc.Advance(utils.FilePos{C: 1})
 		}
 
 	default: // Everything else advances by one column
-		loc.Advance(FilePos{C: 1})
+		loc.Advance(utils.FilePos{C: 1})
 	}
 }

@@ -38,7 +38,11 @@ func TestTokenImplementsVisitable(t *testing.T) {
 func TestTokenStringBase(t *testing.T) {
 	a := assert.New(t)
 	sym := &Symbol{Name: "sym"}
-	loc := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
+	loc := utils.Location{
+		File: "file",
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
+	}
 	tok := Token{Sym: sym, Loc: loc}
 
 	result := tok.String()
@@ -49,7 +53,11 @@ func TestTokenStringBase(t *testing.T) {
 func TestTokenStringWithValue(t *testing.T) {
 	a := assert.New(t)
 	sym := &Symbol{Name: "sym"}
-	loc := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
+	loc := utils.Location{
+		File: "file",
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
+	}
 	tok := Token{Sym: sym, Loc: loc, Val: "value"}
 
 	result := tok.String()
@@ -60,7 +68,11 @@ func TestTokenStringWithValue(t *testing.T) {
 func TestTokenChildren(t *testing.T) {
 	a := assert.New(t)
 	sym := &Symbol{Name: "sym"}
-	loc := Location{File: "file", B: FilePos{3, 2}, E: FilePos{3, 3}}
+	loc := utils.Location{
+		File: "file",
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
+	}
 	tok := Token{Sym: sym, Loc: loc, Val: "value"}
 
 	result := tok.Children()

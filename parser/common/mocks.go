@@ -17,7 +17,7 @@ package common
 import (
 	"github.com/stretchr/testify/mock"
 
-	"github.com/hydralang/hydra/utils"
+	"github.com/hydralang/hydra/ast"
 )
 
 // MockScanner is a mock object for scanners.
@@ -78,12 +78,12 @@ type MockParser struct {
 // determine operator precedence.  An initial call should set this
 // parameter to 0; calls by token parsers (see ParserTable) may pass
 // different values, typically their left binding power.
-func (m *MockParser) Expression(rbp int) (Expression, error) {
+func (m *MockParser) Expression(rbp int) (ast.Expression, error) {
 	args := m.MethodCalled("Expression", rbp)
 
 	tmp := args.Get(0)
 	if tmp != nil {
-		return tmp.(Expression), args.Error(1)
+		return tmp.(ast.Expression), args.Error(1)
 	}
 
 	return nil, args.Error(1)
@@ -91,12 +91,12 @@ func (m *MockParser) Expression(rbp int) (Expression, error) {
 
 // Statement parses a single statement from the output of the lexer.
 // Note that this does not necessarily consume the entire input.
-func (m *MockParser) Statement() (Statement, error) {
+func (m *MockParser) Statement() (ast.Statement, error) {
 	args := m.MethodCalled("Statement")
 
 	tmp := args.Get(0)
 	if tmp != nil {
-		return tmp.(Statement), args.Error(1)
+		return tmp.(ast.Statement), args.Error(1)
 	}
 
 	return nil, args.Error(1)
@@ -104,12 +104,12 @@ func (m *MockParser) Statement() (Statement, error) {
 
 // Module parses a module, or collection of statements, from the
 // output of the lexer.  This is intended to consume the entire input.
-func (m *MockParser) Module() (Statement, error) {
+func (m *MockParser) Module() (ast.Statement, error) {
 	args := m.MethodCalled("Module")
 
 	tmp := args.Get(0)
 	if tmp != nil {
-		return tmp.(Statement), args.Error(1)
+		return tmp.(ast.Statement), args.Error(1)
 	}
 
 	return nil, args.Error(1)
@@ -131,12 +131,12 @@ func (m *MockParserTable) BindingPower(p Parser, t *Token) int {
 
 // ExprFirst is called for the first expression token.  It is passed
 // the token.  It returns an expression or an error.
-func (m *MockParserTable) ExprFirst(p Parser, t *Token) (Expression, error) {
+func (m *MockParserTable) ExprFirst(p Parser, t *Token) (ast.Expression, error) {
 	args := m.MethodCalled("ExprFirst", p, t)
 
 	tmp := args.Get(0)
 	if tmp != nil {
-		return tmp.(Expression), args.Error(1)
+		return tmp.(ast.Expression), args.Error(1)
 	}
 
 	return nil, args.Error(1)
@@ -144,12 +144,12 @@ func (m *MockParserTable) ExprFirst(p Parser, t *Token) (Expression, error) {
 
 // ExprNext is called for subsequent expression tokens.  It is passed
 // the left and right tokens.  It returns an expression or an error.
-func (m *MockParserTable) ExprNext(p Parser, l Expression, r *Token) (Expression, error) {
+func (m *MockParserTable) ExprNext(p Parser, l ast.Expression, r *Token) (ast.Expression, error) {
 	args := m.MethodCalled("ExprNext", p, l, r)
 
 	tmp := args.Get(0)
 	if tmp != nil {
-		return tmp.(Expression), args.Error(1)
+		return tmp.(ast.Expression), args.Error(1)
 	}
 
 	return nil, args.Error(1)
@@ -157,51 +157,13 @@ func (m *MockParserTable) ExprNext(p Parser, l Expression, r *Token) (Expression
 
 // Statement is called for statement tokens.  It returns a statement
 // or an error.
-func (m *MockParserTable) Statement(p Parser, t *Token) (Statement, error) {
+func (m *MockParserTable) Statement(p Parser, t *Token) (ast.Statement, error) {
 	args := m.MethodCalled("Statement", p, t)
 
 	tmp := args.Get(0)
 	if tmp != nil {
-		return tmp.(Statement), args.Error(1)
+		return tmp.(ast.Statement), args.Error(1)
 	}
 
 	return nil, args.Error(1)
-}
-
-// MockExpression is a mock object for expressions.
-type MockExpression struct {
-	mock.Mock
-}
-
-// GetLoc retrieves the location of the expression.
-func (m *MockExpression) GetLoc() Location {
-	args := m.MethodCalled("GetLoc")
-
-	return args.Get(0).(Location)
-}
-
-// Children implements the utils.Visitable interface.
-func (m *MockExpression) Children() []utils.Visitable {
-	args := m.MethodCalled("Children")
-
-	return args.Get(0).([]utils.Visitable)
-}
-
-// String implements the fmt.Stringer interface.
-func (m *MockExpression) String() string {
-	args := m.MethodCalled("String")
-
-	return args.String(0)
-}
-
-// MockStatement is a mock object for statements.
-type MockStatement struct {
-	mock.Mock
-}
-
-// GetLoc retrieves the location of the statement.
-func (m *MockStatement) GetLoc() Location {
-	args := m.MethodCalled("GetLoc")
-
-	return args.Get(0).(Location)
 }

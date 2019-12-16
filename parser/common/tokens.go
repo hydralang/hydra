@@ -38,9 +38,9 @@ func (s Symbol) String() string {
 
 // Token represents a single token emitted by the lexer.
 type Token struct {
-	Sym *Symbol     // The token type
-	Loc Location    // The location range of the token
-	Val interface{} // The semantic value of the token
+	Sym *Symbol        // The token type
+	Loc utils.Location // The location range of the token
+	Val interface{}    // The semantic value of the token
 }
 
 // String constructs a string representation of a token.

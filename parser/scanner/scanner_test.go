@@ -29,6 +29,7 @@ import (
 
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/testutils"
+	"github.com/hydralang/hydra/utils"
 )
 
 var (
@@ -153,10 +154,10 @@ func TestScanDefaultEncoding(t *testing.T) {
 	testutils.AssertPtrEqual(a, s.leUnknown, s.le)
 	a.Equal(common.Err, s.pushed)
 	a.Nil(s.err)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 1, C: 1},
-		E:    common.FilePos{L: 1, C: 1},
+		B:    utils.FilePos{L: 1, C: 1},
+		E:    utils.FilePos{L: 1, C: 1},
 	}, s.loc)
 	buf := [20]byte{}
 	n, err := s.source.Read(buf[:])
@@ -182,10 +183,10 @@ func TestScanISO8859_1(t *testing.T) {
 	testutils.AssertPtrEqual(a, s.leUnknown, s.le)
 	a.Equal(common.Err, s.pushed)
 	a.Nil(s.err)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 1, C: 1},
-		E:    common.FilePos{L: 1, C: 1},
+		B:    utils.FilePos{L: 1, C: 1},
+		E:    utils.FilePos{L: 1, C: 1},
 	}, s.loc)
 	buf := [20]byte{}
 	n, err := s.source.Read(buf[:])
@@ -256,7 +257,7 @@ func TestScannerNextCharBufferedBadChar(t *testing.T) {
 
 	r, err := s.nextChar()
 
-	a.Equal(common.ErrBadRune, err)
+	a.Equal(utils.ErrBadRune, err)
 	a.Equal(common.Err, r)
 	a.Nil(s.source)
 	a.Equal([]byte("nino"), s.buf[s.pos:s.end])
@@ -402,10 +403,10 @@ func TestScannerPush(t *testing.T) {
 	ch := common.AugChar{
 		C:     'c',
 		Class: 5,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 1},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 1},
 		},
 		Val: nil,
 	}
@@ -422,10 +423,10 @@ func TestScannerNextPushed(t *testing.T) {
 		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		end:    4,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 1},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 1},
 		},
 	}
 	copy(s.buf[0:], []byte{'t', 'e', 's', 't', utf8.RuneSelf})
@@ -433,10 +434,10 @@ func TestScannerNextPushed(t *testing.T) {
 	s.queue.PushFront(common.AugChar{
 		C:     'p',
 		Class: common.CharIDStart | common.CharIDCont,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 2, C: 1},
-			E:    common.FilePos{L: 2, C: 2},
+			B:    utils.FilePos{L: 2, C: 1},
+			E:    utils.FilePos{L: 2, C: 2},
 		},
 		Val: nil,
 	})
@@ -445,19 +446,19 @@ func TestScannerNextPushed(t *testing.T) {
 	a.Equal(common.AugChar{
 		C:     'p',
 		Class: common.CharIDStart | common.CharIDCont,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 2, C: 1},
-			E:    common.FilePos{L: 2, C: 2},
+			B:    utils.FilePos{L: 2, C: 1},
+			E:    utils.FilePos{L: 2, C: 2},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte("test"), s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "filename",
-		B:    common.FilePos{L: 1, C: 1},
-		E:    common.FilePos{L: 1, C: 1},
+		B:    utils.FilePos{L: 1, C: 1},
+		E:    utils.FilePos{L: 1, C: 1},
 	}, s.loc)
 }
 
@@ -467,10 +468,10 @@ func TestScannerNextLEPushed(t *testing.T) {
 		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: 'p',
 		end:    4,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 1},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 1},
 		},
 	}
 	copy(s.buf[0:], []byte{'t', 'e', 's', 't', utf8.RuneSelf})
@@ -481,19 +482,19 @@ func TestScannerNextLEPushed(t *testing.T) {
 	a.Equal(common.AugChar{
 		C:     'p',
 		Class: common.CharIDStart | common.CharIDCont,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte("test"), s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "filename",
-		B:    common.FilePos{L: 1, C: 1},
-		E:    common.FilePos{L: 1, C: 2},
+		B:    utils.FilePos{L: 1, C: 1},
+		E:    utils.FilePos{L: 1, C: 2},
 	}, s.loc)
 }
 
@@ -502,10 +503,10 @@ func TestScannerNextEOF(t *testing.T) {
 	s := &scanner{
 		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 	copy(s.buf[0:], []byte{utf8.RuneSelf})
@@ -516,19 +517,19 @@ func TestScannerNextEOF(t *testing.T) {
 	a.Equal(common.AugChar{
 		C:     common.EOF,
 		Class: 0,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 2},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 2},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte{}, s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "filename",
-		B:    common.FilePos{L: 1, C: 2},
-		E:    common.FilePos{L: 1, C: 2},
+		B:    utils.FilePos{L: 1, C: 2},
+		E:    utils.FilePos{L: 1, C: 2},
 	}, s.loc)
 }
 
@@ -538,10 +539,10 @@ func TestScannerNextError(t *testing.T) {
 		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		err:    assert.AnError,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 	copy(s.buf[0:], []byte{utf8.RuneSelf})
@@ -552,19 +553,19 @@ func TestScannerNextError(t *testing.T) {
 	a.Equal(common.AugChar{
 		C:     common.Err,
 		Class: 0,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 2},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 2},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 		Val: assert.AnError,
 	}, ch)
 	a.Equal([]byte{}, s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "filename",
-		B:    common.FilePos{L: 1, C: 2},
-		E:    common.FilePos{L: 1, C: 2},
+		B:    utils.FilePos{L: 1, C: 2},
+		E:    utils.FilePos{L: 1, C: 2},
 	}, s.loc)
 }
 
@@ -574,10 +575,10 @@ func TestScannerNextCharacter(t *testing.T) {
 		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		end:    4,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 1},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 1},
 		},
 	}
 	copy(s.buf[0:], []byte{'t', 'e', 's', 't', utf8.RuneSelf})
@@ -588,19 +589,19 @@ func TestScannerNextCharacter(t *testing.T) {
 	a.Equal(common.AugChar{
 		C:     't',
 		Class: common.CharIDStart | common.CharIDCont,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte("est"), s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "filename",
-		B:    common.FilePos{L: 1, C: 1},
-		E:    common.FilePos{L: 1, C: 2},
+		B:    utils.FilePos{L: 1, C: 1},
+		E:    utils.FilePos{L: 1, C: 2},
 	}, s.loc)
 }
 
@@ -610,10 +611,10 @@ func TestScannerNextNewline(t *testing.T) {
 		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		end:    4,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 3},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 3},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
 	}
 	copy(s.buf[0:], []byte{'\n', 'e', 's', 't', utf8.RuneSelf})
@@ -624,19 +625,19 @@ func TestScannerNextNewline(t *testing.T) {
 	a.Equal(common.AugChar{
 		C:     '\n',
 		Class: common.CharWS | common.CharNL,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 4},
-			E:    common.FilePos{L: 2, C: 1},
+			B:    utils.FilePos{L: 1, C: 4},
+			E:    utils.FilePos{L: 2, C: 1},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte("est"), s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "filename",
-		B:    common.FilePos{L: 1, C: 4},
-		E:    common.FilePos{L: 2, C: 1},
+		B:    utils.FilePos{L: 1, C: 4},
+		E:    utils.FilePos{L: 2, C: 1},
 	}, s.loc)
 }
 
@@ -653,10 +654,10 @@ func TestScannerNextCarriageSwapped(t *testing.T) {
 		opts:   makeOptions(bytes.NewReader([]byte{})),
 		pushed: common.Err,
 		end:    4,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 3},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 3},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
 	}
 	copy(s.buf[0:], []byte{'\r', 'e', 's', 't', utf8.RuneSelf})
@@ -667,18 +668,18 @@ func TestScannerNextCarriageSwapped(t *testing.T) {
 	a.Equal(common.AugChar{
 		C:     '\n',
 		Class: common.CharWS | common.CharNL,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "filename",
-			B:    common.FilePos{L: 1, C: 4},
-			E:    common.FilePos{L: 2, C: 1},
+			B:    utils.FilePos{L: 1, C: 4},
+			E:    utils.FilePos{L: 2, C: 1},
 		},
 		Val: nil,
 	}, ch)
 	a.Equal([]byte("est"), s.buf[s.pos:s.end])
 	a.Nil(s.err)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "filename",
-		B:    common.FilePos{L: 1, C: 4},
-		E:    common.FilePos{L: 2, C: 1},
+		B:    utils.FilePos{L: 1, C: 4},
+		E:    utils.FilePos{L: 2, C: 1},
 	}, s.loc)
 }

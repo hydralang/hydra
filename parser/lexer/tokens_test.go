@@ -21,6 +21,7 @@ import (
 
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/scanner"
+	"github.com/hydralang/hydra/utils"
 )
 
 func TestLexerLastTokNil(t *testing.T) {
@@ -36,10 +37,10 @@ func TestLexerLastTokReturned(t *testing.T) {
 	a := assert.New(t)
 	tok := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: "tok",
 	}
@@ -56,28 +57,28 @@ func TestLexerLastTokQueued(t *testing.T) {
 	a := assert.New(t)
 	tok1 := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: "tok1",
 	}
 	tok2 := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: "tok2",
 	}
 	tok3 := &common.Token{
 		Sym: common.TokIdent,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: "tok3",
 	}
@@ -94,10 +95,10 @@ func TestLexerLastTokQueued(t *testing.T) {
 
 func TestLexerPushTokBase(t *testing.T) {
 	a := assert.New(t)
-	loc := common.Location{
+	loc := utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 	l := &lexer{
 		prevTok: &common.Token{Sym: common.TokEOF},
@@ -122,10 +123,10 @@ func TestLexerPushTokBase(t *testing.T) {
 
 func TestLexerPushTokDuplicateNewline(t *testing.T) {
 	a := assert.New(t)
-	loc := common.Location{
+	loc := utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 	l := &lexer{
 		prevTok: &common.Token{Sym: common.TokNewline},
@@ -141,10 +142,10 @@ func TestLexerPushTokDuplicateNewline(t *testing.T) {
 
 func TestLexerPushTokInitialNewline(t *testing.T) {
 	a := assert.New(t)
-	loc := common.Location{
+	loc := utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 	l := &lexer{}
 	l.indent.PushBack(1)
@@ -158,10 +159,10 @@ func TestLexerPushTokInitialNewline(t *testing.T) {
 
 func TestLexerPushTokDedentEOF(t *testing.T) {
 	a := assert.New(t)
-	loc := common.Location{
+	loc := utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 	l := &lexer{}
 	l.indent.PushBack(1)
@@ -191,10 +192,10 @@ func TestLexerPushTokDedentEOF(t *testing.T) {
 
 func TestLexerPushTokIndent(t *testing.T) {
 	a := assert.New(t)
-	loc := common.Location{
+	loc := utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 	l := &lexer{}
 	l.indent.PushBack(1)
@@ -232,10 +233,10 @@ func TestLexerPushErr(t *testing.T) {
 		Encoding: "utf-8",
 	}
 	s, _ := scanner.Scan(opts)
-	loc := common.Location{
+	loc := utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 	l := &lexer{s: s}
 

@@ -39,12 +39,12 @@ var StrFlags = utils.FlagSet8{
 // should return a rune to add to the buffer and the escape sequence
 // location.  If an error is returned, the error location should be
 // returned instead.  If no character should be written, return EOF.
-type StrEscape func(ch AugChar, s Scanner, flags uint8) (rune, Location, error)
+type StrEscape func(ch AugChar, s Scanner, flags uint8) (rune, utils.Location, error)
 
 // SimpleEscape sets up a StrEscape that returns a specified
 // character.
 func SimpleEscape(r rune) StrEscape {
-	return func(ch AugChar, s Scanner, flags uint8) (rune, Location, error) {
+	return func(ch AugChar, s Scanner, flags uint8) (rune, utils.Location, error) {
 		return r, ch.Loc, nil
 	}
 }
@@ -52,7 +52,7 @@ func SimpleEscape(r rune) StrEscape {
 // HexEscape sets up a StrEscape that consumes the specified number of
 // hexadecimal digits and returns the specified rune.
 func HexEscape(cnt int) StrEscape {
-	return func(ch AugChar, s Scanner, flags uint8) (rune, Location, error) {
+	return func(ch AugChar, s Scanner, flags uint8) (rune, utils.Location, error) {
 		var r rune
 		bLoc := ch.Loc
 
@@ -62,7 +62,7 @@ func HexEscape(cnt int) StrEscape {
 			if ch.C == Err {
 				return 0, ch.Loc, ch.Val.(error)
 			} else if ch.Class&CharHexDigit == 0 {
-				return 0, ch.Loc, ErrBadEscape
+				return 0, ch.Loc, utils.ErrBadEscape
 			}
 
 			// Accumulate the digit
@@ -76,7 +76,7 @@ func HexEscape(cnt int) StrEscape {
 
 // OctEscape is a StrEscape that consumes octal digits and returns the
 // specified rune.
-func OctEscape(ch AugChar, s Scanner, flags uint8) (rune, Location, error) {
+func OctEscape(ch AugChar, s Scanner, flags uint8) (rune, utils.Location, error) {
 	r := rune(ch.Val.(int))
 	loc := ch.Loc
 	el := 1

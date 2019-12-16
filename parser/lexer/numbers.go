@@ -71,7 +71,7 @@ var baseFlagMap = map[rune]int{
 type recognizeNumber struct {
 	l     *lexer           // The lexer
 	buf   *strings.Builder // Buffer for numeric characters
-	loc   common.Location  // Location of 1st char
+	loc   utils.Location   // Location of 1st char
 	flags uint8            // State tracking flags
 	base  int              // Base to use interpreting number
 }
@@ -158,7 +158,7 @@ func (r *recognizeNumber) Recognize(ch common.AugChar) {
 
 	// Only terminated by operators and whitespace
 	if ch.Class != 0 && ch.Class&common.CharWS == 0 {
-		r.l.pushErr(ch.Loc, common.ErrBadNumber)
+		r.l.pushErr(ch.Loc, utils.ErrBadNumber)
 		return
 	}
 

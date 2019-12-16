@@ -22,6 +22,7 @@ import (
 
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/scanner"
+	"github.com/hydralang/hydra/utils"
 )
 
 func TestRecognizeOperatorImplementsRecognizer(t *testing.T) {
@@ -49,10 +50,10 @@ func TestRecognizeOperatorPushFrameBase(t *testing.T) {
 	r := &recognizeOperator{}
 	ch := common.AugChar{
 		C: '!',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 
@@ -74,18 +75,18 @@ func TestRecognizeOperatorPushFramePushes(t *testing.T) {
 	r := &recognizeOperator{}
 	ch1 := common.AugChar{
 		C: '$',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 	ch2 := common.AugChar{
 		C: '$',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 3},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 3},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 	}
 	node1 := opts.Prof.Operators.Next('$')
@@ -122,26 +123,26 @@ func TestRecognizeOperatorPushFrameReplaces(t *testing.T) {
 	r := &recognizeOperator{}
 	ch1 := common.AugChar{
 		C: '$',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 	ch2 := common.AugChar{
 		C: '$',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 3},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 3},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 	}
 	ch3 := common.AugChar{
 		C: '$',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 4},
-			E:    common.FilePos{L: 3, C: 5},
+			B:    utils.FilePos{L: 3, C: 4},
+			E:    utils.FilePos{L: 3, C: 5},
 		},
 	}
 	node1 := opts.Prof.Operators.Next('$')
@@ -165,10 +166,10 @@ func TestRecognizeOperatorPushFrameReplaces(t *testing.T) {
 	frame := elem.Value.(*opFrame)
 	a.Equal(&opFrame{
 		ch: ch3,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 5},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 5},
 		},
 		node: node3,
 	}, frame)
@@ -188,16 +189,16 @@ func TestRecognizeOperatorEmitBase(t *testing.T) {
 	r.st.PushBack(&opFrame{
 		ch: common.AugChar{
 			C: '$',
-			Loc: common.Location{
+			Loc: utils.Location{
 				File: "file",
-				B:    common.FilePos{L: 3, C: 3},
-				E:    common.FilePos{L: 3, C: 4},
+				B:    utils.FilePos{L: 3, C: 3},
+				E:    utils.FilePos{L: 3, C: 4},
 			},
 		},
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 		node: opts.Prof.Operators.Next('$').Next('$').Next('$'),
 	})
@@ -209,10 +210,10 @@ func TestRecognizeOperatorEmitBase(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: &common.Symbol{Name: "$$$"},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 		Val: "$$$",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -233,32 +234,32 @@ func TestRecognizeOperatorEmitExtraChars(t *testing.T) {
 	r.st.PushBack(&opFrame{
 		ch: common.AugChar{
 			C: '$',
-			Loc: common.Location{
+			Loc: utils.Location{
 				File: "file",
-				B:    common.FilePos{L: 3, C: 3},
-				E:    common.FilePos{L: 3, C: 4},
+				B:    utils.FilePos{L: 3, C: 3},
+				E:    utils.FilePos{L: 3, C: 4},
 			},
 		},
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 		node: opts.Prof.Operators.Next('$').Next('$').Next('$'),
 	})
 	r.st.PushBack(&opFrame{
 		ch: common.AugChar{
 			C: '!',
-			Loc: common.Location{
+			Loc: utils.Location{
 				File: "file",
-				B:    common.FilePos{L: 3, C: 4},
-				E:    common.FilePos{L: 3, C: 5},
+				B:    utils.FilePos{L: 3, C: 4},
+				E:    utils.FilePos{L: 3, C: 5},
 			},
 		},
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 4},
-			E:    common.FilePos{L: 3, C: 5},
+			B:    utils.FilePos{L: 3, C: 4},
+			E:    utils.FilePos{L: 3, C: 5},
 		},
 		node: opts.Prof.Operators,
 	})
@@ -270,20 +271,20 @@ func TestRecognizeOperatorEmitExtraChars(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: &common.Symbol{Name: "$$$"},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 		Val: "$$$",
 	}, l.tokens.Front().Value.(*common.Token))
 	ch := s.Next()
 	a.Equal(common.AugChar{
 		C: '!',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 4},
-			E:    common.FilePos{L: 3, C: 5},
+			B:    utils.FilePos{L: 3, C: 4},
+			E:    utils.FilePos{L: 3, C: 5},
 		},
 	}, ch)
 }
@@ -301,16 +302,16 @@ func TestRecognizeOperatorEmitNoSym(t *testing.T) {
 	r.st.PushBack(&opFrame{
 		ch: common.AugChar{
 			C: '$',
-			Loc: common.Location{
+			Loc: utils.Location{
 				File: "file",
-				B:    common.FilePos{L: 3, C: 3},
-				E:    common.FilePos{L: 3, C: 4},
+				B:    utils.FilePos{L: 3, C: 3},
+				E:    utils.FilePos{L: 3, C: 4},
 			},
 		},
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
 		node: opts.Prof.Operators.Next('$').Next('$'),
 	})
@@ -322,12 +323,12 @@ func TestRecognizeOperatorEmitNoSym(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 3},
-			E:    common.FilePos{L: 3, C: 4},
+			B:    utils.FilePos{L: 3, C: 3},
+			E:    utils.FilePos{L: 3, C: 4},
 		},
-		Val: common.ErrBadOp,
+		Val: utils.ErrBadOp,
 	}, l.tokens.Front().Value.(*common.Token))
 }
 
@@ -344,16 +345,16 @@ func TestRecognizeOperatorEmitOpen(t *testing.T) {
 	r.st.PushBack(&opFrame{
 		ch: common.AugChar{
 			C: '(',
-			Loc: common.Location{
+			Loc: utils.Location{
 				File: "file",
-				B:    common.FilePos{L: 3, C: 1},
-				E:    common.FilePos{L: 3, C: 2},
+				B:    utils.FilePos{L: 3, C: 1},
+				E:    utils.FilePos{L: 3, C: 2},
 			},
 		},
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		node: opts.Prof.Operators.Next('('),
 	})
@@ -364,20 +365,20 @@ func TestRecognizeOperatorEmitOpen(t *testing.T) {
 	a.Equal(1, l.pair.Len())
 	a.Equal(&common.Token{
 		Sym: &common.Symbol{Name: "(", Close: ")"},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: "(",
 	}, l.pair.Back().Value.(*common.Token))
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: &common.Symbol{Name: "(", Close: ")"},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: "(",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -396,10 +397,10 @@ func TestRecognizeOperatorEmitClose(t *testing.T) {
 	l.indent.PushBack(1)
 	l.pair.PushBack(&common.Token{
 		Sym: &common.Symbol{Name: "(", Close: ")"},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 		Val: "(",
 	})
@@ -407,16 +408,16 @@ func TestRecognizeOperatorEmitClose(t *testing.T) {
 	r.st.PushBack(&opFrame{
 		ch: common.AugChar{
 			C: ')',
-			Loc: common.Location{
+			Loc: utils.Location{
 				File: "file",
-				B:    common.FilePos{L: 3, C: 1},
-				E:    common.FilePos{L: 3, C: 2},
+				B:    utils.FilePos{L: 3, C: 1},
+				E:    utils.FilePos{L: 3, C: 2},
 			},
 		},
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		node: opts.Prof.Operators.Next(')'),
 	})
@@ -428,10 +429,10 @@ func TestRecognizeOperatorEmitClose(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: &common.Symbol{Name: ")", Open: "("},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		Val: ")",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -450,10 +451,10 @@ func TestRecognizeOperatorEmitCloseMismatch(t *testing.T) {
 	l.indent.PushBack(1)
 	l.pair.PushBack(&common.Token{
 		Sym: &common.Symbol{Name: "[", Close: "]"},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 		Val: "(",
 	})
@@ -461,16 +462,16 @@ func TestRecognizeOperatorEmitCloseMismatch(t *testing.T) {
 	r.st.PushBack(&opFrame{
 		ch: common.AugChar{
 			C: ')',
-			Loc: common.Location{
+			Loc: utils.Location{
 				File: "file",
-				B:    common.FilePos{L: 3, C: 1},
-				E:    common.FilePos{L: 3, C: 2},
+				B:    utils.FilePos{L: 3, C: 1},
+				E:    utils.FilePos{L: 3, C: 2},
 			},
 		},
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		node: opts.Prof.Operators.Next(')'),
 	})
@@ -482,12 +483,12 @@ func TestRecognizeOperatorEmitCloseMismatch(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	tok := l.tokens.Front().Value.(*common.Token)
 	a.Equal(common.TokError, tok.Sym)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 1},
-		E:    common.FilePos{L: 3, C: 2},
+		B:    utils.FilePos{L: 3, C: 1},
+		E:    utils.FilePos{L: 3, C: 2},
 	}, tok.Loc)
-	a.EqualError(tok.Val.(error), "close operator \")\" does not match open operator \"[\" at file:1:1")
+	a.EqualError(tok.Val.(error), "close operator does not match open operator: operator \")\" does not match operator \"[\" at file:1:1")
 }
 
 func TestRecognizeOperatorEmitCloseNoOpen(t *testing.T) {
@@ -503,16 +504,16 @@ func TestRecognizeOperatorEmitCloseNoOpen(t *testing.T) {
 	r.st.PushBack(&opFrame{
 		ch: common.AugChar{
 			C: ')',
-			Loc: common.Location{
+			Loc: utils.Location{
 				File: "file",
-				B:    common.FilePos{L: 3, C: 1},
-				E:    common.FilePos{L: 3, C: 2},
+				B:    utils.FilePos{L: 3, C: 1},
+				E:    utils.FilePos{L: 3, C: 2},
 			},
 		},
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 		node: opts.Prof.Operators.Next(')'),
 	})
@@ -524,10 +525,10 @@ func TestRecognizeOperatorEmitCloseNoOpen(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	tok := l.tokens.Front().Value.(*common.Token)
 	a.Equal(common.TokError, tok.Sym)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 1},
-		E:    common.FilePos{L: 3, C: 2},
+		B:    utils.FilePos{L: 3, C: 1},
+		E:    utils.FilePos{L: 3, C: 2},
 	}, tok.Loc)
 	a.EqualError(tok.Val.(error), "unexpected close operator \")\"")
 }
@@ -553,10 +554,10 @@ func TestRecognizeOperatorRecognizeBase(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: &common.Symbol{Name: "$$$"},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
 		Val: "$$$",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -585,10 +586,10 @@ func TestRecognizeOperatorRecognizeNonop(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: &common.Symbol{Name: "$$$"},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
 		Val: "$$$",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -617,10 +618,10 @@ func TestRecognizeOperatorRecognizeOpLookalike(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: &common.Symbol{Name: "$$$"},
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
 		Val: "$$$",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -649,12 +650,12 @@ func TestRecognizeOperatorRecognizeNotOp(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
-		Val: common.ErrBadOp,
+		Val: utils.ErrBadOp,
 	}, l.tokens.Front().Value.(*common.Token))
 }
 
@@ -673,19 +674,19 @@ func TestRecognizeOperatorRecognizeErr(t *testing.T) {
 	}
 	s.Push(common.AugChar{
 		C: common.Err,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: assert.AnError,
 	})
 	ch := common.AugChar{
 		C: '$',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 
@@ -695,10 +696,10 @@ func TestRecognizeOperatorRecognizeErr(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: assert.AnError,
 	}, l.tokens.Front().Value.(*common.Token))

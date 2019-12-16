@@ -15,40 +15,25 @@
 package common
 
 import (
-	"errors"
 	"fmt"
-)
 
-// Various errors that may occur during parsing.
-var (
-	ErrSplitEntity       = errors.New("entity split across files")
-	ErrBadRune           = errors.New("illegal UTF-8 encoding")
-	ErrBadIndent         = errors.New("inconsistent indentation")
-	ErrBadOp             = errors.New("bad operator character")
-	ErrMixedIndent       = errors.New("mixed whitespace types in indent")
-	ErrDanglingBackslash = errors.New("dangling backslash")
-	ErrBadNumber         = errors.New("bad character for number literal")
-	ErrBadEscape         = errors.New("bad escape sequence")
-	ErrBadStrChar        = errors.New("invalid character for string")
-	ErrUnclosedStr       = errors.New("unclosed string literal")
-	ErrBadIdent          = errors.New("bad identifier character")
-	ErrUnexpected        = errors.New("unexpected symbol")
+	"github.com/hydralang/hydra/utils"
 )
 
 // ErrDanglingOpen generates an error for a dangling open operator
 // with no corresponding close operator.
 func ErrDanglingOpen(tok *Token) error {
-	return fmt.Errorf("unexpected EOF; expected \"%s\"", tok.Sym.Close)
+	return fmt.Errorf("%w; expected \"%s\"", utils.ErrDanglingOpen, tok.Sym.Close)
 }
 
 // ErrNoOpen generates an error for a close operator with no
 // corresponding open operator.
 func ErrNoOpen(sym *Symbol) error {
-	return fmt.Errorf("unexpected close operator \"%s\"", sym.Name)
+	return fmt.Errorf("%w \"%s\"", utils.ErrNoOpen, sym.Name)
 }
 
 // ErrOpMismatch generates an error for a close operator that doesn't
 // match the open operator.
 func ErrOpMismatch(openTok *Token, close *Symbol) error {
-	return fmt.Errorf("close operator \"%s\" does not match open operator \"%s\" at %s", close.Name, openTok.Sym.Name, openTok.Loc)
+	return fmt.Errorf("%w: operator \"%s\" does not match operator \"%s\" at %s", utils.ErrOpMismatch, close.Name, openTok.Sym.Name, openTok.Loc)
 }

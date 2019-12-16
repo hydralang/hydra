@@ -23,6 +23,7 @@ import (
 
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/scanner"
+	"github.com/hydralang/hydra/utils"
 )
 
 func TestBufStringImplementsBuffer(t *testing.T) {
@@ -45,7 +46,7 @@ func TestBufStringPutCFails(t *testing.T) {
 
 	err := obj.putC(unicode.MaxRune + 1)
 
-	a.Equal(common.ErrBadStrChar, err)
+	a.Equal(utils.ErrBadStrChar, err)
 	a.Equal("", obj.String())
 }
 
@@ -88,7 +89,7 @@ func TestBufBytesPutCFails(t *testing.T) {
 
 	err := obj.putC(0x100)
 
-	a.Equal(common.ErrBadStrChar, err)
+	a.Equal(utils.ErrBadStrChar, err)
 	a.Equal("", obj.String())
 }
 
@@ -125,10 +126,10 @@ func TestRecogString(t *testing.T) {
 	a.True(ok)
 	a.Equal(l, r.l)
 	a.Equal(uint8(0), r.flags)
-	a.Equal(common.Location{}, r.loc)
+	a.Equal(utils.Location{}, r.loc)
 	a.Equal(rune(0), r.q)
 	a.Equal(0, r.qcnt)
-	a.Equal(common.Location{}, r.runLoc)
+	a.Equal(utils.Location{}, r.runLoc)
 }
 
 func TestRecognizeStringSetFlagStrFlag(t *testing.T) {
@@ -141,10 +142,10 @@ func TestRecognizeStringSetFlagStrFlag(t *testing.T) {
 	ch := common.AugChar{
 		C:     'b',
 		Class: common.CharStrFlag,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 
@@ -152,10 +153,10 @@ func TestRecognizeStringSetFlagStrFlag(t *testing.T) {
 
 	a.Equal(r, result)
 	a.Equal(common.StrBytes, r.flags)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}, r.loc)
 }
 
@@ -168,19 +169,19 @@ func TestRecognizeStringSetFlagQuote(t *testing.T) {
 	r := &recognizeString{
 		l:     l,
 		flags: common.StrBytes,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	ch := common.AugChar{
 		C:     '"',
 		Class: common.CharQuote,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 
@@ -188,10 +189,10 @@ func TestRecognizeStringSetFlagQuote(t *testing.T) {
 
 	a.Equal(r, result)
 	a.Equal(common.StrBytes|common.StrTriple, r.flags)
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 1},
-		E:    common.FilePos{L: 3, C: 2},
+		B:    utils.FilePos{L: 3, C: 1},
+		E:    utils.FilePos{L: 3, C: 2},
 	}, r.loc)
 }
 
@@ -205,10 +206,10 @@ func TestRecognizeStringSetFlagOther(t *testing.T) {
 	ch := common.AugChar{
 		C:     '!',
 		Class: 0,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 
@@ -236,7 +237,7 @@ func TestRecognizeStringEscapeRaw(t *testing.T) {
 
 	a.NoError(err)
 	a.Equal("\\a", r.buf.get())
-	a.Equal(common.Location{}, loc)
+	a.Equal(utils.Location{}, loc)
 }
 
 func TestRecognizeStringEscapeRawBadEscape(t *testing.T) {
@@ -254,29 +255,29 @@ func TestRecognizeStringEscapeRawBadEscape(t *testing.T) {
 	}
 	ch := common.AugChar{
 		C: unicode.MaxRune + 1,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	s.Push(common.AugChar{
 		C: 'a',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	})
 
 	loc, err := r.escape(ch)
 
-	a.Equal(common.ErrBadStrChar, err)
+	a.Equal(utils.ErrBadStrChar, err)
 	a.Equal("", r.buf.get())
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 1},
-		E:    common.FilePos{L: 3, C: 2},
+		B:    utils.FilePos{L: 3, C: 1},
+		E:    utils.FilePos{L: 3, C: 2},
 	}, loc)
 }
 
@@ -295,18 +296,18 @@ func TestRecognizeStringEscapeRawErr(t *testing.T) {
 	}
 	ch := common.AugChar{
 		C: '\\',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	s.Push(common.AugChar{
 		C: common.Err,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 		Val: assert.AnError,
 	})
@@ -315,10 +316,10 @@ func TestRecognizeStringEscapeRawErr(t *testing.T) {
 
 	a.Equal(assert.AnError, err)
 	a.Equal("\\", r.buf.get())
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}, loc)
 }
 
@@ -337,29 +338,29 @@ func TestRecognizeStringEscapeRawEOF(t *testing.T) {
 	}
 	ch := common.AugChar{
 		C: '\\',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	s.Push(common.AugChar{
 		C: common.EOF,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	})
 
 	loc, err := r.escape(ch)
 
-	a.Equal(common.ErrUnclosedStr, err)
+	a.Equal(utils.ErrUnclosedStr, err)
 	a.Equal("\\", r.buf.get())
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 1},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 1},
+		E:    utils.FilePos{L: 3, C: 3},
 	}, loc)
 }
 
@@ -378,29 +379,29 @@ func TestRecognizeStringEscapeRawBadRune(t *testing.T) {
 	}
 	ch := common.AugChar{
 		C: '\\',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	s.Push(common.AugChar{
 		C: unicode.MaxRune + 1,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	})
 
 	loc, err := r.escape(ch)
 
-	a.Equal(common.ErrBadStrChar, err)
+	a.Equal(utils.ErrBadStrChar, err)
 	a.Equal("\\", r.buf.get())
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 1},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 1},
+		E:    utils.FilePos{L: 3, C: 3},
 	}, loc)
 }
 
@@ -422,7 +423,7 @@ func TestRecognizeStringEscape(t *testing.T) {
 
 	a.NoError(err)
 	a.Equal("\a", r.buf.get())
-	a.Equal(common.Location{}, loc)
+	a.Equal(utils.Location{}, loc)
 }
 
 func TestRecognizeStringEscapeQuote(t *testing.T) {
@@ -443,7 +444,7 @@ func TestRecognizeStringEscapeQuote(t *testing.T) {
 
 	a.NoError(err)
 	a.Equal("\"", r.buf.get())
-	a.Equal(common.Location{}, loc)
+	a.Equal(utils.Location{}, loc)
 }
 
 func TestRecognizeStringEscapeNewline(t *testing.T) {
@@ -464,7 +465,7 @@ func TestRecognizeStringEscapeNewline(t *testing.T) {
 
 	a.NoError(err)
 	a.Equal("", r.buf.get())
-	a.Equal(common.Location{}, loc)
+	a.Equal(utils.Location{}, loc)
 }
 
 func TestRecognizeStringEscapeQuoteBadQuote(t *testing.T) {
@@ -485,30 +486,30 @@ func TestRecognizeStringEscapeQuoteBadQuote(t *testing.T) {
 	}
 	ch := common.AugChar{
 		C: '\\',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 1},
-			E:    common.FilePos{L: 3, C: 2},
+			B:    utils.FilePos{L: 3, C: 1},
+			E:    utils.FilePos{L: 3, C: 2},
 		},
 	}
 	s.Push(common.AugChar{
 		C:     unicode.MaxRune + 1,
 		Class: common.CharQuote,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 3, C: 2},
-			E:    common.FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	})
 
 	loc, err := r.escape(ch)
 
-	a.Equal(common.ErrBadStrChar, err)
+	a.Equal(utils.ErrBadStrChar, err)
 	a.Equal("", r.buf.get())
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 1},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 1},
+		E:    utils.FilePos{L: 3, C: 3},
 	}, loc)
 }
 
@@ -528,12 +529,12 @@ func TestRecognizeStringEscapeEarlyEOF(t *testing.T) {
 
 	loc, err := r.escape(ch)
 
-	a.Equal(common.ErrBadEscape, err)
+	a.Equal(utils.ErrBadEscape, err)
 	a.Equal("", r.buf.get())
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 1, C: 1},
-		E:    common.FilePos{L: 1, C: 3},
+		B:    utils.FilePos{L: 1, C: 1},
+		E:    utils.FilePos{L: 1, C: 3},
 	}, loc)
 }
 
@@ -553,12 +554,12 @@ func TestRecognizeStringEscapeBadChar(t *testing.T) {
 
 	loc, err := r.escape(ch)
 
-	a.Equal(common.ErrBadStrChar, err)
+	a.Equal(utils.ErrBadStrChar, err)
 	a.Nil(r.buf.get())
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 1, C: 1},
-		E:    common.FilePos{L: 1, C: 7},
+		B:    utils.FilePos{L: 1, C: 1},
+		E:    utils.FilePos{L: 1, C: 7},
 	}, loc)
 }
 
@@ -578,12 +579,12 @@ func TestRecognizeStringEscapeUnknown(t *testing.T) {
 
 	loc, err := r.escape(ch)
 
-	a.Equal(common.ErrBadEscape, err)
+	a.Equal(utils.ErrBadEscape, err)
 	a.Equal("", r.buf.get())
-	a.Equal(common.Location{
+	a.Equal(utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 1, C: 1},
-		E:    common.FilePos{L: 1, C: 3},
+		B:    utils.FilePos{L: 1, C: 1},
+		E:    utils.FilePos{L: 1, C: 3},
 	}, loc)
 }
 
@@ -607,10 +608,10 @@ func TestRecognizeStringRecognizeEmpty(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokString,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 3},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 3},
 		},
 		Val: "",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -636,10 +637,10 @@ func TestRecognizeStringRecognizeEmptyTriple(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokString,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 7},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 7},
 		},
 		Val: "",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -665,10 +666,10 @@ func TestRecognizeStringRecognizeBasic(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokString,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 7},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 7},
 		},
 		Val: "spam",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -694,10 +695,10 @@ func TestRecognizeStringRecognizeBasicTriple(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokString,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 11},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 11},
 		},
 		Val: "spam",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -724,10 +725,10 @@ func TestRecognizeStringRecognizeBytes(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokBytes,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 8},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 8},
 		},
 		Val: []byte("spam"),
 	}, l.tokens.Front().Value.(*common.Token))
@@ -753,10 +754,10 @@ func TestRecognizeStringRecognizeTripleInclusions(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokString,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 14},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 14},
 		},
 		Val: "s\"p\"\"am",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -774,58 +775,58 @@ func TestRecognizeStringRecognizeTripleInclusionsBadQuote(t *testing.T) {
 	r := &recognizeString{
 		l:     l,
 		flags: common.StrTriple,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 	s.Push(common.AugChar{
 		C: 'p',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 6},
-			E:    common.FilePos{L: 1, C: 7},
+			B:    utils.FilePos{L: 1, C: 6},
+			E:    utils.FilePos{L: 1, C: 7},
 		},
 	})
 	s.Push(common.AugChar{
 		C: unicode.MaxRune + 1,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 5},
-			E:    common.FilePos{L: 1, C: 6},
+			B:    utils.FilePos{L: 1, C: 5},
+			E:    utils.FilePos{L: 1, C: 6},
 		},
 	})
 	s.Push(common.AugChar{
 		C: 's',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 4},
-			E:    common.FilePos{L: 1, C: 5},
+			B:    utils.FilePos{L: 1, C: 4},
+			E:    utils.FilePos{L: 1, C: 5},
 		},
 	})
 	s.Push(common.AugChar{
 		C: unicode.MaxRune + 1,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 3},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 3},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
 	})
 	s.Push(common.AugChar{
 		C: unicode.MaxRune + 1,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 2},
-			E:    common.FilePos{L: 1, C: 3},
+			B:    utils.FilePos{L: 1, C: 2},
+			E:    utils.FilePos{L: 1, C: 3},
 		},
 	})
 	ch := common.AugChar{
 		C: unicode.MaxRune + 1,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 
@@ -835,12 +836,12 @@ func TestRecognizeStringRecognizeTripleInclusionsBadQuote(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 5},
-			E:    common.FilePos{L: 1, C: 6},
+			B:    utils.FilePos{L: 1, C: 5},
+			E:    utils.FilePos{L: 1, C: 6},
 		},
-		Val: common.ErrBadStrChar,
+		Val: utils.ErrBadStrChar,
 	}, l.tokens.Front().Value.(*common.Token))
 }
 
@@ -856,43 +857,43 @@ func TestRecognizeStringRecognizeReadError(t *testing.T) {
 	r := &recognizeString{
 		l:     l,
 		flags: common.StrTriple,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 	s.Push(common.AugChar{
 		C: common.Err,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 4},
-			E:    common.FilePos{L: 1, C: 5},
+			B:    utils.FilePos{L: 1, C: 4},
+			E:    utils.FilePos{L: 1, C: 5},
 		},
 		Val: assert.AnError,
 	})
 	s.Push(common.AugChar{
 		C: 'p',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 3},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 3},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
 	})
 	s.Push(common.AugChar{
 		C: 's',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 2},
-			E:    common.FilePos{L: 1, C: 3},
+			B:    utils.FilePos{L: 1, C: 2},
+			E:    utils.FilePos{L: 1, C: 3},
 		},
 	})
 	ch := common.AugChar{
 		C: '"',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 
@@ -902,10 +903,10 @@ func TestRecognizeStringRecognizeReadError(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 4},
-			E:    common.FilePos{L: 1, C: 5},
+			B:    utils.FilePos{L: 1, C: 4},
+			E:    utils.FilePos{L: 1, C: 5},
 		},
 		Val: assert.AnError,
 	}, l.tokens.Front().Value.(*common.Token))
@@ -923,42 +924,42 @@ func TestRecognizeStringRecognizeEOF(t *testing.T) {
 	r := &recognizeString{
 		l:     l,
 		flags: common.StrTriple,
-		loc: common.Location{
+		loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 	s.Push(common.AugChar{
 		C: common.EOF,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 4},
-			E:    common.FilePos{L: 1, C: 5},
+			B:    utils.FilePos{L: 1, C: 4},
+			E:    utils.FilePos{L: 1, C: 5},
 		},
 	})
 	s.Push(common.AugChar{
 		C: 'p',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 3},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 3},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
 	})
 	s.Push(common.AugChar{
 		C: 's',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 2},
-			E:    common.FilePos{L: 1, C: 3},
+			B:    utils.FilePos{L: 1, C: 2},
+			E:    utils.FilePos{L: 1, C: 3},
 		},
 	})
 	ch := common.AugChar{
 		C: '"',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 
@@ -968,12 +969,12 @@ func TestRecognizeStringRecognizeEOF(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 4},
-			E:    common.FilePos{L: 1, C: 5},
+			B:    utils.FilePos{L: 1, C: 4},
+			E:    utils.FilePos{L: 1, C: 5},
 		},
-		Val: common.ErrUnclosedStr,
+		Val: utils.ErrUnclosedStr,
 	}, l.tokens.Front().Value.(*common.Token))
 }
 
@@ -997,10 +998,10 @@ func TestRecognizeStringRecognizeEscape(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokString,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 8},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 8},
 		},
 		Val: "sp\am",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -1026,12 +1027,12 @@ func TestRecognizeStringRecognizeEscapeBadEscape(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 4},
-			E:    common.FilePos{L: 1, C: 6},
+			B:    utils.FilePos{L: 1, C: 4},
+			E:    utils.FilePos{L: 1, C: 6},
 		},
-		Val: common.ErrBadEscape,
+		Val: utils.ErrBadEscape,
 	}, l.tokens.Front().Value.(*common.Token))
 }
 
@@ -1055,12 +1056,12 @@ func TestRecognizeStringRecognizeNewline(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 4},
-			E:    common.FilePos{L: 2, C: 1},
+			B:    utils.FilePos{L: 1, C: 4},
+			E:    utils.FilePos{L: 2, C: 1},
 		},
-		Val: common.ErrUnclosedStr,
+		Val: utils.ErrUnclosedStr,
 	}, l.tokens.Front().Value.(*common.Token))
 }
 
@@ -1084,10 +1085,10 @@ func TestRecognizeStringRecognizeNewlineTripleQuote(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokString,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 2, C: 6},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 2, C: 6},
 		},
 		Val: "sp\nam",
 	}, l.tokens.Front().Value.(*common.Token))
@@ -1107,26 +1108,26 @@ func TestRecognizeStringRecognizeBadRune(t *testing.T) {
 	}
 	s.Push(common.AugChar{
 		C: unicode.MaxRune + 1,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 3},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 3},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
 	})
 	s.Push(common.AugChar{
 		C: 's',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 2},
-			E:    common.FilePos{L: 1, C: 3},
+			B:    utils.FilePos{L: 1, C: 2},
+			E:    utils.FilePos{L: 1, C: 3},
 		},
 	})
 	ch := common.AugChar{
 		C: '"',
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 2},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 2},
 		},
 	}
 
@@ -1136,11 +1137,11 @@ func TestRecognizeStringRecognizeBadRune(t *testing.T) {
 	a.Equal(1, l.tokens.Len())
 	a.Equal(&common.Token{
 		Sym: common.TokError,
-		Loc: common.Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    common.FilePos{L: 1, C: 3},
-			E:    common.FilePos{L: 1, C: 4},
+			B:    utils.FilePos{L: 1, C: 3},
+			E:    utils.FilePos{L: 1, C: 4},
 		},
-		Val: common.ErrBadStrChar,
+		Val: utils.ErrBadStrChar,
 	}, l.tokens.Front().Value.(*common.Token))
 }

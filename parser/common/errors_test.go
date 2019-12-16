@@ -18,6 +18,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/hydralang/hydra/utils"
 )
 
 func TestErrDanglingOpen(t *testing.T) {
@@ -42,15 +44,15 @@ func TestErrOpMismatch(t *testing.T) {
 	a := assert.New(t)
 	tok := &Token{
 		Sym: &Symbol{Name: "["},
-		Loc: Location{
+		Loc: utils.Location{
 			File: "file",
-			B:    FilePos{L: 3, C: 2},
-			E:    FilePos{L: 3, C: 3},
+			B:    utils.FilePos{L: 3, C: 2},
+			E:    utils.FilePos{L: 3, C: 3},
 		},
 	}
 	sym := &Symbol{Name: ")"}
 
 	result := ErrOpMismatch(tok, sym)
 
-	a.EqualError(result, "close operator \")\" does not match open operator \"[\" at file:3:2")
+	a.EqualError(result, "close operator does not match open operator: operator \")\" does not match operator \"[\" at file:3:2")
 }

@@ -18,13 +18,14 @@ import (
 	"strings"
 
 	"github.com/hydralang/hydra/parser/common"
+	"github.com/hydralang/hydra/utils"
 )
 
 // recognizeComment is a recognizer for comments.  It should be called
 // when the character is the comment character, '#'.
 type recognizeComment struct {
 	l   *lexer           // The lexer
-	loc common.Location  // Location of first char
+	loc utils.Location   // Location of first char
 	buf *strings.Builder // Buffer to accumulate doc comment
 }
 

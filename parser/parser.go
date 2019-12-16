@@ -17,6 +17,7 @@ package parser
 import (
 	"errors"
 
+	"github.com/hydralang/hydra/ast"
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/lexer"
 )
@@ -54,7 +55,7 @@ func Parse(opts *common.Options, l common.Lexer) (common.Parser, error) {
 // determine operator precedence.  An initial call should set this
 // parameter to 0; calls by token parsers (see ParserTable) may pass
 // different values, typically their left binding power.
-func (p *parser) Expression(rbp int) (common.Expression, error) {
+func (p *parser) Expression(rbp int) (ast.Expression, error) {
 	// Get the parse table
 	pt := p.opts.Prof.ParseTab
 
@@ -83,12 +84,12 @@ func (p *parser) Expression(rbp int) (common.Expression, error) {
 
 // Statement parses a single statement from the output of the lexer.
 // Note that this does not necessarily consume the entire input.
-func (p *parser) Statement() (common.Statement, error) {
+func (p *parser) Statement() (ast.Statement, error) {
 	return nil, errors.New("not implemented")
 }
 
 // Module parses a module, or collection of statements, from the
 // output of the lexer.  This is intended to consume the entire input.
-func (p *parser) Module() (common.Statement, error) {
+func (p *parser) Module() (ast.Statement, error) {
 	return nil, errors.New("not implemented")
 }

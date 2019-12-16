@@ -17,18 +17,17 @@ package ast
 import (
 	"fmt"
 
-	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/utils"
 )
 
 // Constant describes a constant expression node.
 type Constant struct {
-	Loc common.Location // Location of the constant
-	Val interface{}     // Value of the constant
+	Loc utils.Location // Location of the constant
+	Val interface{}    // Value of the constant
 }
 
 // GetLoc retrieves the location of the expression.
-func (c *Constant) GetLoc() common.Location {
+func (c *Constant) GetLoc() utils.Location {
 	return c.Loc
 }
 
@@ -45,13 +44,13 @@ func (c *Constant) String() string {
 // Unary describes the action of a unary operator on another
 // expression node.
 type Unary struct {
-	Loc  common.Location   // Location of the unary operator
-	Op   string            // The operation to perform
-	Node common.Expression // The expression node acted upon
+	Loc  utils.Location // Location of the unary operator
+	Op   string         // The operation to perform
+	Node Expression     // The expression node acted upon
 }
 
 // GetLoc retrieves the location of the expression.
-func (u *Unary) GetLoc() common.Location {
+func (u *Unary) GetLoc() utils.Location {
 	return u.Loc
 }
 
@@ -73,14 +72,14 @@ func (u *Unary) String() string {
 // Binary describes the action of a binary operator on two expression
 // nodes.
 type Binary struct {
-	Loc   common.Location   // Location of the binary operator
-	Op    string            // The operation to perform
-	Left  common.Expression // The left-hand expression
-	Right common.Expression // The right-hand expression
+	Loc   utils.Location // Location of the binary operator
+	Op    string         // The operation to perform
+	Left  Expression     // The left-hand expression
+	Right Expression     // The right-hand expression
 }
 
 // GetLoc retrieves the location of the expression.
-func (b *Binary) GetLoc() common.Location {
+func (b *Binary) GetLoc() utils.Location {
 	return b.Loc
 }
 
@@ -105,14 +104,14 @@ func (b *Binary) String() string {
 
 // Call describes a call to a function.
 type Call struct {
-	Loc    common.Location              // Location of the function call
-	Func   common.Expression            // The function to be called
-	Args   []common.Expression          // The function arguments
-	KwArgs map[string]common.Expression // The function keyword args
+	Loc    utils.Location        // Location of the function call
+	Func   Expression            // The function to be called
+	Args   []Expression          // The function arguments
+	KwArgs map[string]Expression // The function keyword args
 }
 
 // GetLoc retrieves the location of the expression.
-func (c *Call) GetLoc() common.Location {
+func (c *Call) GetLoc() utils.Location {
 	return c.Loc
 }
 

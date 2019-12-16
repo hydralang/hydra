@@ -285,7 +285,7 @@ func TestOperatorsAddBadRune(t *testing.T) {
 	sym := &Symbol{Name: string([]byte{'=', '\xff'})}
 	tree := &Operators{}
 
-	a.PanicsWithValue(ErrBadRune, func() { tree.Add(sym) })
+	a.PanicsWithValue(utils.ErrBadRune, func() { tree.Add(sym) })
 
 	a.Equal("", tree.prefix)
 	a.Nil(tree.Sym)
@@ -431,7 +431,7 @@ func TestRemoveBadRune(t *testing.T) {
 	node.root = tree
 	node.parent = tree
 
-	a.PanicsWithValue(ErrBadRune, func() { tree.Remove(sym) })
+	a.PanicsWithValue(utils.ErrBadRune, func() { tree.Remove(sym) })
 
 	a.Equal("", tree.prefix)
 	a.Nil(tree.Sym)

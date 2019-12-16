@@ -20,6 +20,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hydralang/hydra/ast"
 	"github.com/hydralang/hydra/testutils"
 )
 
@@ -101,7 +102,7 @@ func TestMockParserExpressionNil(t *testing.T) {
 func TestMockParserExpressionNonNil(t *testing.T) {
 	a := assert.New(t)
 	p := &MockParser{}
-	e := &MockExpression{}
+	e := &ast.MockExpression{}
 	p.On("Expression", 5).Return(e, nil)
 
 	result, err := p.Expression(5)
@@ -138,7 +139,7 @@ func TestMockParserStatementNil(t *testing.T) {
 func TestMockParserStatementNonNil(t *testing.T) {
 	a := assert.New(t)
 	p := &MockParser{}
-	s := &MockStatement{}
+	s := &ast.MockStatement{}
 	p.On("Statement").Return(s, nil)
 
 	result, err := p.Statement()
@@ -175,7 +176,7 @@ func TestMockParserModuleNil(t *testing.T) {
 func TestMockParserModuleNonNil(t *testing.T) {
 	a := assert.New(t)
 	p := &MockParser{}
-	s := &MockStatement{}
+	s := &ast.MockStatement{}
 	p.On("Module").Return(s, nil)
 
 	result, err := p.Module()
@@ -233,7 +234,7 @@ func TestMockParserTableExprFirstNonNil(t *testing.T) {
 	p := &MockParser{}
 	tok := &Token{}
 	pt := &MockParserTable{}
-	e := &MockExpression{}
+	e := &ast.MockExpression{}
 	pt.On("ExprFirst", p, tok).Return(e, nil)
 
 	result, err := pt.ExprFirst(p, tok)
@@ -260,7 +261,7 @@ func TestMockParserTableExprFirstErr(t *testing.T) {
 func TestMockParserTableExprNextNil(t *testing.T) {
 	a := assert.New(t)
 	p := &MockParser{}
-	l := &MockExpression{}
+	l := &ast.MockExpression{}
 	tok := &Token{}
 	pt := &MockParserTable{}
 	pt.On("ExprNext", p, l, tok).Return(nil, nil)
@@ -275,10 +276,10 @@ func TestMockParserTableExprNextNil(t *testing.T) {
 func TestMockParserTableExprNextNonNil(t *testing.T) {
 	a := assert.New(t)
 	p := &MockParser{}
-	l := &MockExpression{}
+	l := &ast.MockExpression{}
 	tok := &Token{}
 	pt := &MockParserTable{}
-	e := &MockExpression{}
+	e := &ast.MockExpression{}
 	pt.On("ExprNext", p, l, tok).Return(e, nil)
 
 	result, err := pt.ExprNext(p, l, tok)
@@ -291,7 +292,7 @@ func TestMockParserTableExprNextNonNil(t *testing.T) {
 func TestMockParserTableExprNextErr(t *testing.T) {
 	a := assert.New(t)
 	p := &MockParser{}
-	l := &MockExpression{}
+	l := &ast.MockExpression{}
 	tok := &Token{}
 	pt := &MockParserTable{}
 	pt.On("ExprNext", p, l, tok).Return(nil, errors.New("an error"))
@@ -320,7 +321,7 @@ func TestMockParserTableStatementNil(t *testing.T) {
 func TestMockParserTableStatementNonNil(t *testing.T) {
 	a := assert.New(t)
 	p := &MockParser{}
-	s := &MockStatement{}
+	s := &ast.MockStatement{}
 	tok := &Token{}
 	pt := &MockParserTable{}
 	pt.On("Statement", p, tok).Return(s, nil)
@@ -344,74 +345,4 @@ func TestMockParserTableStatementErr(t *testing.T) {
 	a.Nil(result)
 	a.Error(err, "an error")
 	pt.AssertExpectations(t)
-}
-
-func TestMockExpressionImplementsExpression(t *testing.T) {
-	assert.Implements(t, (*Expression)(nil), &MockExpression{})
-}
-
-func TestMockExpressionGetLoc(t *testing.T) {
-	a := assert.New(t)
-	e := &MockExpression{}
-	e.On("GetLoc").Return(Location{
-		File: "file",
-		B: FilePos{
-			L: 3,
-			C: 2,
-		},
-		E: FilePos{
-			L: 3,
-			C: 3,
-		},
-	})
-
-	result := e.GetLoc()
-
-	a.Equal(Location{
-		File: "file",
-		B: FilePos{
-			L: 3,
-			C: 2,
-		},
-		E: FilePos{
-			L: 3,
-			C: 3,
-		},
-	}, result)
-	e.AssertExpectations(t)
-}
-
-func TestMockStatementImplementsStatement(t *testing.T) {
-	assert.Implements(t, (*Statement)(nil), &MockStatement{})
-}
-
-func TestMockStatementGetLoc(t *testing.T) {
-	a := assert.New(t)
-	s := &MockStatement{}
-	s.On("GetLoc").Return(Location{
-		File: "file",
-		B: FilePos{
-			L: 3,
-			C: 2,
-		},
-		E: FilePos{
-			L: 3,
-			C: 3,
-		},
-	})
-
-	result := s.GetLoc()
-
-	a.Equal(Location{
-		File: "file",
-		B: FilePos{
-			L: 3,
-			C: 2,
-		},
-		E: FilePos{
-			L: 3,
-			C: 3,
-		},
-	}, result)
-	s.AssertExpectations(t)
 }

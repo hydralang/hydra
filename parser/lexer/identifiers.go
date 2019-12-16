@@ -18,6 +18,7 @@ import (
 	"bytes"
 
 	"github.com/hydralang/hydra/parser/common"
+	"github.com/hydralang/hydra/utils"
 )
 
 // recognizeIdentifier is a recognizer for identifiers.  It should be
@@ -25,7 +26,7 @@ import (
 type recognizeIdentifier struct {
 	l   *lexer           // The lexer
 	s   *recognizeString // String recognizer
-	loc common.Location  // Location of first char
+	loc utils.Location   // Location of first char
 	buf *bytes.Buffer    // Buffer to accumulate identifier
 }
 
@@ -73,7 +74,7 @@ func (r *recognizeIdentifier) Recognize(ch common.AugChar) {
 			break
 		} else if ch.Class&common.CharIDCont == 0 {
 			// Bad character
-			r.l.pushErr(ch.Loc, common.ErrBadIdent)
+			r.l.pushErr(ch.Loc, utils.ErrBadIdent)
 			return
 		}
 

@@ -46,6 +46,7 @@ import (
 
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/scanner"
+	"github.com/hydralang/hydra/utils"
 )
 
 // Default recognizers.  Defining these as variables enables the
@@ -146,7 +147,7 @@ func (l *lexer) Next() *common.Token {
 
 			// Error out if it's mixed
 			if errMixed && mixed {
-				l.pushErr(ch.Loc, common.ErrMixedIndent)
+				l.pushErr(ch.Loc, utils.ErrMixedIndent)
 				break
 			}
 
@@ -164,7 +165,7 @@ func (l *lexer) Next() *common.Token {
 				l.pushErr(ch.Loc, ch.Val.(error))
 				break
 			} else if ch.C != '\n' {
-				l.pushErr(ch.Loc, common.ErrDanglingBackslash)
+				l.pushErr(ch.Loc, utils.ErrDanglingBackslash)
 				break
 			}
 
@@ -195,7 +196,7 @@ func (l *lexer) Next() *common.Token {
 		} else if ch.Class == 0 {
 			rOp(l).Recognize(ch)
 		} else {
-			l.pushErr(ch.Loc, common.ErrBadOp)
+			l.pushErr(ch.Loc, utils.ErrBadOp)
 			break
 		}
 	}

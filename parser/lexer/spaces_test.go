@@ -22,6 +22,7 @@ import (
 
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/scanner"
+	"github.com/hydralang/hydra/utils"
 )
 
 func TestLexerSkipSpacesSpaces(t *testing.T) {
@@ -117,10 +118,10 @@ func TestLexerSkipSpacesNewlineSkipped(t *testing.T) {
 
 func TestDoIndentSameColumn(t *testing.T) {
 	a := assert.New(t)
-	loc := common.Location{
+	loc := utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 	l := &lexer{}
 	l.indent.PushBack(1)
@@ -133,10 +134,10 @@ func TestDoIndentSameColumn(t *testing.T) {
 
 func TestDoIndentDeeperColumn(t *testing.T) {
 	a := assert.New(t)
-	loc := common.Location{
+	loc := utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 	l := &lexer{}
 	l.indent.PushBack(1)
@@ -157,10 +158,10 @@ func TestDoIndentDeeperColumn(t *testing.T) {
 
 func TestDoIndentShallowerColumn(t *testing.T) {
 	a := assert.New(t)
-	loc := common.Location{
+	loc := utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 	l := &lexer{}
 	l.indent.PushBack(1)
@@ -190,10 +191,10 @@ func TestDoIndentShallowerColumn(t *testing.T) {
 
 func TestDoIndentShallowerColumnBadIndent(t *testing.T) {
 	a := assert.New(t)
-	loc := common.Location{
+	loc := utils.Location{
 		File: "file",
-		B:    common.FilePos{L: 3, C: 2},
-		E:    common.FilePos{L: 3, C: 3},
+		B:    utils.FilePos{L: 3, C: 2},
+		E:    utils.FilePos{L: 3, C: 3},
 	}
 	l := &lexer{}
 	l.indent.PushBack(1)
@@ -225,6 +226,6 @@ func TestDoIndentShallowerColumnBadIndent(t *testing.T) {
 	a.Equal(&common.Token{
 		Sym: common.TokError,
 		Loc: loc,
-		Val: common.ErrBadIndent,
+		Val: utils.ErrBadIndent,
 	}, elem.Value.(*common.Token))
 }

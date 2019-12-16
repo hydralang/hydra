@@ -18,6 +18,7 @@ import (
 	"container/list"
 
 	"github.com/hydralang/hydra/parser/common"
+	"github.com/hydralang/hydra/utils"
 )
 
 // opFrame describes a single element of the operator stack.  The
@@ -25,7 +26,7 @@ import (
 // characters that may need to be pushed back to the scanner.
 type opFrame struct {
 	ch   common.AugChar    // The character
-	loc  common.Location   // The location of the whole token so far
+	loc  utils.Location    // The location of the whole token so far
 	node *common.Operators // The operator tree node
 }
 
@@ -81,7 +82,7 @@ func (r *recognizeOperator) emit() {
 
 	// Check if there's a token
 	if frame.node.Sym == nil {
-		r.l.pushErr(frame.ch.Loc, common.ErrBadOp)
+		r.l.pushErr(frame.ch.Loc, utils.ErrBadOp)
 		return
 	}
 
@@ -149,7 +150,7 @@ func (r *recognizeOperator) Recognize(ch common.AugChar) {
 
 	// If there is no stack, we couldn't match the op
 	if r.st.Len() == 0 {
-		r.l.pushErr(ch.Loc, common.ErrBadOp)
+		r.l.pushErr(ch.Loc, utils.ErrBadOp)
 		return
 	}
 

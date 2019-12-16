@@ -21,6 +21,7 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"github.com/hydralang/hydra/parser/common"
+	"github.com/hydralang/hydra/utils"
 )
 
 func TestMockRecognizerImplementsRecognizer(t *testing.T) {
@@ -45,7 +46,7 @@ func (m *mockRecognizer) Recognize(ch common.AugChar) {
 	if tmpTok != nil {
 		m.l.pushTok(
 			tmpTok.(*common.Symbol),
-			args.Get(1).(common.Location),
+			args.Get(1).(utils.Location),
 			args.Get(2),
 		)
 	}

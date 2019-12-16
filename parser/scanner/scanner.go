@@ -47,6 +47,7 @@ import (
 	"golang.org/x/text/transform"
 
 	"github.com/hydralang/hydra/parser/common"
+	"github.com/hydralang/hydra/utils"
 )
 
 // scanBuf is the size of the read buffer to utilize.
@@ -62,7 +63,7 @@ type scanner struct {
 	le     lineEnding        // The processor for line ending style
 	pushed rune              // One char pushback for line endings
 	err    error             // Deferred error
-	loc    common.Location   // Location of head of read buffer
+	loc    utils.Location    // Location of head of read buffer
 	queue  list.List         // List of pushed-back chars
 }
 
@@ -79,10 +80,10 @@ func Scan(opts *common.Options) (common.Scanner, error) {
 		source: transform.NewReader(opts.Source, enc.NewDecoder()),
 		opts:   opts,
 		pushed: common.Err, // sentinel for nothing there
-		loc: common.Location{
+		loc: utils.Location{
 			File: opts.Filename,
-			B:    common.FilePos{L: 1, C: 1},
-			E:    common.FilePos{L: 1, C: 1},
+			B:    utils.FilePos{L: 1, C: 1},
+			E:    utils.FilePos{L: 1, C: 1},
 		},
 	}
 
@@ -165,7 +166,7 @@ func (s *scanner) nextChar() (rune, error) {
 				// of input
 				s.source = nil
 
-				return common.Err, common.ErrBadRune
+				return common.Err, utils.ErrBadRune
 			}
 		}
 	}

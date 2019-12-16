@@ -15,13 +15,13 @@
 package parser
 
 import (
-	"github.com/hydralang/hydra/parser/ast"
+	"github.com/hydralang/hydra/ast"
 	"github.com/hydralang/hydra/parser/common"
 )
 
 // LiteralExprFirst is an ExprFirst function that returns a literal
 // value.
-func LiteralExprFirst(p common.Parser, t *common.Token) (common.Expression, error) {
+func LiteralExprFirst(p common.Parser, t *common.Token) (ast.Expression, error) {
 	return &ast.Constant{
 		Loc: t.Loc,
 		Val: t.Val,
@@ -31,7 +31,7 @@ func LiteralExprFirst(p common.Parser, t *common.Token) (common.Expression, erro
 // InfixExprNext is a factory function for ExprNext functions for
 // basic infix operators--e.g., "+", "-", "*", "/", etc.
 func InfixExprNext(op string, lbp int) ExprNext {
-	return func(p common.Parser, l common.Expression, r *common.Token) (common.Expression, error) {
+	return func(p common.Parser, l ast.Expression, r *common.Token) (ast.Expression, error) {
 		right, err := p.Expression(lbp)
 		if err != nil {
 			return nil, err
@@ -49,7 +49,7 @@ func InfixExprNext(op string, lbp int) ExprNext {
 // PrefixExprFirst is a factory function for ExprFirst functions for
 // prefixed unary operators--e.g., "~", "-", etc.
 func PrefixExprFirst(op string, lbp int) ExprFirst {
-	return func(p common.Parser, t *common.Token) (common.Expression, error) {
+	return func(p common.Parser, t *common.Token) (ast.Expression, error) {
 		expr, err := p.Expression(lbp)
 		if err != nil {
 			return nil, err
@@ -66,7 +66,7 @@ func PrefixExprFirst(op string, lbp int) ExprFirst {
 // InfixRightExprNext is a factory function for ExprNext functions for
 // right-associative infix operators--e.g., "**".
 func InfixRightExprNext(op string, lbp int) ExprNext {
-	return func(p common.Parser, l common.Expression, r *common.Token) (common.Expression, error) {
+	return func(p common.Parser, l ast.Expression, r *common.Token) (ast.Expression, error) {
 		right, err := p.Expression(lbp - 1)
 		if err != nil {
 			return nil, err
