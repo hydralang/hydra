@@ -14,6 +14,12 @@
 
 package common
 
+import (
+	"fmt"
+
+	"github.com/hydralang/hydra/utils"
+)
+
 // Scanner is an interface describing a scanner.  A scanner reads a
 // source character rune by character rune, returning augmented
 // characters.
@@ -72,6 +78,11 @@ type Parser interface {
 // ParserTable is an interface describing the table of symbols the
 // parser uses during parsing.
 type ParserTable interface {
+	// BindingPower retrieves the binding power for a particular
+	// expression token.  It is passed the token.  It returns the
+	// binding power or an error.
+	BindingPower(p Parser, t *Token) int
+
 	// ExprFirst is called for the first expression token.  It is
 	// passed the token.  It returns an expression or an error.
 	ExprFirst(p Parser, t *Token) (Expression, error)
@@ -88,8 +99,17 @@ type ParserTable interface {
 
 // Expression is an interface describing an expression node in the
 // abstract syntax tree.
-type Expression interface{}
+type Expression interface {
+	fmt.Stringer
+	utils.Visitable
+
+	// GetLoc retrieves the location of the expression.
+	GetLoc() Location
+}
 
 // Statement is an interface describing a statement node in the
 // abstract syntax tree.
-type Statement interface{}
+type Statement interface {
+	// GetLoc retrieves the location of the statement.
+	GetLoc() Location
+}

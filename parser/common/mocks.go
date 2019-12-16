@@ -14,7 +14,11 @@
 
 package common
 
-import "github.com/stretchr/testify/mock"
+import (
+	"github.com/stretchr/testify/mock"
+
+	"github.com/hydralang/hydra/utils"
+)
 
 // MockScanner is a mock object for scanners.
 type MockScanner struct {
@@ -116,6 +120,15 @@ type MockParserTable struct {
 	mock.Mock
 }
 
+// BindingPower retrieves the binding power for a particular
+// expression token.  It is passed the token.  It returns the binding
+// power or an error.
+func (m *MockParserTable) BindingPower(p Parser, t *Token) int {
+	args := m.MethodCalled("BindingPower", p, t)
+
+	return args.Int(0)
+}
+
 // ExprFirst is called for the first expression token.  It is passed
 // the token.  It returns an expression or an error.
 func (m *MockParserTable) ExprFirst(p Parser, t *Token) (Expression, error) {
@@ -160,7 +173,35 @@ type MockExpression struct {
 	mock.Mock
 }
 
+// GetLoc retrieves the location of the expression.
+func (m *MockExpression) GetLoc() Location {
+	args := m.MethodCalled("GetLoc")
+
+	return args.Get(0).(Location)
+}
+
+// Children implements the utils.Visitable interface.
+func (m *MockExpression) Children() []utils.Visitable {
+	args := m.MethodCalled("Children")
+
+	return args.Get(0).([]utils.Visitable)
+}
+
+// String implements the fmt.Stringer interface.
+func (m *MockExpression) String() string {
+	args := m.MethodCalled("String")
+
+	return args.String(0)
+}
+
 // MockStatement is a mock object for statements.
 type MockStatement struct {
 	mock.Mock
+}
+
+// GetLoc retrieves the location of the statement.
+func (m *MockStatement) GetLoc() Location {
+	args := m.MethodCalled("GetLoc")
+
+	return args.Get(0).(Location)
 }

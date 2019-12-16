@@ -201,6 +201,19 @@ func TestMockParserTableImplementsParserTable(t *testing.T) {
 	assert.Implements(t, (*ParserTable)(nil), &MockParserTable{})
 }
 
+func TestMockParserTableBindingPower(t *testing.T) {
+	a := assert.New(t)
+	p := &MockParser{}
+	tok := &Token{}
+	pt := &MockParserTable{}
+	pt.On("BindingPower", p, tok).Return(5)
+
+	result := pt.BindingPower(p, tok)
+
+	a.Equal(5, result)
+	pt.AssertExpectations(t)
+}
+
 func TestMockParserTableExprFirstNil(t *testing.T) {
 	a := assert.New(t)
 	p := &MockParser{}
@@ -337,6 +350,68 @@ func TestMockExpressionImplementsExpression(t *testing.T) {
 	assert.Implements(t, (*Expression)(nil), &MockExpression{})
 }
 
+func TestMockExpressionGetLoc(t *testing.T) {
+	a := assert.New(t)
+	e := &MockExpression{}
+	e.On("GetLoc").Return(Location{
+		File: "file",
+		B: FilePos{
+			L: 3,
+			C: 2,
+		},
+		E: FilePos{
+			L: 3,
+			C: 3,
+		},
+	})
+
+	result := e.GetLoc()
+
+	a.Equal(Location{
+		File: "file",
+		B: FilePos{
+			L: 3,
+			C: 2,
+		},
+		E: FilePos{
+			L: 3,
+			C: 3,
+		},
+	}, result)
+	e.AssertExpectations(t)
+}
+
 func TestMockStatementImplementsStatement(t *testing.T) {
 	assert.Implements(t, (*Statement)(nil), &MockStatement{})
+}
+
+func TestMockStatementGetLoc(t *testing.T) {
+	a := assert.New(t)
+	s := &MockStatement{}
+	s.On("GetLoc").Return(Location{
+		File: "file",
+		B: FilePos{
+			L: 3,
+			C: 2,
+		},
+		E: FilePos{
+			L: 3,
+			C: 3,
+		},
+	})
+
+	result := s.GetLoc()
+
+	a.Equal(Location{
+		File: "file",
+		B: FilePos{
+			L: 3,
+			C: 2,
+		},
+		E: FilePos{
+			L: 3,
+			C: 3,
+		},
+	}, result)
+	s.AssertExpectations(t)
 }

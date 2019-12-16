@@ -17,11 +17,11 @@ package parser
 import "github.com/hydralang/hydra/parser/common"
 
 // ExprFirst is called to process the first token in a sub-expression.
-type ExprFirst func(p common.Parser, t *common.Token, lbp int) (common.Expression, error)
+type ExprFirst func(p common.Parser, t *common.Token) (common.Expression, error)
 
 // ExprNext is called to process subsequent tokens in a
 // sub-expression.
-type ExprNext func(p common.Parser, l common.Expression, r *common.Token, lbp int) (common.Expression, error)
+type ExprNext func(p common.Parser, l common.Expression, r *common.Token) (common.Expression, error)
 
 // Statement is called to process statement tokens.
 type Statement func(p common.Parser, t *common.Token) (common.Statement, error)
@@ -37,6 +37,18 @@ type parserEntry struct {
 // parserTable is an implementation of the ParserTable interface.
 type parserTable map[string]parserEntry
 
+// BindingPower retrieves the binding power for a particular
+// expression token.  It is passed the token.  It returns the binding
+// power or an error.
+func (pt parserTable) BindingPower(p common.Parser, t *common.Token) int {
+	ent, ok := pt[t.Sym.Name]
+	if !ok || ent.Lbp <= 0 {
+		return 0
+	}
+
+	return ent.Lbp
+}
+
 // ExprFirst is called for the first expression token.  It is passed
 // the token and the associated left binding power of the token's
 // symbol.  It returns an expression or an error.
@@ -46,7 +58,7 @@ func (pt parserTable) ExprFirst(p common.Parser, t *common.Token) (common.Expres
 		return nil, common.ErrUnexpected
 	}
 
-	return ent.ExprFirst(p, t, ent.Lbp)
+	return ent.ExprFirst(p, t)
 }
 
 // ExprNext is called for subsequent expression tokens.  It is passed
@@ -59,7 +71,7 @@ func (pt parserTable) ExprNext(p common.Parser, l common.Expression, r *common.T
 		return nil, common.ErrUnexpected
 	}
 
-	return ent.ExprNext(p, l, r, ent.Lbp)
+	return ent.ExprNext(p, l, r)
 }
 
 // Statement is called for statement tokens.  It returns a statement
