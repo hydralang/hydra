@@ -145,30 +145,3 @@ func (o *Options) Parse(opts ...Option) {
 // Option type for option functions.  Each function mutates a
 // passed-in Options structure to set the specific option.
 type Option func(opts *Options)
-
-// Filename sets the filename being scanned.  If not set, an attempt
-// is made to guess it from the source (depends on source having a
-// Name() method returning a string), and a default is used if that
-// fails.
-func Filename(file string) Option {
-	return func(opts *Options) {
-		opts.Filename = file
-	}
-}
-
-// Encoding sets the encoding for the file being scanned.  If not set,
-// an attempt is made to guess it from the source (depends on source
-// implementing io.Seeker), and a default of "utf-8" is used if that
-// fails.
-func Encoding(encoding string) Option {
-	return func(opts *Options) {
-		opts.Encoding = encoding
-	}
-}
-
-// TabStop sets the size of a tab stop.  If not set, it defaults to 8.
-func TabStop(tabstop int) Option {
-	return func(opts *Options) {
-		opts.TabStop = tabstop
-	}
-}

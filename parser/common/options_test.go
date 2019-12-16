@@ -181,43 +181,25 @@ func TestOptionsParseSeekerUnseekable(t *testing.T) {
 	a.Equal(defaultTabStop, obj.TabStop)
 }
 
+func Opt1(opts *Options) {
+	opts.Filename = "file"
+}
+
+func Opt2(opts *Options) {
+	opts.Encoding = "other"
+}
+
+func Opt3(opts *Options) {
+	opts.TabStop = 4
+}
+
 func TestOptionsParseOptions(t *testing.T) {
 	a := assert.New(t)
 	obj := &Options{}
 
-	obj.Parse(Filename("file"), Encoding("other"), TabStop(4))
+	obj.Parse(Opt1, Opt2, Opt3)
 
 	a.Equal("file", obj.Filename)
 	a.Equal("other", obj.Encoding)
 	a.Equal(4, obj.TabStop)
-}
-
-func TestFilename(t *testing.T) {
-	a := assert.New(t)
-	opts := &Options{}
-
-	opt := Filename("file")
-	opt(opts)
-
-	a.Equal("file", opts.Filename)
-}
-
-func TestEncoding(t *testing.T) {
-	a := assert.New(t)
-	opts := &Options{}
-
-	opt := Encoding("enc")
-	opt(opts)
-
-	a.Equal("enc", opts.Encoding)
-}
-
-func TestTabStop(t *testing.T) {
-	a := assert.New(t)
-	opts := &Options{}
-
-	opt := TabStop(4)
-	opt(opts)
-
-	a.Equal(4, opts.TabStop)
 }
