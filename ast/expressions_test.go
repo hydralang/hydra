@@ -22,13 +22,9 @@ import (
 	"github.com/hydralang/hydra/utils"
 )
 
-func TestConstantImplementsExpression(t *testing.T) {
-	assert.Implements(t, (*Expression)(nil), &Constant{})
-}
-
-func TestConstantGetLoc(t *testing.T) {
+func TestBaseExpressionGetLoc(t *testing.T) {
 	a := assert.New(t)
-	obj := &Constant{
+	obj := &BaseExpression{
 		Loc: utils.Location{
 			File: "file",
 			B:    utils.FilePos{L: 3, C: 2},
@@ -43,6 +39,10 @@ func TestConstantGetLoc(t *testing.T) {
 		B:    utils.FilePos{L: 3, C: 2},
 		E:    utils.FilePos{L: 3, C: 3},
 	}, result)
+}
+
+func TestConstantImplementsExpression(t *testing.T) {
+	assert.Implements(t, (*Expression)(nil), &Constant{})
 }
 
 func TestConstantChildren(t *testing.T) {
@@ -57,10 +57,12 @@ func TestConstantChildren(t *testing.T) {
 func TestConstantString(t *testing.T) {
 	a := assert.New(t)
 	obj := &Constant{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
+		BaseExpression: BaseExpression{
+			Loc: utils.Location{
+				File: "file",
+				B:    utils.FilePos{L: 3, C: 2},
+				E:    utils.FilePos{L: 3, C: 3},
+			},
 		},
 		Val: "value",
 	}
@@ -72,25 +74,6 @@ func TestConstantString(t *testing.T) {
 
 func TestVariableImplementsExpression(t *testing.T) {
 	assert.Implements(t, (*Expression)(nil), &Variable{})
-}
-
-func TestVariableGetLoc(t *testing.T) {
-	a := assert.New(t)
-	obj := &Variable{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
-		},
-	}
-
-	result := obj.GetLoc()
-
-	a.Equal(utils.Location{
-		File: "file",
-		B:    utils.FilePos{L: 3, C: 2},
-		E:    utils.FilePos{L: 3, C: 3},
-	}, result)
 }
 
 func TestVariableChildren(t *testing.T) {
@@ -105,10 +88,12 @@ func TestVariableChildren(t *testing.T) {
 func TestVariableString(t *testing.T) {
 	a := assert.New(t)
 	obj := &Variable{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
+		BaseExpression: BaseExpression{
+			Loc: utils.Location{
+				File: "file",
+				B:    utils.FilePos{L: 3, C: 2},
+				E:    utils.FilePos{L: 3, C: 3},
+			},
 		},
 		Name: "variable",
 	}
@@ -120,25 +105,6 @@ func TestVariableString(t *testing.T) {
 
 func TestUnaryImplementsExpression(t *testing.T) {
 	assert.Implements(t, (*Expression)(nil), &Unary{})
-}
-
-func TestUnaryGetLoc(t *testing.T) {
-	a := assert.New(t)
-	obj := &Unary{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
-		},
-	}
-
-	result := obj.GetLoc()
-
-	a.Equal(utils.Location{
-		File: "file",
-		B:    utils.FilePos{L: 3, C: 2},
-		E:    utils.FilePos{L: 3, C: 3},
-	}, result)
 }
 
 func TestUnaryChildren(t *testing.T) {
@@ -161,10 +127,12 @@ func TestUnaryChildren(t *testing.T) {
 func TestUnaryString(t *testing.T) {
 	a := assert.New(t)
 	obj := &Unary{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
+		BaseExpression: BaseExpression{
+			Loc: utils.Location{
+				File: "file",
+				B:    utils.FilePos{L: 3, C: 2},
+				E:    utils.FilePos{L: 3, C: 3},
+			},
 		},
 		Op: "+",
 	}
@@ -176,25 +144,6 @@ func TestUnaryString(t *testing.T) {
 
 func TestBinaryImplementsExpression(t *testing.T) {
 	assert.Implements(t, (*Expression)(nil), &Binary{})
-}
-
-func TestBinaryGetLoc(t *testing.T) {
-	a := assert.New(t)
-	obj := &Binary{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
-		},
-	}
-
-	result := obj.GetLoc()
-
-	a.Equal(utils.Location{
-		File: "file",
-		B:    utils.FilePos{L: 3, C: 2},
-		E:    utils.FilePos{L: 3, C: 3},
-	}, result)
 }
 
 func TestBinaryChildren(t *testing.T) {
@@ -223,10 +172,12 @@ func TestBinaryChildren(t *testing.T) {
 func TestBinaryString(t *testing.T) {
 	a := assert.New(t)
 	obj := &Binary{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
+		BaseExpression: BaseExpression{
+			Loc: utils.Location{
+				File: "file",
+				B:    utils.FilePos{L: 3, C: 2},
+				E:    utils.FilePos{L: 3, C: 3},
+			},
 		},
 		Op: "+",
 	}
@@ -238,25 +189,6 @@ func TestBinaryString(t *testing.T) {
 
 func TestAttributeImplementsExpression(t *testing.T) {
 	assert.Implements(t, (*Expression)(nil), &Attribute{})
-}
-
-func TestAttributeGetLoc(t *testing.T) {
-	a := assert.New(t)
-	obj := &Attribute{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
-		},
-	}
-
-	result := obj.GetLoc()
-
-	a.Equal(utils.Location{
-		File: "file",
-		B:    utils.FilePos{L: 3, C: 2},
-		E:    utils.FilePos{L: 3, C: 3},
-	}, result)
 }
 
 func TestAttributeChildren(t *testing.T) {
@@ -279,10 +211,12 @@ func TestAttributeChildren(t *testing.T) {
 func TestAttributeString(t *testing.T) {
 	a := assert.New(t)
 	obj := &Attribute{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
+		BaseExpression: BaseExpression{
+			Loc: utils.Location{
+				File: "file",
+				B:    utils.FilePos{L: 3, C: 2},
+				E:    utils.FilePos{L: 3, C: 3},
+			},
 		},
 		Attr: "attr",
 	}
@@ -294,25 +228,6 @@ func TestAttributeString(t *testing.T) {
 
 func TestCallImplementsExpression(t *testing.T) {
 	assert.Implements(t, (*Expression)(nil), &Call{})
-}
-
-func TestCallGetLoc(t *testing.T) {
-	a := assert.New(t)
-	obj := &Call{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
-		},
-	}
-
-	result := obj.GetLoc()
-
-	a.Equal(utils.Location{
-		File: "file",
-		B:    utils.FilePos{L: 3, C: 2},
-		E:    utils.FilePos{L: 3, C: 3},
-	}, result)
 }
 
 func TestCallChildren(t *testing.T) {
@@ -361,10 +276,12 @@ func TestCallChildren(t *testing.T) {
 func TestCallString(t *testing.T) {
 	a := assert.New(t)
 	obj := &Call{
-		Loc: utils.Location{
-			File: "file",
-			B:    utils.FilePos{L: 3, C: 2},
-			E:    utils.FilePos{L: 3, C: 3},
+		BaseExpression: BaseExpression{
+			Loc: utils.Location{
+				File: "file",
+				B:    utils.FilePos{L: 3, C: 2},
+				E:    utils.FilePos{L: 3, C: 3},
+			},
 		},
 	}
 

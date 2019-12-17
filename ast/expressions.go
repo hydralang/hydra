@@ -20,15 +20,22 @@ import (
 	"github.com/hydralang/hydra/utils"
 )
 
-// Constant describes a constant expression node.
-type Constant struct {
-	Loc utils.Location // Location of the constant
-	Val interface{}    // Value of the constant
+// BaseExpression describes basics for an expression.  Note that
+// BaseExpression does not, nor is it intended to, implement
+// Expression.
+type BaseExpression struct {
+	Loc utils.Location // Location of the expression
 }
 
 // GetLoc retrieves the location of the expression.
-func (c *Constant) GetLoc() utils.Location {
-	return c.Loc
+func (b *BaseExpression) GetLoc() utils.Location {
+	return b.Loc
+}
+
+// Constant describes a constant expression node.
+type Constant struct {
+	BaseExpression
+	Val interface{} // Value of the constant
 }
 
 // Children implements the utils.Visitable interface.
@@ -43,13 +50,8 @@ func (c *Constant) String() string {
 
 // Variable describes a reference to a variable.
 type Variable struct {
-	Loc  utils.Location // Location of the variable reference
-	Name string         // Name of the variable
-}
-
-// GetLoc retrieves the location of the expression.
-func (v *Variable) GetLoc() utils.Location {
-	return v.Loc
+	BaseExpression
+	Name string // Name of the variable
 }
 
 // Children implements the utils.Visitable interface.
@@ -65,14 +67,9 @@ func (v *Variable) String() string {
 // Unary describes the action of a unary operator on another
 // expression node.
 type Unary struct {
-	Loc  utils.Location // Location of the unary operator
-	Op   string         // The operation to perform
-	Node Expression     // The expression node acted upon
-}
-
-// GetLoc retrieves the location of the expression.
-func (u *Unary) GetLoc() utils.Location {
-	return u.Loc
+	BaseExpression
+	Op   string     // The operation to perform
+	Node Expression // The expression node acted upon
 }
 
 // Children implements the utils.Visitable interface.
@@ -93,15 +90,10 @@ func (u *Unary) String() string {
 // Binary describes the action of a binary operator on two expression
 // nodes.
 type Binary struct {
-	Loc   utils.Location // Location of the binary operator
-	Op    string         // The operation to perform
-	Left  Expression     // The left-hand expression
-	Right Expression     // The right-hand expression
-}
-
-// GetLoc retrieves the location of the expression.
-func (b *Binary) GetLoc() utils.Location {
-	return b.Loc
+	BaseExpression
+	Op    string     // The operation to perform
+	Left  Expression // The left-hand expression
+	Right Expression // The right-hand expression
 }
 
 // Children implements the utils.Visitable interface.
@@ -126,14 +118,9 @@ func (b *Binary) String() string {
 // Attribute describes the action of the "." operator on an expression
 // node.
 type Attribute struct {
-	Loc  utils.Location // Location of the attribute operator
-	Expr Expression     // The expression to seek the attribute of
-	Attr string         // The name of the attribute to seek
-}
-
-// GetLoc retrieves the location of the expression.
-func (a *Attribute) GetLoc() utils.Location {
-	return a.Loc
+	BaseExpression
+	Expr Expression // The expression to seek the attribute of
+	Attr string     // The name of the attribute to seek
 }
 
 // Children implements the utils.Visitable interface.
@@ -153,15 +140,10 @@ func (a *Attribute) String() string {
 
 // Call describes a call to a function.
 type Call struct {
-	Loc    utils.Location        // Location of the function call
+	BaseExpression
 	Func   Expression            // The function to be called
 	Args   []Expression          // The function arguments
 	KwArgs map[string]Expression // The function keyword args
-}
-
-// GetLoc retrieves the location of the expression.
-func (c *Call) GetLoc() utils.Location {
-	return c.Loc
 }
 
 // Children implements the utils.Visitable interface.

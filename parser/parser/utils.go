@@ -23,7 +23,9 @@ import (
 // value.
 func LiteralExprFirst(p common.Parser, t *common.Token) (ast.Expression, error) {
 	return &ast.Constant{
-		Loc: t.Loc,
+		BaseExpression: ast.BaseExpression{
+			Loc: t.Loc,
+		},
 		Val: t.Val,
 	}, nil
 }
@@ -38,7 +40,9 @@ func InfixExprNext(op string, lbp int) ExprNext {
 		}
 
 		return &ast.Binary{
-			Loc:   l.GetLoc().ThruEnd(r.Loc),
+			BaseExpression: ast.BaseExpression{
+				Loc: l.GetLoc().ThruEnd(r.Loc),
+			},
 			Op:    op,
 			Left:  l,
 			Right: right,
@@ -56,7 +60,9 @@ func PrefixExprFirst(op string, lbp int) ExprFirst {
 		}
 
 		return &ast.Unary{
-			Loc:  expr.GetLoc(),
+			BaseExpression: ast.BaseExpression{
+				Loc: expr.GetLoc(),
+			},
 			Op:   op,
 			Node: expr,
 		}, nil
@@ -73,7 +79,9 @@ func InfixRightExprNext(op string, lbp int) ExprNext {
 		}
 
 		return &ast.Binary{
-			Loc:   l.GetLoc().ThruEnd(r.Loc),
+			BaseExpression: ast.BaseExpression{
+				Loc: l.GetLoc().ThruEnd(r.Loc),
+			},
 			Op:    op,
 			Left:  l,
 			Right: right,
