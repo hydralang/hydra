@@ -19,12 +19,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hydralang/hydra/parser/common"
-	"github.com/hydralang/hydra/parser/scanner"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/unicode/norm"
 	"golang.org/x/text/unicode/rangetable"
+
+	"github.com/hydralang/hydra/parser/common"
+	"github.com/hydralang/hydra/parser/scanner"
 )
 
 var (

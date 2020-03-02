@@ -43,9 +43,10 @@ import (
 	"io"
 	"unicode/utf8"
 
-	"github.com/hydralang/hydra/parser/common"
 	"golang.org/x/text/encoding/ianaindex"
 	"golang.org/x/text/transform"
+
+	"github.com/hydralang/hydra/parser/common"
 )
 
 // scanBuf is the size of the read buffer to utilize.

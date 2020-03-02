@@ -19,9 +19,10 @@ import (
 	"testing"
 	"unicode"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/scanner"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestBufStringImplementsBuffer(t *testing.T) {

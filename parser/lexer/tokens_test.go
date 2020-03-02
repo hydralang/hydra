@@ -17,9 +17,10 @@ package lexer
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/scanner"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestLexerLastTokNil(t *testing.T) {

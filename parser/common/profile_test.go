@@ -17,11 +17,12 @@ package common
 import (
 	"testing"
 
-	"github.com/hydralang/hydra/testutils"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/unicode/norm"
 	"golang.org/x/text/unicode/rangetable"
+
+	"github.com/hydralang/hydra/testutils"
 )
 
 var (

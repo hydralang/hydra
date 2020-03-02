@@ -17,9 +17,10 @@ package lexer
 import (
 	"testing"
 
-	"github.com/hydralang/hydra/parser/common"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	"github.com/hydralang/hydra/parser/common"
 )
 
 func TestMockRecognizerImplementsRecognizer(t *testing.T) {

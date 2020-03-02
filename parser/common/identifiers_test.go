@@ -17,8 +17,9 @@ package common
 import (
 	"testing"
 
-	"github.com/hydralang/hydra/testutils"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/hydralang/hydra/testutils"
 )
 
 func TestKeywordsCopy(t *testing.T) {

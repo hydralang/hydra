@@ -1,2 +1,4 @@
-cover.out
+coverage.out
 coverage.html
+.gitignore.tmp
+tools

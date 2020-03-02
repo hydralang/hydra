@@ -17,8 +17,9 @@ package common
 import (
 	"testing"
 
-	"github.com/hydralang/hydra/utils"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/hydralang/hydra/utils"
 )
 
 func TestSymbolString(t *testing.T) {

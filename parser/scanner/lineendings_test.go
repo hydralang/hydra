@@ -18,9 +18,10 @@ import (
 	"testing"
 	"unicode/utf8"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/testutils"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestScannerLeUnknownNewline(t *testing.T) {

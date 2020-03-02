@@ -17,9 +17,10 @@ package common
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/hydralang/hydra/testutils"
 	"github.com/hydralang/hydra/utils"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestOperatorsImplementsVisitable(t *testing.T) {

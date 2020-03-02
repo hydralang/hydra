@@ -21,13 +21,14 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/hydralang/hydra/parser/common"
-	"github.com/hydralang/hydra/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/unicode/norm"
 	"golang.org/x/text/unicode/rangetable"
+
+	"github.com/hydralang/hydra/parser/common"
+	"github.com/hydralang/hydra/testutils"
 )
 
 var (

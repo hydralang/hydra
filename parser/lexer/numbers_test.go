@@ -19,9 +19,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/hydralang/hydra/parser/common"
 	"github.com/hydralang/hydra/parser/scanner"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestRecognizeNumberImplementsRecognizer(t *testing.T) {
