@@ -18,8 +18,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/hydralang/hydra/testutils"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/hydralang/hydra/testutils"
 )
 
 func TestMockScannerImplementsScanner(t *testing.T) {

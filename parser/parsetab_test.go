@@ -17,8 +17,9 @@ package parser
 import (
 	"testing"
 
-	"github.com/hydralang/hydra/parser/common"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/hydralang/hydra/parser/common"
 )
 
 func TestParserTableImplementsParserTable(t *testing.T) {
